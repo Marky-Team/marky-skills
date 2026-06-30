@@ -38,7 +38,7 @@ curl https://api.mymarky.ai/api/businesses/BIZ_ID/integrations \
   -H "Authorization: Bearer mk_live_YOUR_KEY"
 ```
 
-Only target platforms whose `status` is `VALID`.
+Only target platforms whose `status` is `valid`.
 
 ## Step 3 — plan the schedule
 
@@ -63,56 +63,55 @@ the event description. Either way you end up with a post you then schedule.
 Write it yourself:
 
 ```bash
-curl -X POST https://api.mymarky.ai/api/posts \
+curl -X POST https://api.mymarky.ai/api/businesses/BIZ_ID/posts \
   -H "Authorization: Bearer mk_live_YOUR_KEY" \
   -H "Content-Type: application/json" \
   -d '{
-    "business_id": "BIZ_ID",
     "caption": "Announce-angle caption for the event.",
     "publish_to": ["instagram", "facebook", "linkedIn"]
   }'
 ```
 
-Or let Marky draft on-brand copy (brand voice, colors, and logo are applied automatically):
+Or let Marky draft on-brand copy (brand voice, colors, and logo are applied automatically).
+You choose target platforms later when you schedule, so `generate` only needs the idea:
 
 ```bash
-curl -X POST https://api.mymarky.ai/api/posts/generate \
+curl -X POST https://api.mymarky.ai/api/businesses/BIZ_ID/posts/generate \
   -H "Authorization: Bearer mk_live_YOUR_KEY" \
   -H "Content-Type: application/json" \
   -d '{
-    "business_id": "BIZ_ID",
     "custom_idea": "Announce our Spring Sale, 20% off, this Saturday only.",
-    "count": 1,
-    "platforms": ["instagram", "facebook"]
+    "count": 1
   }'
 ```
 
-`generate` returns a `job_id`. Poll `GET /jobs/{job_id}` until it is `completed`, then list
-the new drafts with `GET /posts?business_id=BIZ_ID&status=NEW` to get each new `post_id`.
+`generate` returns a `job_id`. Poll `GET /businesses/BIZ_ID/jobs/{job_id}` until it is
+`completed`, then list the new drafts with
+`GET /businesses/BIZ_ID/posts?status=NEW` to get each new `post_id`.
 
 ## Step 5 — schedule each post at its interval
 
 For each post, schedule it at the time you planned in Step 3 (ISO 8601, in the future):
 
 ```bash
-curl -X POST https://api.mymarky.ai/api/posts/POST_ID/schedule \
+curl -X POST https://api.mymarky.ai/api/businesses/BIZ_ID/posts/POST_ID/schedule \
   -H "Authorization: Bearer mk_live_YOUR_KEY" \
   -H "Content-Type: application/json" \
   -d '{
-    "publish_at": "2026-04-10T09:00:00Z",
+    "scheduled_publish_time": "2026-04-10T09:00:00Z",
     "publish_to": ["instagram", "facebook", "linkedIn"]
   }'
 ```
 
-Convert the user's local event time to UTC for `publish_at`. Double-check the math so a
-9am-local reminder does not go out in the middle of the night.
+Convert the user's local event time to UTC for `scheduled_publish_time`. Double-check the
+math so a 9am-local reminder does not go out in the middle of the night.
 
 ## Step 6 — confirm
 
 List the scheduled posts back to the user so they can see the full countdown:
 
 ```bash
-curl "https://api.mymarky.ai/api/posts?business_id=BIZ_ID&status=SCHEDULED" \
+curl "https://api.mymarky.ai/api/businesses/BIZ_ID/posts?status=SCHEDULED" \
   -H "Authorization: Bearer mk_live_YOUR_KEY"
 ```
 
@@ -124,4 +123,5 @@ Show the sequence (each angle + its publish time) and confirm it is ready.
   tease, explain the value, remind, last-call.
 - Keep the final reminder short and direct with a clear next step.
 - If the user gives you photos or video for the event, upload them first with
-  `POST /media` and pass the returned `original_url` in each post's `media_urls`.
+  `POST /businesses/{id}/media` and pass the returned `original_url` in each post's
+  `media_urls`.

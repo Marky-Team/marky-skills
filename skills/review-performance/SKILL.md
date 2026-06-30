@@ -42,15 +42,15 @@ engagement), and per-post detail when you want to go deeper.
 
 ```bash
 # Account-level audience stats (followers, growth) for one connected account.
-curl https://api.mymarky.ai/api/integrations/INTEGRATION_ID/stats \
+curl https://api.mymarky.ai/api/businesses/BIZ_ID/integrations/INTEGRATION_ID/stats \
   -H "Authorization: Bearer mk_live_YOUR_KEY"
 
 # Posts published on that platform, each with its engagement numbers.
-curl https://api.mymarky.ai/api/integrations/INTEGRATION_ID/posts \
+curl https://api.mymarky.ai/api/businesses/BIZ_ID/integrations/INTEGRATION_ID/posts \
   -H "Authorization: Bearer mk_live_YOUR_KEY"
 
 # Engagement for one specific Marky post (across the platforms it went to).
-curl https://api.mymarky.ai/api/posts/POST_ID/stats \
+curl https://api.mymarky.ai/api/businesses/BIZ_ID/posts/POST_ID/stats \
   -H "Authorization: Bearer mk_live_YOUR_KEY"
 ```
 
@@ -60,11 +60,20 @@ To tie performance back to what you posted about, also list your posts and topic
 
 ```bash
 # Your post history (filter by status if you like).
-curl "https://api.mymarky.ai/api/posts?business_id=BIZ_ID" \
+curl "https://api.mymarky.ai/api/businesses/BIZ_ID/posts" \
   -H "Authorization: Bearer mk_live_YOUR_KEY"
 
 # Your content topics, so you can group results by topic.
-curl "https://api.mymarky.ai/api/topics?business_id=BIZ_ID" \
+curl "https://api.mymarky.ai/api/businesses/BIZ_ID/topics" \
+  -H "Authorization: Bearer mk_live_YOUR_KEY"
+```
+
+If the business has a Google Business profile connected, you can also pull customer
+reviews to round out the picture (reviewer, star rating, text, and any reply):
+
+```bash
+# Google Business reviews, newest first. order_by also takes 'rating' or 'rating desc'.
+curl "https://api.mymarky.ai/api/businesses/BIZ_ID/reviews?order_by=rating%20desc" \
   -H "Authorization: Bearer mk_live_YOUR_KEY"
 ```
 
@@ -97,7 +106,8 @@ Then offer to act on it with the writing skills:
 
 - The API gives you per-post and per-account engagement plus your post and topic lists.
   Group and compare those yourself, the API does not return pre-aggregated leaderboards.
-- Posts are linked to a `topic_id`, so you can group by topic. There is no public endpoint
-  for the category a topic belongs to, so group at the topic level.
+- Posts are linked to a `topic_id`, so you can group by topic. Categories now have their
+  own endpoints too (`GET /businesses/{id}/categories`), so you can roll topics up by
+  category if you want a higher-level cut.
 - Stats are read-only here. Acting on the findings (new topics, new posts) happens through
   the other skills.

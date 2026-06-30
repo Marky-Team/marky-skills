@@ -48,8 +48,9 @@ handful of concrete things worth saying. Pull from whatever the user actually ha
 - Recent wins, launches, lessons, or behind-the-scenes moments they describe to you.
 - Their website or a recent blog post (you can pass a `website_url` to Marky's generator to
   pull in page context).
-- Their connected platforms' recent performance — `GET /integrations/{id}/stats` and
-  `GET /integrations/{id}/posts` show what has landed before.
+- Their connected platforms' recent performance —
+  `GET /businesses/{id}/integrations/{integration_id}/stats` and
+  `GET /businesses/{id}/integrations/{integration_id}/posts` show what has landed before.
 
 **Judgment gate:** not every real thing is postable. Skip anything that would worry
 customers, expose private details, or name a person or customer without their consent. Keep
@@ -58,7 +59,7 @@ it grounded and safe.
 ### Stage 2 — Learn what is working (optional, once you have history)
 
 If the business has posted through Marky for a few weeks, look at the engagement before
-planning. Pull per-post stats (`GET /posts/{id}/stats`) and account stats, and notice
+planning. Pull per-post stats (`GET /businesses/{id}/posts/{post_id}/stats`) and account stats, and notice
 patterns: which topics, formats, and platforms get the most reach and engagement. Lean the
 next week toward what works, but keep some variety so you keep learning. If there is no
 history yet, skip this and come back to it later.
@@ -73,7 +74,7 @@ Design about 6 posts for the week.
   behind-the-scenes look) so the feed does not feel repetitive.
 - **Lead with the value to the reader,** not the feature or the jargon. Say what they get.
 - **Cover the platforms you have connected.** Check
-  `GET /businesses/{id}/integrations` and plan to reach each `VALID` one.
+  `GET /businesses/{id}/integrations` and plan to reach each `valid` one.
 - **Respect `writing-style.md` exactly.** Match the voice, and avoid anything on the
   brand's "don't" list.
 - Write the week into `calendar.md` so it is easy to scan.
@@ -91,10 +92,10 @@ For each post:
 
 - **Write the caption** in the brand's voice (from `writing-style.md`).
 - **Prepare media.** Use the photos, graphics, or video the user provides. Upload each via
-  `POST /media?business_id=...` and keep the returned `original_url`.
+  `POST /businesses/{id}/media` and keep the returned `original_url`.
 - **Or let Marky write it.** For posts where the user just has a topic, use
-  `POST /posts/generate` (brand voice, colors, and logo come from the business
-  automatically), poll the job, and review the drafts.
+  `POST /businesses/{id}/posts/generate` (brand voice, colors, and logo come from the
+  business automatically), poll the job, and review the drafts.
 
 ### Stage 6 — Approve, then schedule (hard gate)
 
@@ -105,13 +106,13 @@ For each post:
    `writing-style.md`.
 3. On approval, schedule through Marky (see the `schedule-posts` skill). Spread the posts
    across the week — for example one per day at a consistent time. Use
-   `POST /posts/{id}/schedule` with a future `publish_at`, and maximize `publish_to` to
-   every platform the media supports.
+   `POST /businesses/{id}/posts/{post_id}/schedule` with a future `scheduled_publish_time`,
+   and maximize `publish_to` to every platform the media supports.
 4. Update `calendar.md` with the scheduled times.
 
 ### Stage 7 — Confirm
 
-After the scheduled times pass, check `GET /posts/{id}` and read `publish_results`. Every
+After the scheduled times pass, check `GET /businesses/{id}/posts/{post_id}` and read `publish_results`. Every
 platform entry should be `success`. If one is `failed`, tell the user why (often an account
 that needs reconnecting in the dashboard) so they can fix it.
 

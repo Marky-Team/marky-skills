@@ -28,7 +28,7 @@ curl https://api.mymarky.ai/api/businesses/BIZ_ID \
   -H "Authorization: Bearer mk_live_YOUR_KEY"
 
 # The topics they already have.
-curl "https://api.mymarky.ai/api/topics?business_id=BIZ_ID" \
+curl "https://api.mymarky.ai/api/businesses/BIZ_ID/topics" \
   -H "Authorization: Bearer mk_live_YOUR_KEY"
 ```
 
@@ -54,30 +54,29 @@ After the user approves, apply the changes.
 
 ```bash
 # Create a topic. title + body are the substance; body guides what posts to write.
-curl -X POST https://api.mymarky.ai/api/topics \
+curl -X POST https://api.mymarky.ai/api/businesses/BIZ_ID/topics \
   -H "Authorization: Bearer mk_live_YOUR_KEY" \
   -H "Content-Type: application/json" \
   -d '{
-    "business_id": "BIZ_ID",
     "title": "Winter HVAC maintenance tips",
     "body": "Practical tips on maintaining heating systems in winter, framed around saving money and avoiding breakdowns.",
     "enabled": true
   }'
 
 # Edit a topic (sharpen the body, rename, or enable/disable it).
-curl -X PATCH https://api.mymarky.ai/api/topics/TOPIC_ID \
+curl -X PATCH https://api.mymarky.ai/api/businesses/BIZ_ID/topics/TOPIC_ID \
   -H "Authorization: Bearer mk_live_YOUR_KEY" \
   -H "Content-Type: application/json" \
   -d '{ "body": "Sharper, more specific guidance here.", "enabled": true }'
 
 # Disable a topic without deleting it (set enabled false).
-curl -X PATCH https://api.mymarky.ai/api/topics/TOPIC_ID \
+curl -X PATCH https://api.mymarky.ai/api/businesses/BIZ_ID/topics/TOPIC_ID \
   -H "Authorization: Bearer mk_live_YOUR_KEY" \
   -H "Content-Type: application/json" \
   -d '{ "enabled": false }'
 
 # Delete a topic for good.
-curl -X DELETE https://api.mymarky.ai/api/topics/TOPIC_ID \
+curl -X DELETE https://api.mymarky.ai/api/businesses/BIZ_ID/topics/TOPIC_ID \
   -H "Authorization: Bearer mk_live_YOUR_KEY"
 ```
 
@@ -90,11 +89,10 @@ Once the topic list is solid, generate posts from it. Marky drafts on-brand copy
 topic automatically (brand voice, colors, and logo applied server-side):
 
 ```bash
-curl -X POST https://api.mymarky.ai/api/posts/generate \
+curl -X POST https://api.mymarky.ai/api/businesses/BIZ_ID/posts/generate \
   -H "Authorization: Bearer mk_live_YOUR_KEY" \
   -H "Content-Type: application/json" \
   -d '{
-    "business_id": "BIZ_ID",
     "content": "Winter HVAC maintenance tips",
     "count": 3
   }'
@@ -104,10 +102,11 @@ Or hand off to the `schedule-posts` / `plan-social-content` skill for a full bat
 
 ## Notes and limits
 
-- Topics can belong to a category (via `category_id`), but there is no public endpoint for
-  creating or managing categories. Manage categories in the [dashboard](https://app.mymarky.ai)
-  and reference their `category_id` here if needed. Most users do fine working at the topic
-  level.
+- Topics can belong to a **category** (via `category_id`), and categories now have full
+  CRUD: `GET|POST /businesses/{id}/categories` and
+  `GET|PATCH|DELETE /businesses/{id}/categories/{category_id}` (a category takes `name`,
+  optional `description`, and a hex `color`). Create a category, then pass its `id` as a
+  topic's `category_id`. Most users do fine working at the topic level.
 - `enabled` controls whether a topic is in rotation. There is no `is_active` field.
 - A focused, specific topic list is one of the strongest levers for content quality. Pair
   this with the `review-performance` skill to see which topics actually earn engagement.

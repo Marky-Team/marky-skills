@@ -25,7 +25,7 @@ curl https://api.mymarky.ai/api/businesses \
   -H "Authorization: Bearer mk_live_YOUR_KEY"
 
 # List recent posts so the user can choose one to repurpose.
-curl "https://api.mymarky.ai/api/posts?business_id=BIZ_ID" \
+curl "https://api.mymarky.ai/api/businesses/BIZ_ID/posts" \
   -H "Authorization: Bearer mk_live_YOUR_KEY"
 ```
 
@@ -33,7 +33,7 @@ Show the user a short list and let them pick. If you want the full caption and a
 media of the chosen one:
 
 ```bash
-curl https://api.mymarky.ai/api/posts/POST_ID \
+curl https://api.mymarky.ai/api/businesses/BIZ_ID/posts/POST_ID \
   -H "Authorization: Bearer mk_live_YOUR_KEY"
 ```
 
@@ -58,11 +58,10 @@ For each variation, create a new post with `status` `NEW` (a draft) so the user 
 before anything is scheduled:
 
 ```bash
-curl -X POST https://api.mymarky.ai/api/posts \
+curl -X POST https://api.mymarky.ai/api/businesses/BIZ_ID/posts \
   -H "Authorization: Bearer mk_live_YOUR_KEY" \
   -H "Content-Type: application/json" \
   -d '{
-    "business_id": "BIZ_ID",
     "caption": "Variation 1 caption. Different hook, same core message. https://your-link.example",
     "media_urls": ["ORIGINAL_MEDIA_URL_OR_OMIT"],
     "publish_to": ["instagram", "facebook", "linkedIn"],
@@ -79,7 +78,7 @@ the field for text-only variations (text-only posts can only target `facebook` a
 List the new drafts so the user can see them all:
 
 ```bash
-curl "https://api.mymarky.ai/api/posts?business_id=BIZ_ID&status=NEW" \
+curl "https://api.mymarky.ai/api/businesses/BIZ_ID/posts?status=NEW" \
   -H "Authorization: Bearer mk_live_YOUR_KEY"
 ```
 
@@ -87,10 +86,10 @@ Show the variations and ask which to keep. To schedule the keepers, use the
 `schedule-posts` skill, or schedule directly:
 
 ```bash
-curl -X POST https://api.mymarky.ai/api/posts/POST_ID/schedule \
+curl -X POST https://api.mymarky.ai/api/businesses/BIZ_ID/posts/POST_ID/schedule \
   -H "Authorization: Bearer mk_live_YOUR_KEY" \
   -H "Content-Type: application/json" \
-  -d '{ "publish_at": "2026-04-10T09:00:00Z" }'
+  -d '{ "scheduled_publish_time": "2026-04-10T09:00:00Z" }'
 ```
 
 ## Tips
