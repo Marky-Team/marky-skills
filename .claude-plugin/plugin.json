@@ -1,0 +1,22 @@
+{
+  "name": "marky-skills",
+  "owner": {
+    "name": "Marky",
+    "email": "support@mymarky.ai",
+    "url": "https://app.mymarky.ai"
+  },
+  "plugins": [
+    {
+      "name": "marky-skills",
+      "source": "./",
+      "description": "Agent skills for managing social media with Marky: authenticate and connect the API/MCP, create and schedule posts, and plan a full week of on-brand content.",
+      "homepage": "https://docs.mymarky.ai",
+      "license": "MIT",
+      "skills": [
+        "./skills/marky-api",
+        "./skills/schedule-posts",
+        "./skills/plan-social-content"
+      ]
+    }
+  ]
+}
