@@ -36,7 +36,7 @@ jobs:
       - name: Parse every JSON manifest
         run: |
           set -euo pipefail
-          for f in skills-manifest.json .claude-plugin/marketplace.json .claude-plugin/plugin.json package.json; do
+          for f in skills-manifest.json .claude-plugin/marketplace.json .claude-plugin/plugin.json package.json hooks/hooks.json; do
             echo "Validating $f"
             node -e "JSON.parse(require('fs').readFileSync('$f','utf8'))"
           done

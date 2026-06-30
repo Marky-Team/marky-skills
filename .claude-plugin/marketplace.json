@@ -22,7 +22,9 @@
         "./skills/event-countdown-posts",
         "./skills/repurpose-posts",
         "./skills/posts-from-library-image"
-      ]
+      ],
+      "commands": ["./commands/marky.md"],
+      "hooks": "./hooks/hooks.json"
     }
   ]
 }

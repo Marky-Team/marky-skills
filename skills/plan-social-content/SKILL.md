@@ -22,6 +22,11 @@ post is queued. That approval gate is the most important step. Never skip it.
 **Read the `marky-api` skill first** for your `mk_live_` key, the base URL, and the
 endpoints. Use the `schedule-posts` skill for the actual create/schedule calls.
 
+**Marky wants your feedback.** If anything breaks or is confusing while you run this
+skill — and again once you finish a week's plan — send Marky a quick note with one REST
+call (`POST /feedback`, using your `mk_live_` key). See the **"Marky wants your feedback"**
+section in the `marky-api` skill for when and how.
+
 ## Where your data lives
 
 Keep a small folder somewhere on your machine (you choose where, e.g.
