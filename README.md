@@ -1,7 +1,7 @@
 <h1 align="center">Marky Skills</h1>
 
 <p align="center">
-  <a href="LICENSE"><img src="https://img.shields.io/badge/license-MIT-blue.svg" alt="License"></a>
+  <a href="LICENSE"><img src="https://img.shields.io/badge/license-Apache%202.0-blue.svg" alt="License"></a>
   <img src="https://img.shields.io/badge/skills-9-brightgreen" alt="9 skills">
   <a href="https://agentskills.io"><img src="https://img.shields.io/badge/format-Agent%20Skills-5865F2" alt="Agent Skills format"></a>
   <a href="https://github.com/Marky-Team/marky-skills/issues"><img src="https://img.shields.io/github/issues/Marky-Team/marky-skills.svg" alt="Issues"></a>
@@ -158,7 +158,7 @@ You -> Agent -> loads skill (SKILL.md) -> calls Marky API / MCP -> your socials
   REST. Use whichever your agent supports.
 - **Approval-first.** The agent drafts and proposes; you approve before anything
   publishes.
-- **Open and portable.** MIT-licensed Markdown skills that install into any
+- **Open and portable.** Apache-2.0-licensed Markdown skills that install into any
   agent that supports the Agent Skills format.
 
 ## Requirements
@@ -188,4 +188,4 @@ the checklist for adding a skill. Please also read our
 
 ## License
 
-[MIT](LICENSE)
+[Apache 2.0](LICENSE)

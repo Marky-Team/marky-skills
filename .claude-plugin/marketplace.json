@@ -11,7 +11,7 @@
       "source": "./",
       "description": "Agent skills for managing social media with Marky: authenticate and connect the API/MCP, create and schedule posts, plan a week of on-brand content, manage topics and your library, review performance, and repurpose what works.",
       "homepage": "https://docs.mymarky.ai",
-      "license": "MIT",
+      "license": "Apache-2.0",
       "skills": [
         "./skills/marky-api",
         "./skills/schedule-posts",

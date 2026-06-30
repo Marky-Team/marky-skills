@@ -8,7 +8,7 @@
     "type": "git",
     "url": "https://github.com/Marky-Team/marky-skills.git"
   },
-  "license": "MIT",
+  "license": "Apache-2.0",
   "author": {
     "name": "Marky",
     "email": "support@mymarky.ai",
