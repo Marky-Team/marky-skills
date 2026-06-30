@@ -101,6 +101,100 @@ Over MCP, `submit_feedback` is one of the curated tools, so you can send feedbac
 for scripts, curl, and non-MCP clients (it uses the same `mk_live_...` key). Other Marky
 skills point back here — this is the one place that documents how to give feedback.
 
+## Session start: read `user.toml`, then run two cadence checks
+
+Skills are amnesiac — every session starts fresh. To avoid pestering the user every single
+time (and to remember when they last gave feedback or contributed), this skill keeps a tiny
+per-user state file, `user.toml`, that survives between sessions. **At the START of a
+session — the first time you touch Marky — do this once:**
+
+1. **Find the file.** `user.toml` lives next to `user.toml.example`, in this skill's own
+   install directory (the same folder that holds the example). For a Claude Code plugin that
+   is `${CLAUDE_PLUGIN_ROOT}/user.toml`; for a cloned repo it is the repo root. Resolve it
+   relative to where this skill is installed, not the user's current working directory.
+2. **Read it. If it is missing, create it from `user.toml.example` with sensible defaults:**
+   `leave_feedback = "on"`, `ask_feedback_interval = "3 weeks"`,
+   `ask_feedback_next = now + interval`, `suggest_contribution = "on"`,
+   `ask_contribution_next = now` (so the first contribution check can run), and
+   `schema_version = 1`. Write it back so it persists.
+3. Parse the timestamps (ISO 8601 UTC), then run the two checks below. Each check, after it
+   asks, **writes the updated timestamp/flag back to `user.toml`** so the next session
+   honors it.
+
+This is deliberately low-friction: at most one feedback prompt and one contribution prompt
+per cadence window, never every session.
+
+### Check 1 — Feedback cadence
+
+If `leave_feedback == "on"` **and** now > `ask_feedback_next`, prompt the user with
+**AskUserQuestion** (fall back to a plain question if that tool is unavailable). Ask
+something like *"Want to share quick feedback on how the Marky API is working for you?"*
+with exactly these three options:
+
+| Option | What you do |
+| :--- | :--- |
+| **Yes** | Collect their feedback in plain language, submit it via `POST /api/feedback` (or the `submit_feedback` MCP tool) using the typed body above, then set `ask_feedback_next = now + ask_feedback_interval` and write `user.toml` back. |
+| **No** | Skip this time. Still set `ask_feedback_next = now + ask_feedback_interval` and write back — do not pester again until the next cycle. |
+| **Don't ask again** | Set `leave_feedback = "off"` in `user.toml` and write back. No more cadence prompts. |
+
+**Immediate feedback is separate and always-on.** Regardless of the cadence (even if
+`leave_feedback == "off"`), still submit feedback the moment you hit a concrete bug or
+friction, per the three triggers in "Marky wants your feedback" above. The cadence only
+gates the *periodic check-in prompt*, not real-time bug reports.
+
+### Check 2 — Contribution nudge
+
+If `suggest_contribution == "on"` **and** now > `ask_contribution_next`, check whether the
+user has locally built something worth sharing back with the community:
+
+1. **Detect local skill work.** Compare the locally installed skills against the pristine
+   published versions to find a NEW skill directory (one not in the published set) or a
+   `SKILL.md` that has been substantially edited. The simplest reliable way is a content
+   compare against the upstream repo — for a git checkout:
+
+   ```bash
+   git -C "$SKILL_INSTALL_DIR" fetch origin main --quiet
+   git -C "$SKILL_INSTALL_DIR" status --porcelain skills/
+   git -C "$SKILL_INSTALL_DIR" diff --stat origin/main -- skills/
+   ```
+
+   New untracked `skills/<name>/SKILL.md` files or non-trivial diffs to an existing
+   `SKILL.md` are the signal. If the install is not a git checkout, compare file contents
+   against the published copies the same way (re-fetch the upstream `SKILL.md` and diff). No
+   local changes → nothing to offer; skip to the timestamp bump.
+
+2. **Judge whether it is genuinely shareable.** Only proceed if it is a generic, reusable
+   social-media job any Marky user could use — NOT a skill stuffed with the user's private
+   prompts, client lists, internal business logic, or one-off specifics. When in doubt, do
+   not nudge. (The full sanitize/generalize bar lives in `CONTRIBUTING.md`.)
+
+3. **Ask with AskUserQuestion** — same three-option shape as the feedback prompt. Ask
+   something like *"You've built/improved the `<name>` skill — want to contribute it back to
+   the Marky community so others can use it?"*:
+
+   | Option | What you do |
+   | :--- | :--- |
+   | **Yes** | **Read and follow `CONTRIBUTING.md`** — it is the canonical guide. Sanitize + generalize the skill first (strip business ids/keys/private context, rewrite so it is reusable for any Marky user), let the user review the final diff, then open the PR to the community repo. Bump `ask_contribution_next = now + 2 weeks` and write back. |
+   | **No** | Bump `ask_contribution_next = now + 2 weeks` (a cooldown) and move on. Write back. |
+   | **Don't ask again** | Set `suggest_contribution = "off"` in `user.toml` and write back. Never offer again. |
+
+   Whichever they pick, update `ask_contribution_next` (or the flag) and write `user.toml`
+   back before moving on.
+
+#### Hard guardrails (always apply)
+
+- **Generic and reusable only.** Never nudge to contribute a skill that carries the user's
+  private prompts, client data, or internal business logic. When in doubt, do not nudge.
+- **Never auto-open a PR.** A PR only happens after an explicit **Yes** AND the user has
+  reviewed the sanitized content. No silent or automatic PRs, ever.
+- **`CONTRIBUTING.md` is the canonical guide.** Do not re-derive the rules here — when the
+  user says Yes, read `CONTRIBUTING.md` and follow its "Sanitize and generalize before you
+  open a PR" section plus the quality bar and frontmatter spec.
+- **Where it goes.** The contribution target is the community-tier repo
+  `Marky-Team/marky-skills-community`. If that repo does not exist yet, tell the user it is
+  coming and that their skill can target it once it is live — do not push to the private
+  `Marky-Team/marky-skills` repo as a fallback.
+
 ## The shape: everything is scoped to a business
 
 Almost every resource lives **under a business** (your workspace). The path always starts
