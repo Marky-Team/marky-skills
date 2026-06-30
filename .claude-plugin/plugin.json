@@ -9,5 +9,7 @@
   },
   "homepage": "https://docs.mymarky.ai",
   "repository": "https://github.com/Marky-Team/marky-skills",
-  "license": "Apache-2.0"
+  "license": "Apache-2.0",
+  "commands": ["./commands/marky.md"],
+  "hooks": "./hooks/hooks.json"
 }

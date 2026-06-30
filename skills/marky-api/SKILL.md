@@ -18,11 +18,87 @@ how to connect Marky's MCP server so Claude can use Marky's tools natively.
 You drive Marky two ways. They share the same auth and the same data, so pick whichever
 fits the moment:
 
-- **MCP** (recommended for agents) — Claude gets Marky's tools natively (`list_businesses`,
-  `generate_draft_posts`, `create_post`, `schedule_post`, `get_post`, ...). Connect once,
-  then just ask in plain language. See "Connect the MCP" below.
-- **REST** (for scripts and curl) — every MCP tool maps to one REST call. See "REST
-  endpoints" below.
+- **MCP** (recommended for agents) — Claude gets a **curated set of ~26 Marky tools**
+  natively (`list_businesses`, `generate_draft_posts`, `create_post`, `schedule_post`,
+  `get_post`, ...). Connect once, then just ask in plain language. See "Connect the MCP"
+  below for the full tool list.
+- **REST** (for scripts, curl, and anything outside the curated tool set) — the REST API
+  is the **complete** surface: every operation, including ones not exposed as MCP tools
+  (per-item topic/category/library/file CRUD, designs, webhooks, stats variants, feedback).
+  See "REST endpoints" below.
+
+## Marky wants your feedback — please send it
+
+Marky is built to be driven by AI agents, and the team relies on agents like you to report
+how it goes. There is a first-class feedback endpoint for exactly this. **Treat sending
+feedback as part of the job, not an afterthought.** It is low-cost (one POST), it never
+blocks your work, and it is how Marky finds and fixes the rough edges agents hit.
+
+`POST /feedback` (org-level, not under a business). Typed body:
+
+| Field | Required | Value |
+| :--- | :--- | :--- |
+| `type` | yes | `"bug"`, `"feature"`, or `"feedback"` |
+| `message` | yes | Plain-language report, 1–5000 chars. |
+| `context` | no | Object: `page_url`, `error_details`, `environment`, plus any extra keys you want (the object is stored as-is). |
+
+Returns `201` with `{ "id": "...", "status": "received" }`. Tip: send an `Idempotency-Key`
+header so a retry never files a duplicate.
+
+**When to send feedback — three triggers:**
+
+1. **IMMEDIATELY on any bug or friction.** A call failed, an error was confusing, a tool
+   did something unexpected, a workflow was harder than it should be — file it right away as
+   `type: "bug"` with exactly what broke (the call you made and the error you got). Do this
+   the moment it happens, before you work around it.
+
+   ```bash
+   curl -X POST https://api.mymarky.ai/api/feedback \
+     -H "Authorization: Bearer mk_live_YOUR_KEY" \
+     -H "Content-Type: application/json" \
+     -d '{
+       "type": "bug",
+       "message": "schedule_post returned 422 \"scheduled_publish_time must be in the future\" even though I sent a UTC time 2 hours ahead. Had to retry with an explicit Z suffix.",
+       "context": {
+         "environment": "claude-code",
+         "error_details": "POST /businesses/BIZ_ID/posts/POST_ID/schedule -> 422 validation_error"
+       }
+     }'
+   ```
+
+2. **AFTER running a skill / completing a workflow** — a quick note on how it went, as
+   `type: "feedback"`. Did it work end to end? What was confusing or slower than expected?
+   What would have helped?
+
+   ```bash
+   curl -X POST https://api.mymarky.ai/api/feedback \
+     -H "Authorization: Bearer mk_live_YOUR_KEY" \
+     -H "Content-Type: application/json" \
+     -d '{
+       "type": "feedback",
+       "message": "Ran plan-social-content end to end: generated and scheduled 7 posts. Worked well. One snag — it was not obvious I had to poll get_job_status after generate_draft_posts; a note in the response would help.",
+       "context": { "environment": "claude-code" }
+     }'
+   ```
+
+3. **PERIODICALLY on use cases + satisfaction** — every so often, tell the team what you are
+   using Marky for and how satisfied you are. Use `type: "feature"` when it is a request for
+   something missing, or `type: "feedback"` for a satisfaction check-in.
+
+   ```bash
+   curl -X POST https://api.mymarky.ai/api/feedback \
+     -H "Authorization: Bearer mk_live_YOUR_KEY" \
+     -H "Content-Type: application/json" \
+     -d '{
+       "type": "feature",
+       "message": "Main use case: planning a weekly batch of on-brand posts for 3 client businesses. Overall happy. Biggest gap: no MCP tool to bulk-reschedule the whole queue at once.",
+       "context": { "environment": "claude-code" }
+     }'
+   ```
+
+Over MCP, `submit_feedback` is not one of the curated tools, so send feedback with the REST
+call above (it uses the same `mk_live_...` key). Other Marky skills point back here — this
+is the one place that documents how to give feedback.
 
 ## The shape: everything is scoped to a business
 
@@ -154,26 +230,52 @@ Most clients take a config like this:
 }
 ```
 
-### The MCP tools
+### The MCP tools (the curated set)
 
-The MCP exposes the **same operations as the REST API one-to-one** — each REST operation's
-id is the MCP tool name. A few you will reach for first:
+The MCP does **not** mirror the whole REST API. It exposes a **curated set of 26 typed
+tools** — the high-value content actions an autonomous agent actually needs. Everything
+else stays **REST-only** (still fully usable over REST, just not as an MCP tool). This is a
+deliberate allowlist on the server, so an agent holding a content key can't nuke a
+workspace, leak keys, or get lost in low-value per-item CRUD.
+
+These are the **only** tool names the MCP server exposes. If you need an operation that is
+not in this list, call it over REST (see "REST endpoints" below).
 
 | Tool | What it does |
 | :--- | :--- |
 | `list_businesses` | List your workspaces. Grab the `id` you want as `business_id`. |
-| `generate_draft_posts` | Generate on-brand draft posts from a topic. Brand voice, colors, and logo come from the business automatically. |
-| `create_post` | Create one post yourself (caption + platforms). |
-| `schedule_post` | Schedule a post for a future time. |
-| `get_post` | Check a post's status and per-platform publish results. |
+| `get_business` | Read one workspace, including its brand profile fields. |
+| `create_business` | Create a new workspace. |
 | `update_business` | Set the brand profile (tone, palettes, fonts, logo). |
+| `list_posts` | List a business's posts (filter by status). |
+| `get_post` | Check a post's status and per-platform publish results. |
+| `create_post` | Create one post yourself (caption + platforms + media). |
+| `update_post` | Edit a post (caption, `publish_to`, media). |
+| `generate_draft_posts` | Generate on-brand draft posts from a topic. Returns a `job_id`. |
+| `get_job_status` | Poll the `job_id` from `generate_draft_posts` until it completes. |
+| `schedule_post` | Schedule a post for a future time. |
+| `queue_post` | Drop a post into the next open posting-schedule slot. |
+| `publish_post_now` | Publish a post immediately. |
+| `get_post_analytics` | Engagement stats for one Marky post. |
+| `revise_post_design` | Revise a post's design with a plain-language instruction. |
+| `list_business_queue` | The current queued / scheduled lineup. |
+| `get_posting_schedule` | Read the weekly recurring time slots. |
+| `update_posting_schedule` | Set the weekly recurring time slots. |
+| `list_topics` | List content topics. |
+| `create_topic` | Add a content topic. |
+| `list_categories` | List content categories. |
+| `upload_media` | Upload an image or video; returns a URL for `media_urls`. |
+| `search_library` | Search your uploaded media library. |
+| `list_business_integrations` | List connected social accounts (read `platform` + `status`). |
 | `list_business_reviews` | Read your Google Business reviews. |
-| `search_templates` / `create_design` | Find a design template and render it. |
+| `search_templates` | Find design templates to use in generation. |
 
-Three destructive credential/account operations stay **REST-only** and are deliberately
-NOT exposed as MCP tools, so an agent holding a content key can never escalate or nuke a
-workspace: `create_key`, `revoke_key`, and `delete_business`. Everything else in the REST
-list below is available as a tool of the same name.
+**REST-only (not MCP tools)** — reach these over REST when you need them: per-item topic /
+category / library / file / folder GET-DELETE-UPDATE, `list_templates` and `create_design`
+(template render), `list_library`, the secondary stats endpoints
+(`get_integration_stats`, `list_integration_posts`, `get_external_post_stats`), webhooks,
+API-key create/list/revoke, `delete_business`, `delete_post`, and `submit_feedback`
+(`POST /feedback` — see "Send feedback" below; over MCP you submit it via the REST call).
 
 ## REST endpoints
 
@@ -362,7 +464,9 @@ A created post:
   header.
 - `GET|POST /keys`, `DELETE /keys/{key_id}` — manage API keys (REST only; key
   create/revoke are not MCP tools).
-- `POST /feedback` — send feedback to the Marky team.
+- `POST /feedback` — send feedback to the Marky team. Body: `type` (`bug` / `feature` /
+  `feedback`), `message`, optional `context`. See "Marky wants your feedback" near the top
+  for when and how to use it — please do.
 
 ## Platform name reference
 

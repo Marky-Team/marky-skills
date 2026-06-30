@@ -10,7 +10,7 @@
 <p align="center"><b>Describe the posts. Marky ships them. Built for agents.</b></p>
 
 <p align="center">
-  <a href="#quick-start">Quick Start</a> |
+  <a href="#install">Install</a> |
   <a href="#skills">Skills</a> |
   <a href="https://app.mymarky.ai">Marky App</a> |
   <a href="https://docs.mymarky.ai">API Docs</a> |
@@ -27,26 +27,54 @@ schedule a week of content, review what is working, and repurpose your best post
 Marky is the API- and MCP-driven social tool. These skills are the cheat sheet
 that lets an agent use it well.
 
-## Quick Start
+## Install
 
-### With an AI coding agent
+Pick the path for your client. **Claude Code users: install the plugin** — it is the
+preferred path.
 
-Install the Marky skills, then describe the social-media job you want done:
+### Claude Code → install as a plugin (preferred)
+
+Claude Code can install this repo as a **plugin**, not just a bundle of skills. The plugin
+carries the same 9 skills **plus** the extras a plain skills install can't: a
+**feedback-reminder hook** that loads Marky's "please send feedback" expectation into context
+at the start of every session, and a **`/marky` slash command** that bootstraps a session
+(loads the API reference, checks your key, lists your businesses). That is why it is the
+preferred path on Claude Code.
+
+Add the marketplace, then install the plugin:
+
+```
+/plugin marketplace add Marky-Team/marky-skills
+/plugin install marky-skills@marky-skills
+```
+
+(`marky-skills@marky-skills` is `plugin-name@marketplace-name` — both happen to be
+`marky-skills` here. Run `/plugin` with no arguments to browse, manage, or remove it in the
+interactive UI.)
+
+Then run `/marky` (or just describe the job) to start.
+
+### Other clients (Cursor, Claude Desktop / Cowork, …) → install the skills
+
+Anything that supports the [Agent Skills](https://agentskills.io) format installs the skills
+directly:
 
 ```bash
 npx skills add marky-team/marky-skills
 ```
 
-Try a prompt like:
+The installer auto-detects your agent and drops the skills in the right place. Run
+`npx skills add marky-team/marky-skills --skill <name>` to install just one (bare name, no
+leading `/`). (This also works in Claude Code, but the plugin path above is preferred there
+because it carries the hook + command too.)
+
+### Then describe the job
+
+Either way, once installed, just say what you want done:
 
 > Using `/plan-social-content`, plan and schedule a week of posts about our new
 > spring blend — mine my notes for material, draft in my voice, and show me
 > everything before scheduling.
-
-The installer auto-detects your agent (Claude Code, Claude Desktop / Cowork,
-Cursor, and many more) and drops the skills in the right place. Run
-`npx skills add marky-team/marky-skills --skill <name>` to install just one (bare
-name, no leading `/`).
 
 The skills teach agents the Marky workflow: authenticate once, find your
 businesses and connected accounts, generate on-brand drafts, schedule them, and
