@@ -1,28 +1,13 @@
 {
   "name": "marky-skills",
-  "owner": {
+  "description": "Agent skills for driving Marky (social media management): authenticate and connect the API/MCP, create and schedule posts, plan a week of on-brand content, manage topics and your library, review performance, and repurpose what works.",
+  "version": "0.1.0",
+  "author": {
     "name": "Marky",
     "email": "support@mymarky.ai",
     "url": "https://app.mymarky.ai"
   },
-  "plugins": [
-    {
-      "name": "marky-skills",
-      "source": "./",
-      "description": "Agent skills for managing social media with Marky: authenticate and connect the API/MCP, create and schedule posts, plan a week of on-brand content, manage topics and your library, review performance, and repurpose what works.",
-      "homepage": "https://docs.mymarky.ai",
-      "license": "MIT",
-      "skills": [
-        "./skills/marky-api",
-        "./skills/schedule-posts",
-        "./skills/plan-social-content",
-        "./skills/review-performance",
-        "./skills/suggest-topics",
-        "./skills/manage-library",
-        "./skills/event-countdown-posts",
-        "./skills/repurpose-posts",
-        "./skills/posts-from-library-image"
-      ]
-    }
-  ]
+  "homepage": "https://docs.mymarky.ai",
+  "repository": "https://github.com/Marky-Team/marky-skills",
+  "license": "MIT"
 }

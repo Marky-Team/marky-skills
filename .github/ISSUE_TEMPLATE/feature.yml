@@ -1,0 +1,36 @@
+name: Feature Request
+description: Suggest a new skill or an improvement to an existing one
+labels: ["enhancement"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for the idea! Please search [existing issues](https://github.com/Marky-Team/marky-skills/issues) first to avoid duplicates.
+
+  - type: textarea
+    id: problem
+    attributes:
+      label: Problem
+      description: What social-media job are you trying to get done that the current skills do not cover well?
+    validations:
+      required: true
+
+  - type: textarea
+    id: solution
+    attributes:
+      label: Proposed solution
+      description: What new skill or change would solve it? If it maps to a Marky API endpoint, link the relevant docs.
+    validations:
+      required: true
+
+  - type: textarea
+    id: alternatives
+    attributes:
+      label: Alternatives considered
+      description: Any workarounds you are using today.
+
+  - type: textarea
+    id: additional
+    attributes:
+      label: Additional context
+      description: Any other context or examples.
