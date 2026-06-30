@@ -18,10 +18,10 @@ how to connect Marky's MCP server so Claude can use Marky's tools natively.
 You drive Marky two ways. They share the same auth and the same data, so pick whichever
 fits the moment:
 
-- **MCP** (recommended for agents) — Claude gets a **curated set of ~26 Marky tools**
+- **MCP** (recommended for agents) — Claude gets a **curated set of ~28 Marky tools**
   natively (`list_businesses`, `generate_draft_posts`, `create_post`, `schedule_post`,
-  `get_post`, ...). Connect once, then just ask in plain language. See "Connect the MCP"
-  below for the full tool list.
+  `get_post`, `submit_feedback`, `create_design`, ...). Connect once, then just ask in plain
+  language. See "Connect the MCP" below for the full tool list.
 - **REST** (for scripts, curl, and anything outside the curated tool set) — the REST API
   is the **complete** surface: every operation, including ones not exposed as MCP tools
   (per-item topic/category/library/file CRUD, designs, webhooks, stats variants, feedback).
@@ -96,9 +96,10 @@ header so a retry never files a duplicate.
      }'
    ```
 
-Over MCP, `submit_feedback` is not one of the curated tools, so send feedback with the REST
-call above (it uses the same `mk_live_...` key). Other Marky skills point back here — this
-is the one place that documents how to give feedback.
+Over MCP, `submit_feedback` is one of the curated tools, so you can send feedback natively
+(same fields: `type`, `message`, optional `context`). The REST call above is the equivalent
+for scripts, curl, and non-MCP clients (it uses the same `mk_live_...` key). Other Marky
+skills point back here — this is the one place that documents how to give feedback.
 
 ## The shape: everything is scoped to a business
 
@@ -116,6 +117,21 @@ with the business id:
 So the first call you make is always `GET /businesses` to get your `business_id`, then you
 slot that id into every path after it. Only a few org-level resources (`/keys`,
 `/webhooks`, `/feedback`) sit outside a business.
+
+### Pagination (list endpoints)
+
+List endpoints (`GET /businesses`, `/posts`, `/topics`, ...) return **at most 20 items per
+page** in a cursor-paginated envelope:
+
+```json
+{ "data": [ ... ], "has_more": true, "next_cursor": "..." }
+```
+
+If `has_more` is `true`, there are more results. Pass `?limit=100` to get a bigger page, or
+page through with `?cursor=NEXT_CURSOR` until `has_more` is `false`. **This matters on the
+very first call:** if your org has more than 20 workspaces, the one you want may not be on
+page 1 of `GET /businesses` — use `?limit=100` (or page with the cursor) so you do not miss
+it. Same for finding a specific post or topic in a long history.
 
 ## Get your API key
 
@@ -232,7 +248,7 @@ Most clients take a config like this:
 
 ### The MCP tools (the curated set)
 
-The MCP does **not** mirror the whole REST API. It exposes a **curated set of 26 typed
+The MCP does **not** mirror the whole REST API. It exposes a **curated set of 28 typed
 tools** — the high-value content actions an autonomous agent actually needs. Everything
 else stays **REST-only** (still fully usable over REST, just not as an MCP tool). This is a
 deliberate allowlist on the server, so an agent holding a content key can't nuke a
@@ -269,13 +285,14 @@ not in this list, call it over REST (see "REST endpoints" below).
 | `list_business_integrations` | List connected social accounts (read `platform` + `status`). |
 | `list_business_reviews` | Read your Google Business reviews. |
 | `search_templates` | Find design templates to use in generation. |
+| `create_design` | Render a design from a template (text + palette + logo). Returns `image_urls`. |
+| `submit_feedback` | Send a bug report, feature request, or general feedback to the Marky team. |
 
 **REST-only (not MCP tools)** — reach these over REST when you need them: per-item topic /
-category / library / file / folder GET-DELETE-UPDATE, `list_templates` and `create_design`
-(template render), `list_library`, the secondary stats endpoints
-(`get_integration_stats`, `list_integration_posts`, `get_external_post_stats`), webhooks,
-API-key create/list/revoke, `delete_business`, `delete_post`, and `submit_feedback`
-(`POST /feedback` — see "Send feedback" below; over MCP you submit it via the REST call).
+category / library / file / folder GET-DELETE-UPDATE, `list_templates`, `list_library`, the
+secondary stats endpoints (`get_integration_stats`, `list_integration_posts`,
+`get_external_post_stats`), webhooks, API-key create/list/revoke, `delete_business`, and
+`delete_post`.
 
 ## REST endpoints
 
@@ -447,9 +464,12 @@ A created post:
 - `GET /businesses/{business_id}/reviews` — your Google Business reviews (reviewer, star
   rating, text, reply). `order_by` accepts `updateTime desc` (default), `rating`, or
   `rating desc`.
-- `GET /businesses/{business_id}/templates` — list available design templates.
-- `POST /businesses/{business_id}/templates/search` — filter templates (`is_meme`,
-  `has_image_slot`).
+- `GET /businesses/{business_id}/templates` — list available design templates (each item
+  has a `template_id`, `name`, `page_count`, `preview_url`).
+- `POST /businesses/{business_id}/templates/search` — find the best-matching template for
+  filters like `is_meme` / `has_image_slot`. Returns a **single** template object under a
+  `template` key (with its full `pages` / `image_slots`), not a list. Use the `template_id`
+  from it in `POST /designs`.
 - `POST /businesses/{business_id}/designs` — render a design from a template
   (`template_id`, `text_content`, `palette`, `logo_url`, `filler_media`, ...). Returns the
   rendered `image_urls`.
@@ -480,6 +500,10 @@ integration `platform` field returns these canonical strings:
 | Instagram Story | `instagramStory` |
 | LinkedIn | `linkedIn` |
 | TikTok | `tiktok` |
+
+These five are the common targets. The `publish_to` enum also accepts `twitter`,
+`linkedInProfile`, `pinterest`, `googleBusiness`, and `youtube` — but only target a platform
+that shows up as a `valid` integration on the business.
 
 Media rules of thumb:
 - **Video** posts can target all platforms.
