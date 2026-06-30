@@ -1,0 +1,17 @@
+{
+  "source": "marky-team/marky-skills",
+  "skills": {
+    "marky-api": {
+      "hash": "cb3fb305e69715d277fcde2a6e269a4c6e53dd51",
+      "files": 1
+    },
+    "schedule-posts": {
+      "hash": "3ddb4a2c5721bf89c4824cdf0bf7682502d7d601",
+      "files": 1
+    },
+    "plan-social-content": {
+      "hash": "bba24628f8fed3f2e0781fffa6e0b12214272eae",
+      "files": 1
+    }
+  }
+}
