@@ -15,12 +15,18 @@ Claude use it well.
 npx skills add marky-team/marky-skills
 ```
 
-That installs all three skills. To install just one:
+That installs all the skills. To install just one:
 
 ```bash
 npx skills add marky-team/marky-skills --skill marky-api
-npx skills add marky-team/marky-skills --skill plan-social-content
 npx skills add marky-team/marky-skills --skill schedule-posts
+npx skills add marky-team/marky-skills --skill plan-social-content
+npx skills add marky-team/marky-skills --skill review-performance
+npx skills add marky-team/marky-skills --skill suggest-topics
+npx skills add marky-team/marky-skills --skill manage-library
+npx skills add marky-team/marky-skills --skill event-countdown-posts
+npx skills add marky-team/marky-skills --skill repurpose-posts
+npx skills add marky-team/marky-skills --skill posts-from-library-image
 ```
 
 The installer auto-detects your agent (Claude Code, Claude Desktop, Cursor, and many more)
@@ -33,6 +39,12 @@ and drops the skills in the right place.
 | **marky-api** | Reference skill: authenticate, the base URL, the key endpoints, and how to connect Marky's MCP server to Claude Code and Claude Desktop / Cowork. Start here. |
 | **schedule-posts** | Use-case skill: upload media, create or generate posts, schedule them, and confirm they published. |
 | **plan-social-content** | Use-case skill: plan, write, and schedule a full week of on-brand content. Mines your real material, drafts in your voice, and always gets your approval before scheduling. |
+| **review-performance** | Pull your real engagement and follower numbers, find what is working by topic, format, and platform, and turn it into a plan. |
+| **suggest-topics** | Audit your content topics, suggest specific new ones that fill gaps, and add, edit, or remove them. |
+| **manage-library** | Upload media, organize folders, and create or edit the files and knowledge-base docs Marky draws on when it writes. |
+| **event-countdown-posts** | Build a countdown campaign for an event: a series of posts, each a different angle, scheduled leading up to the date. |
+| **repurpose-posts** | Take a post that worked and spin it into several fresh variations, optionally with a specific call-to-action link. |
+| **posts-from-library-image** | Turn one strong image from your library into several ready-to-review posts, each with its own angle. |
 
 ## Quickstart
 
