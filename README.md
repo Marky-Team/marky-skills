@@ -63,16 +63,22 @@ Then run `/marky` (or just describe the job) to start.
 ### Other clients (Cursor, Claude Desktop / Cowork, …) → install the skills
 
 Anything that supports the [Agent Skills](https://agentskills.io) format installs the skills
-directly:
+directly. Install **globally** (`-g`) so Marky is available in every session, not just one
+project:
 
 ```bash
-npx skills add marky-team/marky-skills
+npx skills add marky-team/marky-skills -g
 ```
 
-The installer auto-detects your agent and drops the skills in the right place. Run
-`npx skills add marky-team/marky-skills --skill <name>` to install just one (bare name, no
-leading `/`). (This also works in Claude Code, but the plugin path above is preferred there
-because it carries the hook + command too.)
+The installer auto-detects your agent and drops the skills in the right place. `-g` installs
+them user-level (e.g. `~/.claude/skills/`), so you can drive Marky from any directory — which
+is what you want for "run my social from wherever I'm working." (Global is per-machine, so
+run it once on each computer you use.)
+
+Drop the `-g` to scope the skills to the current project instead — handy if you only want
+Marky inside one repo. Add `--skill <name>` (bare name, no leading `/`) to install just one.
+(All of this works in Claude Code too, but the plugin path above is preferred there because
+it carries the hook + command.)
 
 ### Then describe the job
 
