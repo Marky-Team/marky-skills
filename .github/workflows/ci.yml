@@ -1,0 +1,42 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  lint-skills:
+    name: "Skills: lint + manifests in sync"
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      # Validates every skills/<name>/SKILL.md (frontmatter, name match, no
+      # shell-trap characters) and that skills-manifest.json +
+      # .claude-plugin/marketplace.json register exactly the skills on disk.
+      # One broken SKILL.md aborts `npx skills add` for the whole repo, so this
+      # gate is what keeps the collection installable.
+      - name: Lint skills
+        run: node scripts/lint-skills.mjs
+
+  validate-json:
+    name: "Manifests: valid JSON"
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - name: Parse every JSON manifest
+        run: |
+          set -euo pipefail
+          for f in skills-manifest.json .claude-plugin/marketplace.json .claude-plugin/plugin.json package.json; do
+            echo "Validating $f"
+            node -e "JSON.parse(require('fs').readFileSync('$f','utf8'))"
+          done

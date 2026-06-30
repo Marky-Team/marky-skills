@@ -1,0 +1,8 @@
+blank_issues_enabled: false
+contact_links:
+  - name: Marky support
+    url: mailto:support@mymarky.ai
+    about: Questions about your Marky account, billing, or connected social accounts.
+  - name: Marky API docs
+    url: https://docs.mymarky.ai
+    about: Reference for the Marky API and MCP server these skills drive.

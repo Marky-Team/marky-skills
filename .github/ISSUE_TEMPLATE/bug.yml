@@ -1,0 +1,72 @@
+name: Bug Report
+description: Report a problem with a Marky skill
+labels: ["bug"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for taking the time to report a bug! Before filing, please:
+        - Search [existing issues](https://github.com/Marky-Team/marky-skills/issues) to avoid duplicates
+        - Re-install the latest skills with `npx skills add marky-team/marky-skills`
+        - Confirm the issue is with a skill here, not with the Marky API or your account (those go to support@mymarky.ai)
+
+  - type: dropdown
+    id: skill
+    attributes:
+      label: Which skill?
+      options:
+        - marky-api
+        - schedule-posts
+        - plan-social-content
+        - review-performance
+        - suggest-topics
+        - manage-library
+        - event-countdown-posts
+        - repurpose-posts
+        - posts-from-library-image
+        - Not sure / multiple
+    validations:
+      required: true
+
+  - type: textarea
+    id: description
+    attributes:
+      label: Describe the bug
+      description: A clear description of what went wrong.
+    validations:
+      required: true
+
+  - type: textarea
+    id: reproduction
+    attributes:
+      label: Steps to reproduce
+      description: What did you ask the agent to do, and what happened?
+      placeholder: |
+        1. Installed the skill with `npx skills add marky-team/marky-skills --skill schedule-posts`
+        2. Asked the agent to "schedule 3 posts for next week"
+        3. Saw this error...
+    validations:
+      required: true
+
+  - type: textarea
+    id: expected
+    attributes:
+      label: Expected behavior
+      description: What you expected to happen.
+    validations:
+      required: true
+
+  - type: input
+    id: agent
+    attributes:
+      label: Agent
+      description: Which agent were you using (Claude Code, Claude Desktop / Cowork, Cursor, ...) and its version.
+      placeholder: "Claude Code 1.x"
+    validations:
+      required: true
+
+  - type: textarea
+    id: additional
+    attributes:
+      label: Additional context
+      description: Any other context, logs, or screenshots. Do NOT paste your API key.
