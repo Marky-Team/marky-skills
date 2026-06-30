@@ -69,6 +69,31 @@ commands in fenced code blocks (the linter rejects shell-trap characters in
 inline backticks). The `marky-api` skill holds the shared auth + base-URL +
 endpoint reference; other skills should point to it rather than repeat it.
 
+## Sanitize and generalize before you open a PR
+
+Many skills start life inside one user's real Marky workflow, full of their own
+business specifics. Those details must come out before the skill is shared. This
+is the most important review step, so do it first — and it is exactly what the
+`marky-api` skill's contribution nudge tells an agent to follow when a user
+agrees to contribute a skill back:
+
+1. **Strip every business specific.** Remove real API keys, business IDs, org
+   IDs, internal hostnames, client/customer names, real post copy, and any
+   private prompt text or internal references. Replace them with the standard
+   placeholders: `mk_live_YOUR_KEY`, `BIZ_ID`, `POST_ID`, `https://mybusiness.com`.
+   A leaked `mk_live_...` key is a security incident — scrub it and rotate it.
+2. **Generalize the job.** Rewrite the skill so it is reusable for ANY Marky
+   user, not just the author's business. Cut one-off steps that only make sense
+   for the author's accounts; describe the general flow (which endpoints, in what
+   order) so a different user with different businesses can follow it. If a step
+   only works because of the author's private setup, either generalize it or
+   remove it.
+3. **Review the final diff yourself.** Read the whole `SKILL.md` end to end as if
+   you were a stranger. If anything would only make sense to you, fix it.
+
+If a skill cannot be generalized without giving away private business logic, it
+is not a good candidate for the community repo — keep it local.
+
 ## Quality bar
 
 Before opening a PR, a skill should clear this bar:

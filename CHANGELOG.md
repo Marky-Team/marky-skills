@@ -7,6 +7,17 @@ on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ### Added
 
+- **Cross-session state + cadence-gated prompts (`user.toml`).** A gitignored `user.toml`
+  (schema documented in the committed `user.toml.example`) stores per-user prefs across
+  otherwise-amnesiac sessions. The `marky-api` skill reads it at session start and runs two
+  cadence-gated checks, each with an AskUserQuestion **Yes / No / Don't ask again** prompt:
+  (1) a **feedback check-in** on an interval (default 3 weeks) — immediate bug/friction
+  feedback is still always sent, separate from the cadence; and (2) a **contribution nudge**
+  that detects locally built/improved skills and offers to help contribute generic, sanitized
+  ones to the community repo `Marky-Team/marky-skills-community`. A second SessionStart hook
+  (`hooks/user-state-check.sh`) surfaces a due prompt automatically for plugin users. New
+  `CONTRIBUTING.md` "Sanitize and generalize before you open a PR" section is the canonical
+  guardrail the nudge follows.
 - **First-class Claude Code plugin.** The repo installs as a plugin via `/plugin` (the
   preferred path on Claude Code), carrying the skills plus a SessionStart **feedback-reminder
   hook** (`hooks/hooks.json` + `hooks/feedback-reminder.sh`) and a **`/marky` slash command**

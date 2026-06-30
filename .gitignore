@@ -6,6 +6,11 @@ node_modules/
 .env.local
 .env.*.local
 
+# Per-user, cross-session plugin state. The real file holds local prefs (feedback
+# cadence, contribution nudge timing) and must never be committed. The committed
+# `user.toml.example` documents the schema; each user copies it to user.toml.
+user.toml
+
 # OS
 .DS_Store
 Thumbs.db

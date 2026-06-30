@@ -37,9 +37,15 @@ preferred path.
 Claude Code can install this repo as a **plugin**, not just a bundle of skills. The plugin
 carries the same 9 skills **plus** the extras a plain skills install can't: a
 **feedback-reminder hook** that loads Marky's "please send feedback" expectation into context
-at the start of every session, and a **`/marky` slash command** that bootstraps a session
+at the start of every session, a **session-state hook** that reads your local `user.toml` and
+surfaces a feedback or contribution prompt only when one is actually due (cadence-gated, so it
+never nags every session), and a **`/marky` slash command** that bootstraps a session
 (loads the API reference, checks your key, lists your businesses). That is why it is the
 preferred path on Claude Code.
+
+Your cadence and preferences live in a gitignored `user.toml` in the plugin dir (copy
+`user.toml.example` to start, or let the skill create it on first run). Set `leave_feedback`
+or `suggest_contribution` to `off` there to silence either prompt.
 
 Add the marketplace, then install the plugin:
 
