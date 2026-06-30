@@ -25,17 +25,18 @@ curl https://api.mymarky.ai/api/businesses \
   -H "Authorization: Bearer mk_live_YOUR_KEY"
 
 # Browse your media library and pick one image.
-curl "https://api.mymarky.ai/api/library?business_id=BIZ_ID" \
+curl "https://api.mymarky.ai/api/businesses/BIZ_ID/library" \
   -H "Authorization: Bearer mk_live_YOUR_KEY"
 ```
 
 Show the user the options and let them choose. Grab the chosen item's image URL (its
-`original_url`) to attach to each post.
+`original_url`) to attach to each post. (To find a specific image fast, use
+`GET /businesses/BIZ_ID/library/search?query=...`.)
 
 If the image is on the user's computer and not in the library yet, upload it first:
 
 ```bash
-curl -X POST "https://api.mymarky.ai/api/media?business_id=BIZ_ID" \
+curl -X POST "https://api.mymarky.ai/api/businesses/BIZ_ID/media" \
   -H "Authorization: Bearer mk_live_YOUR_KEY" \
   -F "file=@/path/to/photo.jpg"
 ```
@@ -60,11 +61,10 @@ Keep each one genuinely different. The image is shared, the words should not be.
 For each caption, create a post with `status` `NEW` (a draft) using the same image URL:
 
 ```bash
-curl -X POST https://api.mymarky.ai/api/posts \
+curl -X POST https://api.mymarky.ai/api/businesses/BIZ_ID/posts \
   -H "Authorization: Bearer mk_live_YOUR_KEY" \
   -H "Content-Type: application/json" \
   -d '{
-    "business_id": "BIZ_ID",
     "caption": "Angle 1 caption goes here.",
     "media_urls": ["ORIGINAL_URL_OF_THE_IMAGE"],
     "publish_to": ["instagram", "facebook", "linkedIn"],
@@ -80,12 +80,13 @@ video).
 List the new drafts so the user can review them:
 
 ```bash
-curl "https://api.mymarky.ai/api/posts?business_id=BIZ_ID&status=NEW" \
+curl "https://api.mymarky.ai/api/businesses/BIZ_ID/posts?status=NEW" \
   -H "Authorization: Bearer mk_live_YOUR_KEY"
 ```
 
 Show the set and ask which to keep. To schedule the keepers, use the `schedule-posts`
-skill, or schedule directly with `POST /posts/POST_ID/schedule`.
+skill, or schedule directly with
+`POST /businesses/BIZ_ID/posts/POST_ID/schedule`.
 
 ## Tips
 

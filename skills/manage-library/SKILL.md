@@ -32,7 +32,7 @@ Upload an image or video. Multipart form, field name `file`, up to 50 MB. The re
 an `original_url` you can attach to a post or a file.
 
 ```bash
-curl -X POST "https://api.mymarky.ai/api/media?business_id=BIZ_ID" \
+curl -X POST "https://api.mymarky.ai/api/businesses/BIZ_ID/media" \
   -H "Authorization: Bearer mk_live_YOUR_KEY" \
   -F "file=@/path/to/photo.jpg"
 ```
@@ -41,18 +41,22 @@ curl -X POST "https://api.mymarky.ai/api/media?business_id=BIZ_ID" \
 
 ```bash
 # Media library (uploaded images and video).
-curl "https://api.mymarky.ai/api/library?business_id=BIZ_ID" \
+curl "https://api.mymarky.ai/api/businesses/BIZ_ID/library" \
+  -H "Authorization: Bearer mk_live_YOUR_KEY"
+
+# Search the library by keyword.
+curl "https://api.mymarky.ai/api/businesses/BIZ_ID/library/search?query=team%20photo" \
   -H "Authorization: Bearer mk_live_YOUR_KEY"
 
 # One media item.
-curl https://api.mymarky.ai/api/library/MEDIA_ID \
+curl https://api.mymarky.ai/api/businesses/BIZ_ID/library/MEDIA_ID \
   -H "Authorization: Bearer mk_live_YOUR_KEY"
 
 # Folders and files (your text docs / knowledge base).
-curl "https://api.mymarky.ai/api/folders?business_id=BIZ_ID" \
+curl "https://api.mymarky.ai/api/businesses/BIZ_ID/folders" \
   -H "Authorization: Bearer mk_live_YOUR_KEY"
 
-curl "https://api.mymarky.ai/api/files?business_id=BIZ_ID" \
+curl "https://api.mymarky.ai/api/businesses/BIZ_ID/files" \
   -H "Authorization: Bearer mk_live_YOUR_KEY"
 ```
 
@@ -60,19 +64,19 @@ curl "https://api.mymarky.ai/api/files?business_id=BIZ_ID" \
 
 ```bash
 # Create a folder (omit parent_id for a top-level folder).
-curl -X POST https://api.mymarky.ai/api/folders \
+curl -X POST https://api.mymarky.ai/api/businesses/BIZ_ID/folders \
   -H "Authorization: Bearer mk_live_YOUR_KEY" \
   -H "Content-Type: application/json" \
-  -d '{ "business_id": "BIZ_ID", "name": "Knowledge Base" }'
+  -d '{ "name": "Knowledge Base" }'
 
 # Rename or move a folder.
-curl -X PATCH https://api.mymarky.ai/api/folders/FOLDER_ID \
+curl -X PATCH https://api.mymarky.ai/api/businesses/BIZ_ID/folders/FOLDER_ID \
   -H "Authorization: Bearer mk_live_YOUR_KEY" \
   -H "Content-Type: application/json" \
   -d '{ "name": "Brand Docs" }'
 
 # Delete a folder.
-curl -X DELETE https://api.mymarky.ai/api/folders/FOLDER_ID \
+curl -X DELETE https://api.mymarky.ai/api/businesses/BIZ_ID/folders/FOLDER_ID \
   -H "Authorization: Bearer mk_live_YOUR_KEY"
 ```
 
@@ -84,37 +88,37 @@ able to reference.
 
 ```bash
 # Create a file.
-curl -X POST https://api.mymarky.ai/api/library/files \
+curl -X POST https://api.mymarky.ai/api/businesses/BIZ_ID/library/files \
   -H "Authorization: Bearer mk_live_YOUR_KEY" \
   -H "Content-Type: application/json" \
   -d '{
-    "business_id": "BIZ_ID",
     "path": "/knowledge-base/services.md",
     "content": "# Our Services\n\n- Service one...\n- Service two..."
   }'
 
 # Read / update / delete a file.
-curl https://api.mymarky.ai/api/files/FILE_ID \
+curl https://api.mymarky.ai/api/businesses/BIZ_ID/files/FILE_ID \
   -H "Authorization: Bearer mk_live_YOUR_KEY"
 
-curl -X PUT https://api.mymarky.ai/api/files/FILE_ID \
+curl -X PUT https://api.mymarky.ai/api/businesses/BIZ_ID/files/FILE_ID \
   -H "Authorization: Bearer mk_live_YOUR_KEY" \
   -H "Content-Type: application/json" \
   -d '{ "content": "# Our Services (updated)\n\n..." }'
 
-curl -X DELETE https://api.mymarky.ai/api/files/FILE_ID \
+curl -X DELETE https://api.mymarky.ai/api/businesses/BIZ_ID/files/FILE_ID \
   -H "Authorization: Bearer mk_live_YOUR_KEY"
 ```
 
 ## Attach media to a file
 
-Pair an uploaded image with a file (for example, a product photo with a product doc):
+Pair an uploaded image with a file (for example, a product photo with a product doc).
+The body takes `media_ids` (a list, so you can attach several at once):
 
 ```bash
-curl -X POST https://api.mymarky.ai/api/files/FILE_ID/media \
+curl -X POST https://api.mymarky.ai/api/businesses/BIZ_ID/files/FILE_ID/media \
   -H "Authorization: Bearer mk_live_YOUR_KEY" \
   -H "Content-Type: application/json" \
-  -d '{ "media_id": "MEDIA_ID" }'
+  -d '{ "media_ids": ["MEDIA_ID"] }'
 ```
 
 ## Why this matters

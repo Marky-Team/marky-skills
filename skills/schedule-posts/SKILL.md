@@ -30,7 +30,7 @@ curl https://api.mymarky.ai/api/businesses/BIZ_ID/integrations \
 ```
 
 Note the `platform` value and `status` of each integration. Only target platforms whose
-`status` is `VALID`. You connect new accounts in the dashboard, not the API.
+`status` is `valid`. You connect new accounts in the dashboard, not the API.
 
 ## Two ways to make a post
 
@@ -40,16 +40,15 @@ Upload media (if any), then create the post.
 
 ```bash
 # 1. Upload media -> returns original_url
-curl -X POST "https://api.mymarky.ai/api/media?business_id=BIZ_ID" \
+curl -X POST "https://api.mymarky.ai/api/businesses/BIZ_ID/media" \
   -H "Authorization: Bearer mk_live_YOUR_KEY" \
   -F "file=@/path/to/photo.jpg"
 
-# 2. Create the post with that media url
-curl -X POST https://api.mymarky.ai/api/posts \
+# 2. Create the post with that media url (business_id is in the path now)
+curl -X POST https://api.mymarky.ai/api/businesses/BIZ_ID/posts \
   -H "Authorization: Bearer mk_live_YOUR_KEY" \
   -H "Content-Type: application/json" \
   -d '{
-    "business_id": "BIZ_ID",
     "caption": "Your caption here.",
     "media_urls": ["ORIGINAL_URL_FROM_STEP_1"],
     "publish_to": ["instagram", "facebook", "linkedIn"]
@@ -65,17 +64,17 @@ Marky pulls brand voice, colors, and logo from the business.
 
 ```bash
 # 1. Kick off generation -> returns job_id
-curl -X POST https://api.mymarky.ai/api/posts/generate \
+curl -X POST https://api.mymarky.ai/api/businesses/BIZ_ID/posts/generate \
   -H "Authorization: Bearer mk_live_YOUR_KEY" \
   -H "Content-Type: application/json" \
-  -d '{ "business_id": "BIZ_ID", "content": "our spring product line", "count": 5 }'
+  -d '{ "content": "our spring product line", "count": 5 }'
 
 # 2. Poll until completed
-curl https://api.mymarky.ai/api/jobs/JOB_ID \
+curl https://api.mymarky.ai/api/businesses/BIZ_ID/jobs/JOB_ID \
   -H "Authorization: Bearer mk_live_YOUR_KEY"
 
 # 3. Review the new drafts
-curl "https://api.mymarky.ai/api/posts?business_id=BIZ_ID&status=NEW" \
+curl "https://api.mymarky.ai/api/businesses/BIZ_ID/posts?status=NEW" \
   -H "Authorization: Bearer mk_live_YOUR_KEY"
 ```
 
@@ -84,29 +83,31 @@ curl "https://api.mymarky.ai/api/posts?business_id=BIZ_ID&status=NEW" \
 Pick a future time (ISO 8601, UTC). Schedule each post id:
 
 ```bash
-curl -X POST https://api.mymarky.ai/api/posts/POST_ID/schedule \
+curl -X POST https://api.mymarky.ai/api/businesses/BIZ_ID/posts/POST_ID/schedule \
   -H "Authorization: Bearer mk_live_YOUR_KEY" \
   -H "Content-Type: application/json" \
   -d '{
-    "publish_at": "2026-07-15T14:00:00Z",
+    "scheduled_publish_time": "2026-07-15T14:00:00Z",
     "publish_to": ["instagram", "facebook", "linkedIn"]
   }'
 ```
 
 Shortcut: you can also schedule at create time by setting `"status": "SCHEDULED"` and
-`"adhoc_publish_time"` in the `POST /posts` body, instead of a separate schedule call.
+`"scheduled_publish_time"` in the `POST /businesses/{id}/posts` body, instead of a separate
+schedule call. Or call `POST /businesses/{id}/posts/POST_ID/queue` to drop it into the next
+open slot of your posting schedule.
 
 Publish immediately instead of scheduling:
 
 ```bash
-curl -X POST https://api.mymarky.ai/api/posts/POST_ID/publish \
+curl -X POST https://api.mymarky.ai/api/businesses/BIZ_ID/posts/POST_ID/publish \
   -H "Authorization: Bearer mk_live_YOUR_KEY"
 ```
 
 ## Confirm it went out
 
 ```bash
-curl https://api.mymarky.ai/api/posts/POST_ID \
+curl https://api.mymarky.ai/api/businesses/BIZ_ID/posts/POST_ID \
   -H "Authorization: Bearer mk_live_YOUR_KEY"
 ```
 
@@ -119,9 +120,9 @@ reconnect in the dashboard).
 - **Maximize reach.** Target every platform the media supports rather than just one. Video
   can go everywhere; image goes everywhere except TikTok; text-only goes to Facebook and
   LinkedIn.
-- **Match platform strings exactly** (`linkedIn` and `instagramStory` are camelCase). Use
-  the `platform` value straight from the integrations call.
+- **`publish_to` is case-insensitive** (`linkedin` and `linkedIn` both work). When in
+  doubt, copy the `platform` value straight from the integrations call.
 - **One change at a time.** To move a scheduled post to different platforms later,
-  `PATCH /posts/{post_id}` with a new `publish_to`.
+  `PATCH /businesses/{id}/posts/{post_id}` with a new `publish_to`.
 - Posts created via the API also appear in your dashboard queue, so you can eyeball them
   there before they publish.
