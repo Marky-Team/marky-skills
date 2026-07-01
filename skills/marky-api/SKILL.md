@@ -18,10 +18,10 @@ how to connect Marky's MCP server so Claude can use Marky's tools natively.
 You drive Marky two ways. They share the same auth and the same data, so pick whichever
 fits the moment:
 
-- **MCP** (recommended for agents) — Claude gets a **curated set of ~28 Marky tools**
-  natively (`list_businesses`, `generate_draft_posts`, `create_post`, `schedule_post`,
-  `get_post`, `submit_feedback`, `create_design`, ...). Connect once, then just ask in plain
-  language. See "Connect the MCP" below for the full tool list.
+- **MCP** (recommended for agents) — Claude gets a **curated set of Marky tools**
+  natively (for example `list_businesses`, `create_post`, `schedule_post`,
+  `publish_post_now`, `submit_feedback`, ...) — see the live list your client shows after
+  connecting. Connect once, then just ask in plain language. See "Connect the MCP" below.
 - **REST** (for scripts, curl, and anything outside the curated tool set) — the REST API
   is the **complete** surface: every operation, including ones not exposed as MCP tools
   (per-item topic/category/library/file CRUD, designs, webhooks, stats variants, feedback).
@@ -76,7 +76,7 @@ header so a retry never files a duplicate.
      -H "Content-Type: application/json" \
      -d '{
        "type": "feedback",
-       "message": "Ran plan-social-content end to end: generated and scheduled 7 posts. Worked well. One snag — it was not obvious I had to poll get_job_status after generate_draft_posts; a note in the response would help.",
+       "message": "Ran plan-social-content end to end: generated and scheduled 7 posts. Worked well. One snag — it was not obvious that schedule_post wanted the time with an explicit Z suffix; a note in the error would help.",
        "context": { "environment": "claude-code" }
      }'
    ```
@@ -342,51 +342,45 @@ Most clients take a config like this:
 
 ### The MCP tools (the curated set)
 
-The MCP does **not** mirror the whole REST API. It exposes a **curated set of 28 typed
+The MCP does **not** mirror the whole REST API. It exposes a **curated set of typed
 tools** — the high-value content actions an autonomous agent actually needs. Everything
 else stays **REST-only** (still fully usable over REST, just not as an MCP tool). This is a
 deliberate allowlist on the server, so an agent holding a content key can't nuke a
 workspace, leak keys, or get lost in low-value per-item CRUD.
 
-These are the **only** tool names the MCP server exposes. If you need an operation that is
-not in this list, call it over REST (see "REST endpoints" below).
+The curated tools below are the stable core. Rather than trust this list to stay perfectly
+in sync, **read the live tool list your MCP client shows after connecting** — that is the
+source of truth. If you need an operation that is not exposed as a tool, call it over REST
+(see "REST endpoints" below).
 
 | Tool | What it does |
 | :--- | :--- |
 | `list_businesses` | List your workspaces. Grab the `id` you want as `business_id`. |
-| `get_business` | Read one workspace, including its brand profile fields. |
 | `create_business` | Create a new workspace. |
 | `update_business` | Set the brand profile (tone, palettes, fonts, logo). |
 | `list_posts` | List a business's posts (filter by status). |
-| `get_post` | Check a post's status and per-platform publish results. |
 | `create_post` | Create one post yourself (caption + platforms + media). |
 | `update_post` | Edit a post (caption, `publish_to`, media). |
-| `generate_draft_posts` | Generate on-brand draft posts from a topic. Returns a `job_id`. |
-| `get_job_status` | Poll the `job_id` from `generate_draft_posts` until it completes. |
 | `schedule_post` | Schedule a post for a future time. |
 | `queue_post` | Drop a post into the next open posting-schedule slot. |
 | `publish_post_now` | Publish a post immediately. |
 | `get_post_analytics` | Engagement stats for one Marky post. |
-| `revise_post_design` | Revise a post's design with a plain-language instruction. |
-| `list_business_queue` | The current queued / scheduled lineup. |
 | `get_posting_schedule` | Read the weekly recurring time slots. |
 | `update_posting_schedule` | Set the weekly recurring time slots. |
 | `list_topics` | List content topics. |
 | `create_topic` | Add a content topic. |
 | `list_categories` | List content categories. |
-| `upload_media` | Upload an image or video; returns a URL for `media_urls`. |
-| `search_library` | Search your uploaded media library. |
+| `upload_media_base64` | Upload an image or video (base64); returns a URL for `media_urls`. |
 | `list_business_integrations` | List connected social accounts (read `platform` + `status`). |
-| `list_business_reviews` | Read your Google Business reviews. |
-| `search_templates` | Find design templates to use in generation. |
-| `create_design` | Render a design from a template (text + palette + logo). Returns `image_urls`. |
+| `list_google_reviews` | Read your Google Business reviews. |
 | `submit_feedback` | Send a bug report, feature request, or general feedback to the Marky team. |
 
-**REST-only (not MCP tools)** — reach these over REST when you need them: per-item topic /
-category / library / file / folder GET-DELETE-UPDATE, `list_templates`, `list_library`, the
-secondary stats endpoints (`get_integration_stats`, `list_integration_posts`,
-`get_external_post_stats`), webhooks, API-key create/list/revoke, `delete_business`, and
-`delete_post`.
+**REST-only (not MCP tools)** — reach these over REST when you need them: generating draft
+posts (`POST /posts/generate` + polling the job), reading a single post or business,
+designs and templates, library search, the queue listing, per-item topic / category /
+library / file / folder GET-DELETE-UPDATE, the secondary stats endpoints
+(`get_integration_stats`, `list_integration_posts`, `get_external_post_stats`), webhooks,
+API-key create/list/revoke, `delete_business`, and `delete_post`.
 
 ## REST endpoints
 
