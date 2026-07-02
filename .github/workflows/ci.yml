@@ -4,6 +4,11 @@ on:
   push:
     branches: [main]
   pull_request:
+  schedule:
+    # Nightly (08:00 UTC): catch API drift even when no PR is open — a rename or
+    # removal on the Marky API side won't touch this repo, so we can't rely on a
+    # PR here to notice it.
+    - cron: "0 8 * * *"
 
 permissions:
   contents: read
@@ -40,3 +45,22 @@ jobs:
             echo "Validating $f"
             node -e "JSON.parse(require('fs').readFileSync('$f','utf8'))"
           done
+
+  api-drift:
+    name: "API: skills match the live contract"
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      # Fails if a skill references a request field or tool the live Marky API no
+      # longer has (the publish_to / get_business class of break). Reads the live
+      # public OpenAPI (no key needed). If MARKY_API_KEY is set (a repo secret),
+      # it ALSO checks that MCP-only tools are still exposed on the live MCP.
+      # MARKY_API_KEY is absent on fork PRs — the check just runs its no-key half.
+      - name: Check for API drift
+        env:
+          MARKY_API_KEY: ${{ secrets.MARKY_API_KEY }}
+        run: node scripts/check-api-drift.mjs

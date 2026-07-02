@@ -16,7 +16,8 @@
   },
   "scripts": {
     "lint": "node scripts/lint-skills.mjs",
-    "lint:skills": "node scripts/lint-skills.mjs"
+    "lint:skills": "node scripts/lint-skills.mjs",
+    "check:drift": "node scripts/check-api-drift.mjs"
   },
   "engines": {
     "node": ">=18"
