@@ -240,6 +240,12 @@ it. Same for finding a specific post or topic in a long history.
    API Keys).
 3. Click **Create API Key**, name it, and copy the `mk_live_...` value. It is only shown
    once, so save it somewhere safe.
+4. **If you use this plugin in Claude Code**, put the key in the `MARKY_API_KEY`
+   environment variable (the bundled MCP server reads it):
+
+   ```bash
+   export MARKY_API_KEY="mk_live_YOUR_KEY"
+   ```
 
 Notes:
 - You must be an **org admin** to create keys.
@@ -285,15 +291,23 @@ Auth:          Authorization: Bearer mk_live_YOUR_KEY
 
 ### Claude Code CLI
 
-One command. Replace `mk_live_YOUR_KEY` with your key:
+**If you installed this plugin, the MCP server is already bundled** (in the plugin's
+`.mcp.json`) — you only need your key in an environment variable. Set it before
+launching Claude Code:
+
+```bash
+export MARKY_API_KEY="mk_live_YOUR_KEY"
+```
+
+Then ask: *"List my Marky businesses."* Claude calls `list_businesses` and shows your
+workspaces. Each has an `id` you use as `business_id` for everything else.
+
+**Not using the plugin?** Register the server manually (replace `mk_live_YOUR_KEY`):
 
 ```bash
 claude mcp add --transport http marky https://api.mymarky.ai/api/mcp \
   --header "Authorization: Bearer mk_live_YOUR_KEY"
 ```
-
-Then ask: *"List my Marky businesses."* Claude calls `list_businesses` and shows your
-workspaces. Each has an `id` you use as `business_id` for everything else.
 
 ### Claude Desktop / Cowork
 

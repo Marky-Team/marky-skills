@@ -130,28 +130,20 @@ how to connect Marky's MCP server).
 
 2. **Connect Marky's MCP** so the agent can use Marky's tools natively.
 
-   Claude Code CLI:
+   **Claude Code (with this plugin installed): nothing to configure.** The plugin
+   ships Marky's MCP server (`.mcp.json`), so all it needs is your key in an
+   environment variable. Set it before launching Claude Code:
 
    ```bash
-   claude mcp add --transport http marky https://api.mymarky.ai/api/mcp \
-     --header "Authorization: Bearer mk_live_YOUR_KEY"
+   export MARKY_API_KEY="mk_live_YOUR_KEY"
    ```
 
-   Claude Desktop / Cowork — add this to `claude_desktop_config.json` and restart:
+   That's it — Marky's tools appear automatically. (No key set yet? The `marky-api`
+   skill walks you through getting one and setting it.)
 
-   ```json
-   {
-     "mcpServers": {
-       "marky": {
-         "command": "npx",
-         "args": ["-y", "mcp-remote", "https://api.mymarky.ai/api/mcp",
-                  "--header", "Authorization: Bearer mk_live_YOUR_KEY"]
-       }
-     }
-   }
-   ```
-
-   (Full instructions, including the REST option, live in the `marky-api` skill.)
+   **Other clients (Claude Desktop / Cowork / Cursor):** these don't install the
+   plugin, so configure the MCP manually — full instructions, including the REST
+   option, live in the `marky-api` skill.
 
 3. **First post.** Connect a social account in the Marky dashboard first (the API
    can see accounts but cannot add them), then ask your agent:
