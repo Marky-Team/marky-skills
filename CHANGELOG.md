@@ -7,6 +7,16 @@ on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ### Added
 
+- **Workspace memory (`[workspace]` in `user.toml`).** Skills now remember the business the
+  user operates on (`current_business_id` / `current_business_name`): `/marky` confirms a
+  saved business with one `get_business` call instead of re-listing every business each
+  session, writes the first selection back, and `hooks/user-state-check.sh` injects the
+  saved business as session-start context so the agent begins every session oriented.
+
+## [0.1.1]
+
+### Added
+
 - **Cross-session state + cadence-gated prompts (`user.toml`).** A gitignored `user.toml`
   (schema documented in the committed `user.toml.example`) stores per-user prefs across
   otherwise-amnesiac sessions. The `marky-api` skill reads it at session start and runs two
