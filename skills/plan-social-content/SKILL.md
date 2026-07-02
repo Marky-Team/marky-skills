@@ -112,7 +112,7 @@ For each post:
 3. On approval, schedule through Marky (see the `schedule-posts` skill). Spread the posts
    across the week — for example one per day at a consistent time. Use
    `POST /businesses/{id}/posts/{post_id}/schedule` with a future `scheduled_publish_time`,
-   and maximize `publish_to` to every platform the media supports.
+   and maximize `restrict_publish_to` to every platform the media supports.
 4. Update `calendar.md` with the scheduled times.
 
 ### Stage 7 — Confirm

@@ -53,7 +53,7 @@ curl -X POST https://api.mymarky.ai/api/businesses/BIZ_ID/posts \
   -d '{
     "caption": "Your caption here.",
     "media_urls": ["ORIGINAL_URL_FROM_STEP_1"],
-    "publish_to": ["instagram", "facebook", "linkedIn"]
+    "restrict_publish_to": ["instagram", "facebook", "linkedIn"]
   }'
 ```
 
@@ -90,7 +90,7 @@ curl -X POST https://api.mymarky.ai/api/businesses/BIZ_ID/posts/POST_ID/schedule
   -H "Content-Type: application/json" \
   -d '{
     "scheduled_publish_time": "2026-07-15T14:00:00Z",
-    "publish_to": ["instagram", "facebook", "linkedIn"]
+    "restrict_publish_to": ["instagram", "facebook", "linkedIn"]
   }'
 ```
 
@@ -122,9 +122,9 @@ reconnect in the dashboard).
 - **Maximize reach.** Target every platform the media supports rather than just one. Video
   can go everywhere; image goes everywhere except TikTok; text-only goes to Facebook and
   LinkedIn.
-- **`publish_to` is case-insensitive** (`linkedin` and `linkedIn` both work). When in
+- **`restrict_publish_to` is case-insensitive** (`linkedin` and `linkedIn` both work). When in
   doubt, copy the `platform` value straight from the integrations call.
 - **One change at a time.** To move a scheduled post to different platforms later,
-  `PATCH /businesses/{id}/posts/{post_id}` with a new `publish_to`.
+  `PATCH /businesses/{id}/posts/{post_id}` with a new `restrict_publish_to`.
 - Posts created via the API also appear in your dashboard queue, so you can eyeball them
   there before they publish.

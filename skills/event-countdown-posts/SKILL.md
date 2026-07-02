@@ -70,7 +70,7 @@ curl -X POST https://api.mymarky.ai/api/businesses/BIZ_ID/posts \
   -H "Content-Type: application/json" \
   -d '{
     "caption": "Announce-angle caption for the event.",
-    "publish_to": ["instagram", "facebook", "linkedIn"]
+    "restrict_publish_to": ["instagram", "facebook", "linkedIn"]
   }'
 ```
 
@@ -101,7 +101,7 @@ curl -X POST https://api.mymarky.ai/api/businesses/BIZ_ID/posts/POST_ID/schedule
   -H "Content-Type: application/json" \
   -d '{
     "scheduled_publish_time": "2026-04-10T09:00:00Z",
-    "publish_to": ["instagram", "facebook", "linkedIn"]
+    "restrict_publish_to": ["instagram", "facebook", "linkedIn"]
   }'
 ```
 
