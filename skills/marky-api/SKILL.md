@@ -122,10 +122,10 @@ session — the first time you touch Marky — do this once:**
    honors it.
 4. **Remember the workspace.** `user.toml` also carries a `[workspace]` section with
    `current_business_id` / `current_business_name` — the business the user usually operates
-   on. If it is set, use it directly and skip listing every business: tell the user which
-   business you're on, then let your first business-scoped call validate the id (a stale id
-   returns 404, in which case re-list and re-pick). Over REST you can also confirm cheaply
-   with `GET /businesses/{business_id}`. If it is empty, the first time the user picks a
+   on. If it is set, skip listing every business: confirm it with one `get_business` call
+   (MCP, if exposed) or `GET /businesses/{business_id}` (REST); if neither is handy, just
+   use the id directly — your first business-scoped call validates it (a stale id returns
+   404: re-list, re-pick, write back). If it is empty, the first time the user picks a
    business, write the id and name back so later sessions start already oriented. When the
    user asks to switch, list businesses, let them pick, and write the new choice back.
 

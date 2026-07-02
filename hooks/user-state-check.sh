@@ -69,7 +69,7 @@ else
   # Orient the agent on the saved default business so it can skip re-listing
   # every business at the start of every session.
   if [[ -n "$current_business_id" ]]; then
-    workspace_note="Current Marky business (from user.toml): ${current_business_name:-unnamed} (business_id ${current_business_id}). Use it directly instead of listing all businesses — your first business-scoped call validates it (a stale id returns 404: re-list, re-pick, write the new choice back to user.toml). The user can ask to switch at any time."
+    workspace_note="Current Marky business (from user.toml): ${current_business_name:-unnamed} (business_id ${current_business_id}). Do not list all businesses — confirm it with one get_business call if that tool is exposed, else use the id directly (a stale id 404s on first use: re-list, re-pick, write the new choice back to user.toml). The user can ask to switch at any time."
   fi
 
   # String compare is a valid time compare here: all stamps are ISO 8601 UTC Z.
