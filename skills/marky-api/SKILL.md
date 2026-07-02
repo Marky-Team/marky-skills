@@ -380,9 +380,11 @@ source of truth. If you need an operation that is not exposed as a tool, call it
 | `list_businesses` | List your workspaces. Grab the `id` you want as `business_id`. |
 | `create_business` | Create a new workspace. |
 | `update_business` | Set the brand profile (tone, palettes, fonts, logo). |
+| `get_business` | Read one business's full brand profile by id. |
 | `list_posts` | List a business's posts (filter by status). |
 | `create_post` | Create one post yourself (caption + platforms + media). |
 | `update_post` | Edit a post (caption, `restrict_publish_to`, media). |
+| `get_post` | Read one post by id, including its `publish_results`. |
 | `schedule_post` | Schedule a post for a future time. |
 | `queue_post` | Drop a post into the next open posting-schedule slot. |
 | `publish_post_now` | Publish a post immediately. |
@@ -397,7 +399,7 @@ source of truth. If you need an operation that is not exposed as a tool, call it
 | `submit_feedback` | Send a bug report, feature request, or general feedback to the Marky team. |
 
 **REST-only (not MCP tools)** — reach these over REST when you need them: generating draft
-posts (`POST /posts/generate` + polling the job), reading a single post or business,
+posts (`POST /posts/generate` + polling the job), media upload,
 designs and templates, library search, the queue listing, per-item topic / category /
 library / file / folder GET-DELETE-UPDATE, the secondary stats endpoints
 (`get_integration_stats`, `list_integration_posts`, `get_external_post_stats`), webhooks,
