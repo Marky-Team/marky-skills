@@ -120,6 +120,12 @@ session — the first time you touch Marky — do this once:**
 3. Parse the timestamps (ISO 8601 UTC), then run the two checks below. Each check, after it
    asks, **writes the updated timestamp/flag back to `user.toml`** so the next session
    honors it.
+4. **Remember the workspace.** `user.toml` also carries a `[workspace]` section with
+   `current_business_id` / `current_business_name` — the business the user usually operates
+   on. If it is set, confirm it with ONE `get_business` call and skip listing every
+   business. If it is empty, then the first time the user picks a business, write the id
+   and name back so later sessions start already oriented. When the user asks to switch,
+   list businesses, let them pick, and write the new choice back.
 
 This is deliberately low-friction: at most one feedback prompt and one contribution prompt
 per cadence window, never every session.

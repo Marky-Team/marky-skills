@@ -48,6 +48,14 @@ suggest_contribution = "on"
 # nudge. Bumped forward by a cooldown after each ask.
 ask_contribution_next = "2026-07-07T00:00:00Z"
 
+[workspace]
+# The business you usually operate on. The agent writes these the first time you
+# pick a business; after that, skills confirm it with a single `get_business`
+# call instead of re-listing every business at the start of every session.
+# Clear the values (or delete the section) to pick fresh again.
+current_business_id = ""
+current_business_name = ""
+
 [meta]
 # Bump this if the schema changes so the skill can migrate older files.
 schema_version = 1

@@ -15,9 +15,15 @@ ready before doing anything else:
    sign in at app.mymarky.ai -> Organization Settings -> API Keys -> Create API Key, and set
    it as an env var. Never print the key back to the user.
 
-3. **Find the workspace.** Call `list_businesses` (MCP) or `GET /businesses` (REST) and show
-   the user their businesses with the `id` (the `business_id`) for each. Almost every other
-   call is scoped to a `business_id`.
+3. **Find the workspace.** First check `user.toml` (see the marky-api skill's "Session
+   start" section) for `workspace.current_business_id`. If it is set, confirm it with ONE
+   `get_business` call and tell the user which business you're on (e.g. "Working on
+   **Marky** — say the word to switch") — do NOT re-list every business. If it is empty or
+   the lookup fails, call `list_businesses` (MCP) or `GET /businesses` (REST), show the
+   user their businesses with the `id` (the `business_id`) for each, and once they pick
+   one, write `current_business_id` + `current_business_name` back to `user.toml` so the
+   next session starts already oriented. Almost every other call is scoped to a
+   `business_id`.
 
 4. **Ask what they want done**, then route to the right Marky skill:
    - plan + schedule a week of content -> `plan-social-content`

@@ -49,6 +49,7 @@ read_toml() {
 
 feedback_prompt=""
 contribution_prompt=""
+workspace_note=""
 
 if [[ ! -f "$TOML_PATH" ]]; then
   # First run on this machine — no state yet. Surface both prompts and tell the
@@ -61,7 +62,15 @@ else
   ask_feedback_next="$(read_toml feedback ask_feedback_next || true)"
   suggest_contribution="$(read_toml contribution suggest_contribution || true)"
   ask_contribution_next="$(read_toml contribution ask_contribution_next || true)"
+  current_business_id="$(read_toml workspace current_business_id || true)"
+  current_business_name="$(read_toml workspace current_business_name || true)"
   init_note=""
+
+  # Orient the agent on the saved default business so it can skip re-listing
+  # every business at the start of every session (one get_business confirms it).
+  if [[ -n "$current_business_id" ]]; then
+    workspace_note="Current Marky business (from user.toml): ${current_business_name:-unnamed} (business_id ${current_business_id}). Confirm it with one get_business call on first use instead of listing all businesses; the user can ask to switch, in which case list businesses and write the new choice back to user.toml."
+  fi
 
   # String compare is a valid time compare here: all stamps are ISO 8601 UTC Z.
   if [[ "$leave_feedback" == "on" && -n "$ask_feedback_next" && "$NOW" > "$ask_feedback_next" ]]; then
@@ -73,12 +82,13 @@ else
   fi
 fi
 
-# Nothing due → stay silent (truly non-intrusive).
-if [[ -z "$feedback_prompt" && -z "$contribution_prompt" && -z "${init_note:-}" ]]; then
+# Nothing due and no saved workspace → stay silent (truly non-intrusive).
+if [[ -z "$feedback_prompt" && -z "$contribution_prompt" && -z "${init_note:-}" && -z "$workspace_note" ]]; then
   exit 0
 fi
 
 REMINDER="marky-skills session-state check (from user.toml in the plugin dir)."
+[[ -n "$workspace_note" ]] && REMINDER="$REMINDER $workspace_note"
 [[ -n "${init_note:-}" ]] && REMINDER="$REMINDER $init_note"
 [[ -n "$feedback_prompt" ]] && REMINDER="$REMINDER $feedback_prompt"
 [[ -n "$contribution_prompt" ]] && REMINDER="$REMINDER $contribution_prompt"
