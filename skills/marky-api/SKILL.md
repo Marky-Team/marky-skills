@@ -122,10 +122,12 @@ session — the first time you touch Marky — do this once:**
    honors it.
 4. **Remember the workspace.** `user.toml` also carries a `[workspace]` section with
    `current_business_id` / `current_business_name` — the business the user usually operates
-   on. If it is set, confirm it with ONE `get_business` call and skip listing every
-   business. If it is empty, then the first time the user picks a business, write the id
-   and name back so later sessions start already oriented. When the user asks to switch,
-   list businesses, let them pick, and write the new choice back.
+   on. If it is set, use it directly and skip listing every business: tell the user which
+   business you're on, then let your first business-scoped call validate the id (a stale id
+   returns 404, in which case re-list and re-pick). Over REST you can also confirm cheaply
+   with `GET /businesses/{business_id}`. If it is empty, the first time the user picks a
+   business, write the id and name back so later sessions start already oriented. When the
+   user asks to switch, list businesses, let them pick, and write the new choice back.
 
 This is deliberately low-friction: at most one feedback prompt and one contribution prompt
 per cadence window, never every session.
@@ -390,7 +392,6 @@ source of truth. If you need an operation that is not exposed as a tool, call it
 | `list_topics` | List content topics. |
 | `create_topic` | Add a content topic. |
 | `list_categories` | List content categories. |
-| `upload_media_base64` | Upload an image or video (base64); returns a URL for `media_urls`. |
 | `list_business_integrations` | List connected social accounts (read `platform` + `status`). |
 | `list_google_reviews` | Read your Google Business reviews. |
 | `submit_feedback` | Send a bug report, feature request, or general feedback to the Marky team. |
