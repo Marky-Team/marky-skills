@@ -5,6 +5,15 @@ on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ## [Unreleased]
 
+### Added
+
+- **Bundled MCP server (`.mcp.json`).** Installing the plugin in Claude Code now
+  auto-registers Marky's MCP server — no more manual `claude mcp add`. Set your key
+  in the `MARKY_API_KEY` environment variable and Marky's tools appear automatically.
+  The header uses `${MARKY_API_KEY:-}` so the config always parses (it 401s until the
+  key is set, and the `marky-api` skill guides you through getting one). Other clients
+  (Claude Desktop / Cowork / Cursor) still configure the MCP manually.
+
 ### Changed
 
 - **`publish_to` → `restrict_publish_to`.** The post platform-target field was renamed
