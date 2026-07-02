@@ -366,7 +366,7 @@ source of truth. If you need an operation that is not exposed as a tool, call it
 | `update_business` | Set the brand profile (tone, palettes, fonts, logo). |
 | `list_posts` | List a business's posts (filter by status). |
 | `create_post` | Create one post yourself (caption + platforms + media). |
-| `update_post` | Edit a post (caption, `publish_to`, media). |
+| `update_post` | Edit a post (caption, `restrict_publish_to`, media). |
 | `schedule_post` | Schedule a post for a future time. |
 | `queue_post` | Drop a post into the next open posting-schedule slot. |
 | `publish_post_now` | Publish a post immediately. |
@@ -454,7 +454,7 @@ Each integration has:
 ```
 
 The field that names the platform is **`platform`** (e.g. `facebook`, `instagram`,
-`linkedIn`, `tiktok`, `instagramStory`). Read it here before you choose `publish_to`
+`linkedIn`, `tiktok`, `instagramStory`). Read it here before you choose `restrict_publish_to`
 targets so you only post to platforms the account actually has connected. Target only
 integrations whose `status` is `valid`.
 
@@ -474,7 +474,7 @@ curl -X POST "https://api.mymarky.ai/api/businesses/BIZ_ID/media" \
 
 - `POST /businesses/{business_id}/posts` — create a post.
   - `caption` (required)
-  - `publish_to` — target platforms, e.g. `["instagram", "facebook", "linkedIn"]`
+  - `restrict_publish_to` — target platforms, e.g. `["instagram", "facebook", "linkedIn"]`
     (case-insensitive)
   - `media_urls` — image/video URLs to attach (use `original_url` from an upload)
   - `status` — `NEW` (default draft) or `SCHEDULED`
@@ -483,11 +483,11 @@ curl -X POST "https://api.mymarky.ai/api/businesses/BIZ_ID/media" \
 - `GET /businesses/{business_id}/posts/{post_id}` — one post, including `publish_results`
   (per-platform outcome) and `scheduled_publish_time`.
 - `PATCH /businesses/{business_id}/posts/{post_id}` — update a post (e.g. change
-  `publish_to`, `caption`, or `media_urls`).
+  `restrict_publish_to`, `caption`, or `media_urls`).
 - `DELETE /businesses/{business_id}/posts/{post_id}` — delete a post.
 - `POST /businesses/{business_id}/posts/{post_id}/schedule` — schedule a post.
   - `scheduled_publish_time` (required) — ISO 8601 time, must be in the future
-  - `publish_to` — defaults to all connected platforms if omitted
+  - `restrict_publish_to` — defaults to all connected platforms if omitted
 - `POST /businesses/{business_id}/posts/{post_id}/queue` — drop the post into the
   business's posting schedule (the next open slot) instead of a fixed time.
 - `POST /businesses/{business_id}/posts/{post_id}/publish` — publish immediately.
@@ -495,7 +495,7 @@ curl -X POST "https://api.mymarky.ai/api/businesses/BIZ_ID/media" \
 A created post:
 
 ```json
-{ "id": "post-uuid", "business_id": "...", "caption": "...", "status": "NEW", "publish_to": ["instagram", "linkedIn"] }
+{ "id": "post-uuid", "business_id": "...", "caption": "...", "status": "NEW", "restrict_publish_to": ["instagram", "linkedIn"] }
 ```
 
 ### Generate on-brand posts (let Marky write them)
@@ -584,7 +584,7 @@ A created post:
 
 ## Platform name reference
 
-`publish_to` is **case-insensitive**, so `linkedin` and `linkedIn` both work. The
+`restrict_publish_to` is **case-insensitive**, so `linkedin` and `linkedIn` both work. The
 integration `platform` field returns these canonical strings:
 
 | Platform | String |
@@ -595,7 +595,7 @@ integration `platform` field returns these canonical strings:
 | LinkedIn | `linkedIn` |
 | TikTok | `tiktok` |
 
-These five are the common targets. The `publish_to` enum also accepts `twitter`,
+These five are the common targets. The `restrict_publish_to` enum also accepts `twitter`,
 `linkedInProfile`, `pinterest`, `googleBusiness`, and `youtube` — but only target a platform
 that shows up as a `valid` integration on the business.
 

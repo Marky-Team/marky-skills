@@ -1,8 +1,8 @@
 {
   "name": "marky-skills",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "private": true,
-  "description": "Agent skills for driving Marky — social media management — from Claude Code, Claude Desktop / Cowork, Cursor, and other coding agents.",
+  "description": "Agent skills for driving Marky \u2014 social media management \u2014 from Claude Code, Claude Desktop / Cowork, Cursor, and other coding agents.",
   "homepage": "https://docs.mymarky.ai",
   "repository": {
     "type": "git",

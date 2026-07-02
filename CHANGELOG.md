@@ -5,6 +5,13 @@ on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ## [Unreleased]
 
+### Changed
+
+- **`publish_to` → `restrict_publish_to`.** The post platform-target field was renamed
+  across the Marky API (the old name now returns `422`). Every skill that creates,
+  updates, or schedules a post now uses `restrict_publish_to`. Same meaning: omit or
+  set it to null to publish to all connected platforms; pass a list to restrict.
+
 ## [0.1.1]
 
 ### Added

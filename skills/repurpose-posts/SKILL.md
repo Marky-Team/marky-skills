@@ -66,7 +66,7 @@ curl -X POST https://api.mymarky.ai/api/businesses/BIZ_ID/posts \
   -d '{
     "caption": "Variation 1 caption. Different hook, same core message. https://your-link.example",
     "media_urls": ["ORIGINAL_MEDIA_URL_OR_OMIT"],
-    "publish_to": ["instagram", "facebook", "linkedIn"],
+    "restrict_publish_to": ["instagram", "facebook", "linkedIn"],
     "status": "NEW"
   }'
 ```

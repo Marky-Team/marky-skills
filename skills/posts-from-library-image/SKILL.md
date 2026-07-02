@@ -69,7 +69,7 @@ curl -X POST https://api.mymarky.ai/api/businesses/BIZ_ID/posts \
   -d '{
     "caption": "Angle 1 caption goes here.",
     "media_urls": ["ORIGINAL_URL_OF_THE_IMAGE"],
-    "publish_to": ["instagram", "facebook", "linkedIn"],
+    "restrict_publish_to": ["instagram", "facebook", "linkedIn"],
     "status": "NEW"
   }'
 ```
