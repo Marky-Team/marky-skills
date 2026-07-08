@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# SessionStart hook for the marky-skills plugin — cross-session cadence checks.
+# SessionStart hook for the Marky plugin — cross-session cadence checks.
 #
 # WHY THIS EXISTS: skills are amnesiac (each session starts fresh), so we keep a
 # tiny per-user state file, `user.toml`, in the plugin install dir. This hook
@@ -56,7 +56,7 @@ if [[ ! -f "$TOML_PATH" ]]; then
   # agent to create user.toml from the example (the skill documents the defaults).
   feedback_prompt="Marky feedback check-in is due. Ask the user (AskUserQuestion: Yes / No / Don't ask again) whether they want to share quick feedback on how the Marky API is working. Yes -> collect + POST /api/feedback, bump ask_feedback_next. No -> bump ask_feedback_next. Don't ask again -> set leave_feedback = off."
   contribution_prompt="Marky contribution check is due. If the user has locally built a new skill or substantially improved a SKILL.md that is generic/reusable, ask (AskUserQuestion: Yes / No / Don't ask again) whether to contribute it to the community repo Marky-Team/marky-skills-community. Follow CONTRIBUTING.md (sanitize + generalize, user reviews) before any PR. Never auto-open a PR."
-  init_note="No user.toml found in the marky-skills plugin dir — create it from user.toml.example with defaults (leave_feedback=on, ask_feedback_interval=\"3 weeks\", suggest_contribution=on) per the marky-api skill, then write back the updated timestamps after asking."
+  init_note="No user.toml found in the Marky plugin dir — create it from user.toml.example with defaults (leave_feedback=on, ask_feedback_interval=\"3 weeks\", suggest_contribution=on) per the marky-api skill, then write back the updated timestamps after asking."
 else
   leave_feedback="$(read_toml feedback leave_feedback || true)"
   ask_feedback_next="$(read_toml feedback ask_feedback_next || true)"
@@ -87,7 +87,7 @@ if [[ -z "$feedback_prompt" && -z "$contribution_prompt" && -z "${init_note:-}" 
   exit 0
 fi
 
-REMINDER="marky-skills session-state check (from user.toml in the plugin dir)."
+REMINDER="Marky plugin session-state check (from user.toml in the plugin dir)."
 [[ -n "$workspace_note" ]] && REMINDER="$REMINDER $workspace_note"
 [[ -n "${init_note:-}" ]] && REMINDER="$REMINDER $init_note"
 [[ -n "$feedback_prompt" ]] && REMINDER="$REMINDER $feedback_prompt"

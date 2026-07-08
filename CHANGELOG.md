@@ -3,7 +3,14 @@
 All notable changes to this collection are documented here. The format is based
 on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
-## [Unreleased]
+## [0.2.0] - 2026-07-08
+
+### Changed
+
+- **Plugin renamed `marky-skills` → `marky`.** The repo keeps its name; only the plugin
+  slug changes, so skills namespace as `marky:<skill>` and the install command is
+  `/plugin install marky@marky-skills`. Existing installs migrate automatically via the
+  `renames` map in `marketplace.json`.
 
 ### Added
 
