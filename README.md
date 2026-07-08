@@ -51,11 +51,11 @@ Add the marketplace, then install the plugin:
 
 ```
 /plugin marketplace add Marky-Team/marky-skills
-/plugin install marky-skills@marky-skills
+/plugin install marky@marky-skills
 ```
 
-(`marky-skills@marky-skills` is `plugin-name@marketplace-name` — both happen to be
-`marky-skills` here. Run `/plugin` with no arguments to browse, manage, or remove it in the
+(`marky@marky-skills` is `plugin-name@marketplace-name` — the plugin is `marky`, hosted in
+the `marky-skills` repo. Run `/plugin` with no arguments to browse, manage, or remove it in the
 interactive UI.)
 
 Then run `/marky` (or just describe the job) to start.
