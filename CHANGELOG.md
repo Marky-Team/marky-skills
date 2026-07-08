@@ -3,6 +3,14 @@
 All notable changes to this collection are documented here. The format is based
 on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
+## [Unreleased]
+
+### Changed
+
+- **Key setup now says how to PERSIST `MARKY_API_KEY`** (`~/.claude/settings.json` `env`
+  block recommended, shell profile as alternative). The old instructions showed a bare
+  `export`, which dies with the terminal and never reaches GUI-launched Claude apps.
+
 ## [0.2.0] - 2026-07-08
 
 ### Changed
