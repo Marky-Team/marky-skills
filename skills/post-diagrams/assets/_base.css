@@ -1,0 +1,40 @@
+/* Post-diagram base. Substitute --ink / --accent / --surface from the
+   business's palettes[0].colors (SKILL.md Stage 1); everything else derives.
+   The hex values here are placeholders. */
+* { margin: 0; padding: 0; box-sizing: border-box; }
+:root {
+  --ink: #1b1b1b;      /* darkest palette color: body text */
+  --ink-2: #6b6b6b;    /* secondary text */
+  --accent: #952ed1;   /* most saturated mid-tone palette color */
+  --accent-deep: color-mix(in srgb, var(--accent) 85%, black);
+  --surface: #fcfcfb;  /* lightest palette color: page background */
+  --card: #ffffff;
+  --line: color-mix(in srgb, var(--accent) 8%, #e9e9e9);
+  --r1: color-mix(in srgb, var(--accent) 8%, white);   /* lightest tint */
+  --r2: color-mix(in srgb, var(--accent) 18%, white);
+  --r3: color-mix(in srgb, var(--accent) 35%, white);
+  --r4: color-mix(in srgb, var(--accent) 55%, white);  /* deepest tint */
+}
+body {
+  width: 1080px; height: 1350px;
+  background: var(--surface);
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
+  color: var(--ink);
+  display: flex; flex-direction: column;
+  padding: 72px 72px 56px;
+  overflow: hidden;
+}
+.kicker {
+  font-size: 26px; font-weight: 700; letter-spacing: 3px;
+  text-transform: uppercase; color: var(--accent);
+  margin-bottom: 18px;
+}
+h1 { font-size: 64px; font-weight: 800; line-height: 1.12; letter-spacing: -1px; }
+.sub { font-size: 30px; color: var(--ink-2); line-height: 1.4; margin-top: 16px; }
+.stage { flex: 1; display: flex; align-items: center; justify-content: center; }
+.footer {
+  display: flex; justify-content: space-between; align-items: baseline;
+  border-top: 2px solid var(--line); padding-top: 28px;
+}
+.wordmark { font-size: 34px; font-weight: 800; color: var(--accent); letter-spacing: -0.5px; }
+.foot-note { font-size: 26px; color: var(--ink-2); font-weight: 600; }

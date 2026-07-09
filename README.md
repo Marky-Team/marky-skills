@@ -2,7 +2,7 @@
 
 <p align="center">
   <a href="LICENSE"><img src="https://img.shields.io/badge/license-Apache%202.0-blue.svg" alt="License"></a>
-  <img src="https://img.shields.io/badge/skills-9-brightgreen" alt="9 skills">
+  <img src="https://img.shields.io/badge/skills-10-brightgreen" alt="10 skills">
   <a href="https://agentskills.io"><img src="https://img.shields.io/badge/format-Agent%20Skills-5865F2" alt="Agent Skills format"></a>
   <a href="https://github.com/Marky-Team/marky-skills/issues"><img src="https://img.shields.io/github/issues/Marky-Team/marky-skills.svg" alt="Issues"></a>
 </p>
@@ -35,7 +35,7 @@ preferred path.
 ### Claude Code → install as a plugin (preferred)
 
 Claude Code can install this repo as a **plugin**, not just a bundle of skills. The plugin
-carries the same 9 skills **plus** the extras a plain skills install can't: a
+carries the same 10 skills **plus** the extras a plain skills install can't: a
 **feedback-reminder hook** that loads Marky's "please send feedback" expectation into context
 at the start of every session, a **session-state hook** that reads your local `user.toml` and
 surfaces a feedback or contribution prompt only when one is actually due (cadence-gated, so it
@@ -94,7 +94,7 @@ confirm they published.
 
 ## Skills
 
-Marky Skills ships **9 skills** agents load on demand. Read **`marky-api`** first —
+Marky Skills ships **10 skills** agents load on demand. Read **`marky-api`** first —
 it is the reference every other skill builds on (auth, base URL, endpoints, and
 how to connect Marky's MCP server).
 
@@ -110,6 +110,7 @@ how to connect Marky's MCP server).
 | :--- | :--- |
 | **`schedule-posts`** | You have content ready (your own captions and media, or a topic for Marky to write) and want it on your connected accounts on a schedule. Covers media upload, post creation, on-brand generation, scheduling, and publish confirmation. |
 | **`plan-social-content`** | You want a full week of on-brand posts produced and queued in one conversation. Mines your real material, drafts in your voice, and always gets your approval before scheduling. |
+| **`post-diagrams`** | A post announces, teaches, or compares something and a designed diagram would beat a stock photo. Authors branded HTML (layers, flows, loops, quote cards, sequences, steps), renders to PNG in your brand colors, and attaches it to the post. |
 | **`event-countdown-posts`** | You have an upcoming event (launch, sale, webinar, opening, holiday promo) and want a sequence of posts that build anticipation and end with a final reminder. |
 | **`posts-from-library-image`** | You have one strong image and want maximum mileage from it — several ready-to-review posts with different captions and angles, all using that image. |
 | **`repurpose-posts`** | A post did well (or you just like it) and you want fresh variations — new angles, new wording, or a specific call-to-action link. |
