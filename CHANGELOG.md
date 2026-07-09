@@ -3,6 +3,13 @@
 All notable changes to this collection are documented here. The format is based
 on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
+## [Unreleased]
+
+### Changed
+
+- README documents the self-update experience and recommends enabling marketplace
+  auto-update (off by default for third-party marketplaces).
+
 ## [0.2.2] - 2026-07-08
 
 ### Fixed
