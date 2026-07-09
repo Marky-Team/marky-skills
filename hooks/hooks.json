@@ -18,6 +18,17 @@
           }
         ]
       }
+    ],
+    "PostToolUse": [
+      {
+        "matcher": "mcp__marky__get_business|mcp__marky__update_business",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash \"${CLAUDE_PLUGIN_ROOT}/hooks/brand-voice-sync.sh\""
+          }
+        ]
+      }
     ]
   }
 }

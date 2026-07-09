@@ -3,6 +3,20 @@
 All notable changes to this collection are documented here. The format is based
 on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
+## [0.2.7] - 2026-07-09
+
+### Added
+
+- **`/marky-status` command.** One-glance account snapshot: what's queued, whether recent
+  posts landed (`publish_results`), drafts waiting to be scheduled, and integrations that
+  need a reconnect. Read-only; leads with problems, offers next actions.
+- **Brand-voice cache now syncs itself.** A PostToolUse hook rewrites
+  `~/.marky/brand-voice.md` automatically after every `get_business` / `update_business`
+  MCP call — the SessionStart snapshot can no longer drift from what the agent last saw.
+  Partial updates merge over cached fields for the same business; a different business id
+  replaces the file. Needs `python3`; exits silently (old behavior) without it. REST-path
+  usage still refreshes the cache per the marky-api skill instructions.
+
 ## [0.2.6] - 2026-07-09
 
 ### Changed
