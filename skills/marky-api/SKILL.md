@@ -517,8 +517,7 @@ endpoint applies these automatically; this rule is for content you author direct
 hook injects a cached brand-voice snapshot into context so sessions start already on-brand
 with no fetch. You keep that cache fresh: **after every `get_business` /
 `GET /businesses/{id}` and after every profile update**, write
-`${CLAUDE_PLUGIN_ROOT}/brand-voice.md` (next to `user.toml`; same location rule) in this
-shape — header lines, blank line, then the voice fields as plain text:
+`~/.marky/brand-voice.md` (next to `user.toml`) in this shape — header lines, blank line, then the voice fields as plain text:
 
 ```markdown
 business_id: your-business-uuid
@@ -530,9 +529,15 @@ caption_suffix: #smallbusiness #local
 imagery_preferences: Bright, natural light. Real people.
 ```
 
-If the hook already injected the snapshot this session, draft from it directly and skip
-the fetch. When the user switches business, rewrite the file for the new business — the
-hook only injects it when its `business_id` matches the current workspace.
+**The snapshot orients you; it does not replace the fetch.** The brand profile can be
+edited by anyone at any time in the Marky dashboard (a teammate tweaking the tone, the
+user on their phone), and the cache only updates when an agent touches the profile — so
+treat the injected snapshot as possibly stale. Use it to sound right in conversation, but
+before your FIRST authored-or-scheduled content of a session, make one `get_business`
+call to pick up dashboard edits, then rewrite the cache with what you got. The workspace
+is always the source of truth; the file is disposable. When the user switches business,
+rewrite the file for the new business — the hook only injects it when its `business_id`
+matches the current workspace.
 
 ### Learn the user's style — persist critiques into the brand profile
 
