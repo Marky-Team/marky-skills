@@ -127,10 +127,11 @@ time (and to remember when they last gave feedback or contributed), this skill k
 per-user state file, `user.toml`, that survives between sessions. **At the START of a
 session — the first time you touch Marky — do this once:**
 
-1. **Find the file.** `user.toml` lives next to `user.toml.example`, in this skill's own
-   install directory (the same folder that holds the example). For a Claude Code plugin that
-   is `${CLAUDE_PLUGIN_ROOT}/user.toml`; for a cloned repo it is the repo root. Resolve it
-   relative to where this skill is installed, not the user's current working directory.
+1. **Find the file.** `user.toml` lives at `~/.marky/user.toml` — a stable home OUTSIDE
+   the skill install directory, because plugin updates install to a fresh directory and
+   would wipe anything stored beside the skill. (`brand-voice.md` lives there too.) Older
+   installs kept it next to `user.toml.example` in the install dir; if you find one there
+   and `~/.marky/user.toml` does not exist, move it to `~/.marky/` first.
 2. **Read it. If it is missing, create it from `user.toml.example` with sensible defaults:**
    `leave_feedback = "on"`, `ask_feedback_interval = "3 weeks"`,
    `ask_feedback_next = now + interval`, `suggest_contribution = "on"`,
