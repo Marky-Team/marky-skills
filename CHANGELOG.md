@@ -3,6 +3,20 @@
 All notable changes to this collection are documented here. The format is based
 on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
+## [0.2.6] - 2026-07-09
+
+### Changed
+
+- **Cowork MCP setup corrected.** The plugin carries the skills, hooks, and `/marky`
+  command, but Cowork does not read the plugin's `.mcp.json` — the MCP is added in the UI
+  as a custom connector (Settings -> Connectors -> Add custom connector, name `Marky`,
+  URL `https://api.mymarky.ai/api/mcp`, OAuth fields blank, paste your `mk_live_` key).
+  The marky-api skill and README both document the click-path now; the README's
+  "nothing to configure on Cowork" claim is gone.
+- Claude Desktop instructions replaced with Codex CLI (`~/.codex/config.toml` with the
+  same `mcp-remote` bridge). Cowork plugin install path documented in the README
+  (Customize -> Plugins -> Add marketplace -> from repository).
+
 ## [0.2.5] - 2026-07-09
 
 ### Fixed
