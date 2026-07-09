@@ -4,7 +4,7 @@ description: >
   Reference for driving Marky (social media management) from an AI agent. Use this
   when you need to authenticate to the Marky API, find the base URL, look up the key
   endpoints (businesses, integrations, media, posts, generate, schedule, stats), or
-  connect Marky's MCP server to Claude Code CLI or Claude Desktop / Cowork. Read this
+  connect Marky's MCP server to Claude Code CLI, Cowork, or Codex. Read this
   first before calling the Marky API or using the plan-social-content or schedule-posts
   skills.
 ---
@@ -356,40 +356,34 @@ claude mcp add --transport http marky https://api.mymarky.ai/api/mcp \
   --header "Authorization: Bearer mk_live_YOUR_KEY"
 ```
 
-### Claude Desktop / Cowork
+### Cowork
 
-Claude Desktop talks to local (stdio) MCP servers, so you bridge to Marky's remote HTTP
-server with the open-source `mcp-remote` package (run on demand via `npx`, no install).
+Cowork adds remote MCP servers as **custom connectors** in the UI — even with the Marky
+plugin installed, the connector is a separate manual step (the plugin carries skills,
+hooks, and the `/marky` command; Cowork does not read the plugin's `.mcp.json`):
 
-Edit your Claude Desktop config file:
-- macOS: `~/Library/Application Support/Claude/claude_desktop_config.json`
-- Windows: `%APPDATA%\Claude\claude_desktop_config.json`
+1. **Settings → Connectors → Add → Add custom connector**
+2. Name: `Marky`; URL: `https://api.mymarky.ai/api/mcp`
+3. Leave the OAuth Client ID/Secret fields blank, click **Add**, and paste your
+   `mk_live_...` key when asked for the API key / bearer token.
 
-Add Marky under `mcpServers`:
+Marky's tools then appear in the tools menu for every Cowork session.
 
-```json
-{
-  "mcpServers": {
-    "marky": {
-      "command": "npx",
-      "args": [
-        "-y",
-        "mcp-remote",
-        "https://api.mymarky.ai/api/mcp",
-        "--header",
-        "Authorization:${MARKY_AUTH}"
-      ],
-      "env": {
-        "MARKY_AUTH": "Bearer mk_live_YOUR_KEY"
-      }
-    }
-  }
-}
+### Codex CLI
+
+Codex talks to local (stdio) MCP servers, so bridge to Marky's remote HTTP server with the
+open-source `mcp-remote` package (run on demand via `npx`, no install). Add to
+`~/.codex/config.toml`:
+
+```toml
+[mcp_servers.marky]
+command = "npx"
+args = ["-y", "mcp-remote", "https://api.mymarky.ai/api/mcp", "--header", "Authorization:${MARKY_AUTH}"]
+env = { "MARKY_AUTH" = "Bearer mk_live_YOUR_KEY" }
 ```
 
-Save and fully restart Claude Desktop. Marky's tools appear under the tools menu. The same
-config works in Claude Cowork. (The key sits in the `env` block on purpose, so the space in
-`Bearer mk_live_...` is passed as one piece and not split apart.)
+(The key sits in the `env` block on purpose, so the space in `Bearer mk_live_...` is
+passed as one piece and not split apart.)
 
 ### Any other MCP client (Cursor, custom agents)
 

@@ -20,7 +20,7 @@
 Marky Skills is a collection of [Agent Skills](https://agentskills.io) that teach
 coding agents how to drive [Marky](https://app.mymarky.ai) — AI social media
 management — through its API and MCP server. Install them into Claude Code,
-Claude Desktop / Cowork, Cursor, or any agent that supports skills, then run your
+Cowork, Codex, Cursor, or any agent that supports skills, then run your
 whole social workflow in plain language: generate on-brand posts, upload media,
 schedule a week of content, review what is working, and repurpose your best posts.
 
@@ -65,7 +65,10 @@ Cowork installs the same plugin without a command line:
 **Customize → Plugins → Add → Add marketplace → Add from a repository →**
 `Marky-Team/marky-skills`, then click **+** on the **Marky** plugin.
 
-### Other clients (Cursor, Claude Desktop, …) → install the skills
+One more step on Cowork: the plugin carries the skills but not the MCP connector — add
+that in the UI too (see step 2 of the [Quickstart](#quickstart-first-action-in-3-steps)).
+
+### Other clients (Codex, Cursor, …) → install the skills
 
 Anything that supports the [Agent Skills](https://agentskills.io) format installs the skills
 directly. Install **globally** (`-g`) so Marky is available in every session, not just one
@@ -107,7 +110,7 @@ how to connect Marky's MCP server).
 
 | Skill | Use when |
 | :--- | :--- |
-| **`marky-api`** | **Read first.** Authenticate to the Marky API, find the base URL and key endpoints, and connect Marky's MCP server to Claude Code or Claude Desktop / Cowork. Every other skill reads its auth and endpoints from here. |
+| **`marky-api`** | **Read first.** Authenticate to the Marky API, find the base URL and key endpoints, and connect Marky's MCP server to Claude Code, Cowork, or Codex. Every other skill reads its auth and endpoints from here. |
 
 ### Create & schedule
 
@@ -147,10 +150,12 @@ how to connect Marky's MCP server).
    That's it — Marky's tools appear automatically. (No key set yet? The `marky-api`
    skill walks you through getting one and setting it.)
 
-   **Cowork (with the plugin installed): nothing to configure either** — same
-   deal, just set `MARKY_API_KEY`. **Other clients (Claude Desktop / Cursor):**
-   these don't install the plugin, so configure the MCP manually — full
-   instructions, including the REST option, live in the `marky-api` skill.
+   **Cowork: add the MCP as a custom connector** (the plugin carries the skills,
+   not the connector): **Settings → Connectors → Add → Add custom connector**,
+   name `Marky`, URL `https://api.mymarky.ai/api/mcp`, leave the OAuth fields
+   blank, and paste your `mk_live_...` key when asked. **Other clients (Codex /
+   Cursor):** configure the MCP manually — full instructions, including the REST
+   option, live in the `marky-api` skill.
 
 3. **First post.** Connect a social account in the Marky dashboard first (the API
    can see accounts but cannot add them), then ask your agent:
@@ -223,7 +228,7 @@ the interactive UI.)
 
 - A [Marky](https://app.mymarky.ai) account with at least one connected social account.
 - An API key (`mk_live_...`) — see step 1 of the Quickstart.
-- An agent that supports Agent Skills (Claude Code, Claude Desktop / Cowork, Cursor, ...).
+- An agent that supports Agent Skills (Claude Code, Cowork, Codex, Cursor, ...).
 
 ## Documentation
 
