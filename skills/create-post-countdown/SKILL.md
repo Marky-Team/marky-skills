@@ -1,5 +1,5 @@
 ---
-name: event-countdown-posts
+name: create-post-countdown
 description: >
   Build a countdown campaign for an upcoming event through the Marky API: a series of
   on-brand posts, each with a different angle, scheduled at the right intervals leading up

@@ -25,21 +25,25 @@
       "hash": "acf8e01e97884e2be3016e7ea6fe5415d14a79b6",
       "files": 1
     },
-    "event-countdown-posts": {
+    "create-post-countdown": {
       "hash": "58cc67df5fc0af21dea21ee2c7699af3772a8a18",
       "files": 1
     },
-    "repurpose-posts": {
+    "create-post-variations": {
       "hash": "fb8f3ad7de3df95025917e118260b25709612b0a",
       "files": 1
     },
-    "posts-from-library-image": {
+    "create-post-from-image": {
       "hash": "9c8e8102e289220632679a0e1ecd30f52a5cd6ab",
       "files": 1
     },
-    "post-diagrams": {
+    "create-post-diagram": {
       "hash": "d436c8068c8b167d96a5d6e23f1da1dfbbdee891",
       "files": 3
+    },
+    "create-post-video": {
+      "hash": "2e1ea834d2907311990879948fc3fcf182568938",
+      "files": 1
     }
   }
 }

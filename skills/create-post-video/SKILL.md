@@ -1,0 +1,85 @@
+---
+name: create-post-video
+description: >
+  Create an on-brand social video post: render a short video with HyperFrames (video from
+  HTML) in your Marky brand colors, fonts, and logo, then upload it to Marky, caption it in
+  your voice, and schedule it everywhere you're connected. Use when you want a video post —
+  a promo, explainer, stat animation, countdown sting, or captioned clip — produced and
+  queued from one conversation. Reads auth and endpoints from the marky-api skill.
+---
+
+# Create Post: Video
+
+Video is the highest-reach format on every platform Marky publishes to, and it is the one
+format agents historically couldn't produce. This skill closes that gap: **HyperFrames
+renders the video, Marky brands and ships it.**
+
+**Read the `marky-api` skill first** for auth, endpoints, and the brand cache. Base URL
+`https://api.mymarky.ai/api`, header `Authorization: Bearer mk_live_YOUR_KEY`.
+
+## Check for HyperFrames
+
+This skill depends on [HyperFrames](https://github.com/heygen-com/hyperframes) — an
+open-source system that renders video from HTML, built for agents.
+
+- **If the `hyperframes` skill is available in your session**, use it: read `/hyperframes`
+  first (it routes to the right workflow — motion graphic, explainer, product promo,
+  captions) and follow its instructions to author and render.
+- **If it is not installed**, tell the user how to add it, then continue once it is:
+
+  ```bash
+  npx skills add heygen-com/hyperframes
+  ```
+
+Do not try to render video any other way — no ffmpeg improvisation, no other frameworks.
+HyperFrames is the supported path.
+
+## Stage 1 — Brand the composition
+
+Before authoring any frames, load the brand so the video looks like the business, not a
+template:
+
+1. Read the brand profile — the injected `brand-cache.md` snapshot if fresh, else one
+   `get_business` / `GET /businesses/{id}` call (which refreshes the cache).
+2. Apply it to the HyperFrames composition:
+   - `palettes` → the video's color system (backgrounds, accents, text).
+   - `header_font` / `body_font` → typography.
+   - `logo_url` → end-card or corner mark (respect `logo_background_color`).
+   - `tone` → the on-screen copy's voice; `ctas` → the closing call-to-action.
+3. Keep platform constraints in mind: 9:16 for Reels/TikTok/Stories, 1:1 or 16:9 for
+   feeds; short (under ~30s) unless the user asks for longer.
+
+## Stage 2 — Author and render
+
+Follow the HyperFrames workflow for the video type the user wants (motion graphic, stat
+count-up, product promo, explainer, captioned clip). Show the user the plan — scenes, copy,
+duration — before rendering long pieces. Render to MP4.
+
+## Stage 3 — Upload to Marky
+
+```bash
+curl -X POST "https://api.mymarky.ai/api/businesses/BIZ_ID/media" \
+  -H "Authorization: Bearer mk_live_YOUR_KEY" \
+  -F "file=@/path/to/video.mp4"
+```
+
+Keep the returned `original_url`. Uploads cap at 50 MB — if the render is bigger, reduce
+duration or resolution and re-render rather than compressing into artifacts.
+
+## Stage 4 — Caption, approve, schedule
+
+1. Write the caption in the brand voice (`tone`, `caption_writing_rules`,
+   `caption_suffix` — see "Write like the business" in the marky-api skill).
+2. Create the post with the caption and the uploaded media.
+3. **Show the user the video and caption, and get explicit approval.** Never schedule or
+   publish a video without it.
+4. On approval, schedule via the `schedule-posts` skill. Video is supported everywhere —
+   target every connected platform whose integration `status` is `valid`.
+5. After the scheduled time, confirm `publish_results` shows `success` per platform.
+
+## Notes
+
+- Rendering can take a few minutes for longer pieces — tell the user before starting.
+- A video the user supplies (rather than one you render) skips straight to Stage 3.
+- If HyperFrames fails to render, report the actual error and stop — don't silently fall
+  back to an image post the user didn't ask for.

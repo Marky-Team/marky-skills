@@ -1,5 +1,5 @@
 ---
-name: repurpose-posts
+name: create-post-variations
 description: >
   Turn one of your existing posts into several fresh variations through the Marky API. Use
   this when a post did well (or you just have one you like) and you want more posts in the
