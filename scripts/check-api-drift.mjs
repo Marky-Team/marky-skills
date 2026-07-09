@@ -43,8 +43,8 @@ const MCP_URL = "https://api.mymarky.ai/api/mcp";
 // when a new non-API key shows up; a genuinely-removed API field is never here.
 const FIELD_ALLOWLIST = new Set([
   "mcpServers", "command", "args", "url", "headers", "type", "env", "transport",
-  "Authorization", "MARKY_AUTH", "marky", "marky-api",
-  "current_business_id", "current_business_name", // user.toml [workspace]
+  "Authorization", "MARKY_AUTH", "MARKY_API_KEY", "marky", "marky-api",
+  "current_business_id", "current_business_name", "file_system", // user.toml [workspace]
 ]);
 
 // Operations the skills invoke as MCP tools (not just mention as REST). Check C
