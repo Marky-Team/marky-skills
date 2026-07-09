@@ -27,6 +27,25 @@ fits the moment:
   (per-item topic/category/library/file CRUD, designs, webhooks, stats variants, feedback).
   See "REST endpoints" below.
 
+## Opening the app for the user
+
+When the user asks to *see* something (their scheduled posts, the calendar, the library),
+open the right page in the Marky app instead of describing it. Workspace pages live under
+`https://app.mymarky.ai/ws/{workspace}/...` — `{workspace}` accepts **the `business_id`
+UUID** (the human-readable slug also works, but the API does not expose it, so use the id
+you already have).
+
+| To show the user... | Open |
+| :--- | :--- |
+| Scheduled posts | `https://app.mymarky.ai/ws/{business_id}/social-posts?tab=scheduled` |
+| Drafts to review | `https://app.mymarky.ai/ws/{business_id}/social-posts/review` |
+| The posting calendar | `https://app.mymarky.ai/ws/{business_id}/post-calendar` |
+| The media/docs library | `https://app.mymarky.ai/ws/{business_id}/library` |
+| Business settings | `https://app.mymarky.ai/ws/{business_id}/business/settings` |
+
+Do not invent page paths (there is no `/calendar` at the root, for example) — anything not
+in this table, link `https://app.mymarky.ai` and let the user navigate.
+
 ## Marky wants your feedback — please send it
 
 Marky is built to be driven by AI agents, and the team relies on agents like you to report
@@ -712,7 +731,9 @@ Always read `GET /businesses/{id}/integrations` first and only target platforms 
 - **Connect your social accounts in the dashboard first.** This is a one-time step at
   [app.mymarky.ai](https://app.mymarky.ai). The API sees connected accounts but cannot add
   new ones.
-- Find your `business_id` with `GET /businesses` (or from the dashboard URL
-  `app.mymarky.ai/businesses/{business_id}`).
-- Posts you create via the API show up in your normal Marky queue, so you can review them
-  in the dashboard too.
+- Find your `business_id` with `GET /businesses` (or from the dashboard URL —
+  workspace pages are `app.mymarky.ai/ws/{workspace}/...`, and a UUID in that slot is
+  the business_id).
+- Posts you create via the API show up in your normal Marky queue — review them at
+  `app.mymarky.ai/ws/{business_id}/social-posts?tab=scheduled` (see "Opening the app
+  for the user" above).
