@@ -3,7 +3,14 @@
 All notable changes to this collection are documented here. The format is based
 on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
-## [Unreleased]
+## [0.2.3] - 2026-07-08
+
+### Fixed
+
+- **Hook-loading errors on session start are gone.** Claude Code loads `hooks/hooks.json`
+  automatically by convention; our manifests ALSO pointed at it explicitly, which raised
+  "duplicate hooks file" and "file-path form not supported in a marketplace entry" errors.
+  Removed the redundant `hooks` keys from plugin.json and marketplace.json.
 
 ### Changed
 
