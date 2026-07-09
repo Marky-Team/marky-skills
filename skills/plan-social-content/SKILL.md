@@ -80,8 +80,8 @@ Design about 6 posts for the week.
 - **Lead with the value to the reader,** not the feature or the jargon. Say what they get.
 - **Cover the platforms you have connected.** Check
   `GET /businesses/{id}/integrations` and plan to reach each `valid` one.
-- **Respect `writing-style.md` exactly.** Match the voice, and avoid anything on the
-  brand's "don't" list.
+- **Respect the brand profile and `writing-style.md` exactly.** Match the voice, and
+  avoid anything on the brand's "don't" list.
 - Write the week into `calendar.md` so it is easy to scan.
 
 ### Stage 4 — Ask for what only the user can give
@@ -95,7 +95,9 @@ week, swap it for one that needs nothing extra.
 
 For each post:
 
-- **Write the caption** in the brand's voice (from `writing-style.md`).
+- **Write the caption** in the brand's voice. Pull the business's brand profile first
+  (`GET /businesses/{id}` — `tone`, `caption_writing_rules`, `caption_suffix`; see
+  "Write like the business" in the `marky-api` skill) and layer `writing-style.md` on top.
 - **Prepare media.** Use the photos, graphics, or video the user provides. Upload each via
   `POST /businesses/{id}/media` and keep the returned `original_url`.
 - **Or let Marky write it.** For posts where the user just has a topic, use
@@ -108,7 +110,9 @@ For each post:
    it targets.
 2. **Stop and get explicit approval.** Do not schedule anything until the user says go.
    Apply their edits. If an edit reveals a lasting voice preference, write it into
-   `writing-style.md`.
+   `writing-style.md` AND persist it to the business's brand profile (`tone` /
+   `caption_writing_rules` via `PATCH /businesses/{id}` or `update_business`) so Marky's
+   own generator learns it too — see "Learn the user's style" in the `marky-api` skill.
 3. On approval, schedule through Marky (see the `schedule-posts` skill). Spread the posts
    across the week — for example one per day at a consistent time. Use
    `POST /businesses/{id}/posts/{post_id}/schedule` with a future `scheduled_publish_time`,
