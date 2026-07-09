@@ -32,15 +32,17 @@ TOML_PATH="${STATE_DIR}/user.toml"
 NOW="$(date -u +%Y-%m-%dT%H:%M:%SZ)"
 
 # One-time migration from the old location(s). Older releases kept user.toml in
-# the plugin dir itself; after an update that file lives in a SIBLING version
-# directory (the previous install), so check the current dir first, then the
-# most recently modified sibling.
+# the plugin dir itself; after an update that file lives in another install dir.
+# Check the current dir, then sibling version dirs, then COUSIN dirs two levels
+# up — a plugin RENAME (marky-skills -> marky in v0.2.0) puts new versions under
+# a different slug, so the old file sits at ../../<old-slug>/<version>/, which a
+# sibling-only glob never reaches. Newest file wins.
 if [[ ! -f "$TOML_PATH" ]]; then
   migrate_from=""
   if [[ -f "${PLUGIN_ROOT}/user.toml" ]]; then
     migrate_from="${PLUGIN_ROOT}/user.toml"
   else
-    migrate_from="$(ls -t "${PLUGIN_ROOT}"/../*/user.toml 2>/dev/null | head -1 || true)"
+    migrate_from="$(ls -t "${PLUGIN_ROOT}"/../*/user.toml "${PLUGIN_ROOT}"/../../*/*/user.toml 2>/dev/null | head -1 || true)"
   fi
 
   if [[ -n "$migrate_from" && -f "$migrate_from" ]]; then
@@ -79,11 +81,12 @@ workspace_note=""
 brand_note=""
 
 if [[ ! -f "$TOML_PATH" ]]; then
-  # First run on this machine — no state yet. Surface both prompts and tell the
-  # agent to create user.toml from the example (the skill documents the defaults).
-  feedback_prompt="Marky feedback check-in is due. Ask the user (AskUserQuestion: Yes / No / Don't ask again) whether they want to share quick feedback on how the Marky API is working. Yes -> collect + POST /api/feedback, bump ask_feedback_next. No -> bump ask_feedback_next. Don't ask again -> set leave_feedback = off."
-  contribution_prompt="Marky contribution check is due. If the user has locally built a new skill or substantially improved a SKILL.md that is generic/reusable, ask (AskUserQuestion: Yes / No / Don't ask again) whether to contribute it to the community repo Marky-Team/marky-skills-community. Follow CONTRIBUTING.md (sanitize + generalize, user reviews) before any PR. Never auto-open a PR."
-  init_note="No user.toml found at ~/.marky/user.toml — create it from the plugin's user.toml.example with defaults (leave_feedback=on, ask_feedback_interval=\"3 weeks\", suggest_contribution=on) per the marky-api skill, then write back the updated timestamps after asking."
+  # First run on this machine — no state yet. Only surface the init note: per
+  # the skill's defaults the FIRST feedback prompt comes one interval from now
+  # (ask_feedback_next = now + 3 weeks), so nothing is "due" yet. Asking for
+  # feedback on first contact — or right after an update wiped state — is
+  # pestering, not a cadence.
+  init_note="No user.toml found at ~/.marky/user.toml — create it silently from the plugin's user.toml.example with defaults (leave_feedback=on, ask_feedback_interval=\"3 weeks\", ask_feedback_next=now+interval, suggest_contribution=on, ask_contribution_next=now+2 weeks) per the marky-api skill. Do NOT ask the user for feedback now; the first cadence prompt comes after the interval."
 else
   leave_feedback="$(read_toml feedback leave_feedback || true)"
   ask_feedback_next="$(read_toml feedback ask_feedback_next || true)"
@@ -118,11 +121,11 @@ else
 
   # String compare is a valid time compare here: all stamps are ISO 8601 UTC Z.
   if [[ "$leave_feedback" == "on" && -n "$ask_feedback_next" && "$NOW" > "$ask_feedback_next" ]]; then
-    feedback_prompt="Marky feedback check-in is due (now is past ask_feedback_next). Ask the user (AskUserQuestion: Yes / No / Don't ask again) whether they want to share quick feedback on how the Marky API is working. Yes -> collect + POST /api/feedback, set ask_feedback_next = now + ask_feedback_interval. No -> bump ask_feedback_next by one interval. Don't ask again -> set leave_feedback = off. Then write user.toml back."
+    feedback_prompt="Marky feedback check-in is due (now is past ask_feedback_next). Ask with a real AskUserQuestion TOOL CALL — not a prose question folded into your reply (options: Yes / No / Don't ask again) whether they want to share quick feedback on how the Marky API is working. Yes -> collect + POST /api/feedback, set ask_feedback_next = now + ask_feedback_interval. No -> bump ask_feedback_next by one interval. Don't ask again -> set leave_feedback = off. Then write user.toml back."
   fi
 
   if [[ "$suggest_contribution" == "on" && -n "$ask_contribution_next" && "$NOW" > "$ask_contribution_next" ]]; then
-    contribution_prompt="Marky contribution check is due. Check whether the user has locally built a new skill or substantially edited a SKILL.md (git status/diff the skills/ dir against origin/main). If it is genuinely generic/reusable, ask (AskUserQuestion: Yes / No / Don't ask again) whether to contribute it to the community repo Marky-Team/marky-skills-community. Yes -> follow CONTRIBUTING.md (sanitize + generalize, user reviews the diff), then open the PR; bump ask_contribution_next by ~2 weeks. No -> bump ask_contribution_next by ~2 weeks. Don't ask again -> set suggest_contribution = off. Never auto-open a PR. Then write user.toml back."
+    contribution_prompt="Marky contribution check is due. Check whether the user has locally built a new skill or substantially edited a SKILL.md (git status/diff the skills/ dir against origin/main). If it is genuinely generic/reusable, ask with a real AskUserQuestion tool call (Yes / No / Don't ask again) whether to contribute it to the community repo Marky-Team/marky-skills-community. Yes -> follow CONTRIBUTING.md (sanitize + generalize, user reviews the diff), then open the PR; bump ask_contribution_next by ~2 weeks. No -> bump ask_contribution_next by ~2 weeks. Don't ask again -> set suggest_contribution = off. Never auto-open a PR. Then write user.toml back."
   fi
 fi
 
