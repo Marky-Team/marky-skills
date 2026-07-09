@@ -50,6 +50,7 @@ read_toml() {
 feedback_prompt=""
 contribution_prompt=""
 workspace_note=""
+brand_note=""
 
 if [[ ! -f "$TOML_PATH" ]]; then
   # First run on this machine — no state yet. Surface both prompts and tell the
@@ -70,6 +71,23 @@ else
   # every business at the start of every session.
   if [[ -n "$current_business_id" ]]; then
     workspace_note="Current Marky business (from user.toml): ${current_business_name:-unnamed} (business_id ${current_business_id}). Do not list all businesses — confirm it with one get_business call if that tool is exposed, else use the id directly (a stale id 404s on first use: re-list, re-pick, write the new choice back to user.toml). The user can ask to switch at any time."
+
+    # Brand voice snapshot: a small cache file the AGENT maintains (written after
+    # every get_business / update_business, per the marky-api skill). We inject it
+    # here so the agent writes on-brand from the first message without a fetch.
+    # No network call in this hook on purpose — SessionStart blocks the session.
+    BRAND_PATH="${PLUGIN_ROOT}/brand-voice.md"
+    if [[ -f "$BRAND_PATH" ]]; then
+      cached_id="$(sed -n 's/^business_id:[[:space:]]*//p' "$BRAND_PATH" | head -1)"
+      if [[ "$cached_id" == "$current_business_id" ]]; then
+        # Body = everything after the first blank line; flatten + cap so the
+        # reminder stays small. Full/current values come from get_business.
+        brand_body="$(sed '1,/^$/d' "$BRAND_PATH" | tr '\n' ' ' | cut -c1-1200)"
+        if [[ -n "${brand_body// /}" ]]; then
+          brand_note="Brand voice for this business (cached snapshot — refresh brand-voice.md after any get_business/update_business): ${brand_body} Apply this voice to ANY social copy you author (captions, hooks, hashtags)."
+        fi
+      fi
+    fi
   fi
 
   # String compare is a valid time compare here: all stamps are ISO 8601 UTC Z.
@@ -89,6 +107,7 @@ fi
 
 REMINDER="Marky plugin session-state check (from user.toml in the plugin dir)."
 [[ -n "$workspace_note" ]] && REMINDER="$REMINDER $workspace_note"
+[[ -n "$brand_note" ]] && REMINDER="$REMINDER $brand_note"
 [[ -n "${init_note:-}" ]] && REMINDER="$REMINDER $init_note"
 [[ -n "$feedback_prompt" ]] && REMINDER="$REMINDER $feedback_prompt"
 [[ -n "$contribution_prompt" ]] && REMINDER="$REMINDER $contribution_prompt"
