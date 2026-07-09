@@ -60,6 +60,24 @@ interactive UI.)
 
 Then run `/marky` (or just describe the job) to start.
 
+#### Staying up to date
+
+The plugin keeps you posted about itself. After any update, your next session opens with
+a short "here's what's new" summary (read from this repo's CHANGELOG). And when a newer
+version exists that you don't have, the agent offers the update once — with snooze and
+stop-asking options — instead of nagging.
+
+New versions don't install themselves unless you turn that on: Claude Code only
+auto-updates marketplaces with auto-update enabled, and it is **off by default** for
+third-party marketplaces like this one. Recommended: run `/plugin`, open the
+**Marketplaces** tab, select `marky-skills`, and toggle **Enable auto-update**. New
+versions then land at session start and the what's-new note is all you see. Prefer
+manual? Update any time with:
+
+```
+/plugin marketplace update marky-skills
+```
+
 ### Other clients (Cursor, Claude Desktop / Cowork, …) → install the skills
 
 Anything that supports the [Agent Skills](https://agentskills.io) format installs the skills
