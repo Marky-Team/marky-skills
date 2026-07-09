@@ -1,5 +1,5 @@
 ---
-name: post-diagrams
+name: create-post-diagram
 description: >
   Design branded diagram images for social posts — layer diagrams, flows, loops,
   quote + stat cards, sequence diagrams, numbered steps — as hand-authored HTML

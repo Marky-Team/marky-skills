@@ -1,5 +1,5 @@
 ---
-name: posts-from-library-image
+name: create-post-from-image
 description: >
   Turn one image from your Marky library into several ready-to-review social posts through
   the API. Use this when you have a strong photo or graphic (a product shot, a professional

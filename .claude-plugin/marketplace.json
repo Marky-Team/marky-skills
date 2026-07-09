@@ -19,16 +19,18 @@
         "./skills/marky-api",
         "./skills/schedule-posts",
         "./skills/plan-social-content",
-        "./skills/post-diagrams",
+        "./skills/create-post-diagram",
         "./skills/review-performance",
         "./skills/suggest-topics",
         "./skills/manage-library",
-        "./skills/event-countdown-posts",
-        "./skills/repurpose-posts",
-        "./skills/posts-from-library-image"
+        "./skills/create-post-countdown",
+        "./skills/create-post-variations",
+        "./skills/create-post-from-image",
+        "./skills/create-post-video"
       ],
       "commands": [
-        "./commands/marky.md"
+        "./commands/marky.md",
+        "./commands/marky-status.md"
       ]
     }
   ]

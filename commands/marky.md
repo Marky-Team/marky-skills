@@ -30,9 +30,10 @@ ready before doing anything else:
 4. **Ask what they want done**, then route to the right Marky skill:
    - plan + schedule a week of content -> `plan-social-content`
    - schedule specific posts you already have -> `schedule-posts`
-   - countdown to an event -> `event-countdown-posts`
-   - many posts from one image -> `posts-from-library-image`
-   - fresh variations of a good post -> `repurpose-posts`
+   - countdown to an event -> `create-post-countdown`
+   - many posts from one image -> `create-post-from-image`
+   - fresh variations of a good post -> `create-post-variations`
+   - a video post (promo, explainer, stat animation) -> `create-post-video`
    - what is working / recommendations -> `review-performance`
    - fix or refresh topics -> `suggest-topics`
    - upload media / manage notes + library -> `manage-library`

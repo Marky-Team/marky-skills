@@ -3,6 +3,26 @@
 All notable changes to this collection are documented here. The format is based
 on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
+## [0.3.0] - 2026-07-09
+
+### Added
+
+- **`create-post-video` skill.** On-brand video posts end to end: renders with
+  [HyperFrames](https://github.com/heygen-com/hyperframes) (video from HTML — offers the
+  `npx skills add heygen-com/hyperframes` install if missing), styled from the brand
+  cache (palettes, fonts, logo, tone), then uploads to Marky, captions in your voice,
+  and schedules everywhere connected. Approval-gated like every creation skill.
+
+### Changed
+
+- **BREAKING (names only): creation skills are now prefixed `create-post-*`.**
+  `post-diagrams` → `create-post-diagram`, `event-countdown-posts` →
+  `create-post-countdown`, `posts-from-library-image` → `create-post-from-image`,
+  `repurpose-posts` → `create-post-variations`. Behavior is unchanged; update anything
+  that invokes the old names. Skill routing by description is unaffected.
+- `/marky-status` is now registered in the plugin manifests (it shipped in 0.2.7 but was
+  missing from the `commands` lists).
+
 ## [0.2.8] - 2026-07-09
 
 ### Changed
