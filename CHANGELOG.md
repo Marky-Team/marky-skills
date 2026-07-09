@@ -3,6 +3,19 @@
 All notable changes to this collection are documented here. The format is based
 on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
+## [0.2.5] - 2026-07-09
+
+### Fixed
+
+- **Brand-voice cache no longer masks dashboard edits.** The profile can be changed by
+  anyone in the Marky dashboard at any time, but the local `brand-voice.md` snapshot only
+  refreshed when an agent touched the profile — and the skill told agents to "skip the
+  fetch" when the snapshot was injected, so a stale voice could persist indefinitely. The
+  snapshot now carries its `updated` timestamp and a staleness warning, and the skill
+  requires one `get_business` refresh before the first authored-or-scheduled content of a
+  session. Also fixed the documented cache path (`~/.marky/brand-voice.md`, not the
+  plugin dir).
+
 ## [0.2.4] - 2026-07-09
 
 ### Fixed

@@ -108,12 +108,13 @@ else
     BRAND_PATH="${STATE_DIR}/brand-voice.md"
     if [[ -f "$BRAND_PATH" ]]; then
       cached_id="$(sed -n 's/^business_id:[[:space:]]*//p' "$BRAND_PATH" | head -1)"
+      cached_updated="$(sed -n 's/^updated:[[:space:]]*//p' "$BRAND_PATH" | head -1)"
       if [[ "$cached_id" == "$current_business_id" ]]; then
         # Body = everything after the first blank line; flatten + cap so the
         # reminder stays small. Full/current values come from get_business.
         brand_body="$(sed '1,/^$/d' "$BRAND_PATH" | tr '\n' ' ' | cut -c1-1200)"
         if [[ -n "${brand_body// /}" ]]; then
-          brand_note="Brand voice for this business: ${brand_body} Apply this voice to ANY social copy you author (captions, hooks, hashtags). PROVENANCE + HOW TO REMEMBER: this is a cached snapshot of the business's brand profile (the tone / caption_writing_rules / imagery_preferences fields on the business object). When the user states a lasting style preference or critique (e.g. 'I don't like em-dashes!'), remember it by updating those fields via update_business / PATCH /businesses/{id} (read-merge-write, confirm wording with the user), then rewrite brand-voice.md next to user.toml so future sessions see it — see 'Learn the user's style' in the marky-api skill."
+          brand_note="Brand voice for this business (snapshot taken ${cached_updated:-unknown}): ${brand_body} Apply this voice to ANY social copy you author (captions, hooks, hashtags). POSSIBLY STALE: the profile can be edited in the Marky dashboard at any time, so before your first authored-or-scheduled content this session, refresh with one get_business call and rewrite brand-voice.md. PROVENANCE + HOW TO REMEMBER: this is a cached snapshot of the business's brand profile (the tone / caption_writing_rules / imagery_preferences fields on the business object). When the user states a lasting style preference or critique (e.g. 'I don't like em-dashes!'), remember it by updating those fields via update_business / PATCH /businesses/{id} (read-merge-write, confirm wording with the user), then rewrite brand-voice.md next to user.toml so future sessions see it — see 'Learn the user's style' in the marky-api skill."
         fi
       fi
     fi
