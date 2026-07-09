@@ -34,19 +34,6 @@ preferred path.
 
 ### Claude Code → install as a plugin (preferred)
 
-Claude Code can install this repo as a **plugin**, not just a bundle of skills. The plugin
-carries the same 10 skills **plus** the extras a plain skills install can't: a
-**feedback-reminder hook** that loads Marky's "please send feedback" expectation into context
-at the start of every session, a **session-state hook** that reads your local `user.toml` and
-surfaces a feedback or contribution prompt only when one is actually due (cadence-gated, so it
-never nags every session), and a **`/marky` slash command** that bootstraps a session
-(loads the API reference, checks your key, lists your businesses). That is why it is the
-preferred path on Claude Code.
-
-Your cadence and preferences live in `~/.marky/user.toml` (copy `user.toml.example` to
-start, or let the skill create it on first run — it survives plugin updates there). Set `leave_feedback`
-or `suggest_contribution` to `off` there to silence either prompt.
-
 Add the marketplace, then install the plugin:
 
 ```
@@ -54,18 +41,11 @@ Add the marketplace, then install the plugin:
 /plugin install marky@marky-skills
 ```
 
-(`marky@marky-skills` is `plugin-name@marketplace-name` — the plugin is `marky`, hosted in
-the `marky-skills` repo. Run `/plugin` with no arguments to browse, manage, or remove it in the
-interactive UI.)
-
-Then run `/marky` (or just describe the job) to start.
+Then run `/marky` (or just describe the job) to start. (Why the plugin beats a plain
+skills install, and where your preferences live, is covered in
+[How It Works](#how-it-works).)
 
 #### Staying up to date
-
-The plugin keeps you posted about itself. After any update, your next session opens with
-a short "here's what's new" summary (read from this repo's CHANGELOG). And when a newer
-version exists that you don't have, the agent offers the update once — with snooze and
-stop-asking options — instead of nagging.
 
 New versions don't install themselves unless you turn that on: Claude Code only
 auto-updates marketplaces with auto-update enabled, and it is **off by default** for
@@ -198,6 +178,25 @@ You -> Agent -> loads skill (SKILL.md) -> calls Marky API / MCP -> your socials
   complete workflow and defers to `marky-api` for the details.
 - Nothing is scheduled without your go-ahead. The planning skills always show you
   the drafts and ask for approval first.
+
+### The Claude Code plugin
+
+Claude Code can install this repo as a **plugin**, not just a bundle of skills. The plugin
+carries the same 10 skills **plus** the extras a plain skills install can't: a
+**feedback-reminder hook** that loads Marky's "please send feedback" expectation into context
+at the start of every session, a **session-state hook** that reads your local `user.toml` and
+surfaces a feedback or contribution prompt only when one is actually due (cadence-gated, so it
+never nags every session), and a **`/marky` slash command** that bootstraps a session
+(loads the API reference, checks your key, lists your businesses). That is why it is the
+preferred path on Claude Code.
+
+Your cadence and preferences live in `~/.marky/user.toml` (copy `user.toml.example` to
+start, or let the skill create it on first run — it survives plugin updates there). Set
+`leave_feedback` or `suggest_contribution` to `off` there to silence either prompt.
+
+(`marky@marky-skills` is `plugin-name@marketplace-name` — the plugin is `marky`, hosted in
+the `marky-skills` repo. Run `/plugin` with no arguments to browse, manage, or remove it in
+the interactive UI.)
 
 ## Why Marky Skills?
 
