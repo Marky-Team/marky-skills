@@ -29,8 +29,8 @@ that lets an agent use it well.
 
 ## Install
 
-Pick the path for your client. **Claude Code users: install the plugin** — it is the
-preferred path.
+Pick the path for your client. **Claude Code and Cowork users: install the plugin** — it
+is the preferred path.
 
 ### Claude Code → install as a plugin (preferred)
 
@@ -58,7 +58,14 @@ manual? Update any time with:
 /plugin marketplace update marky-skills
 ```
 
-### Other clients (Cursor, Claude Desktop / Cowork, …) → install the skills
+### Cowork → install the plugin in the UI
+
+Cowork installs the same plugin without a command line:
+
+**Customize → Plugins → Add → Add marketplace → Add from a repository →**
+`Marky-Team/marky-skills`, then click **+** on the **Marky** plugin.
+
+### Other clients (Cursor, Claude Desktop, …) → install the skills
 
 Anything that supports the [Agent Skills](https://agentskills.io) format installs the skills
 directly. Install **globally** (`-g`) so Marky is available in every session, not just one
@@ -140,9 +147,10 @@ how to connect Marky's MCP server).
    That's it — Marky's tools appear automatically. (No key set yet? The `marky-api`
    skill walks you through getting one and setting it.)
 
-   **Other clients (Claude Desktop / Cowork / Cursor):** these don't install the
-   plugin, so configure the MCP manually — full instructions, including the REST
-   option, live in the `marky-api` skill.
+   **Cowork (with the plugin installed): nothing to configure either** — same
+   deal, just set `MARKY_API_KEY`. **Other clients (Claude Desktop / Cursor):**
+   these don't install the plugin, so configure the MCP manually — full
+   instructions, including the REST option, live in the `marky-api` skill.
 
 3. **First post.** Connect a social account in the Marky dashboard first (the API
    can see accounts but cannot add them), then ask your agent:
