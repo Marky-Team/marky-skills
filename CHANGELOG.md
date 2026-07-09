@@ -3,6 +3,23 @@
 All notable changes to this collection are documented here. The format is based
 on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
+## [0.2.4] - 2026-07-09
+
+### Fixed
+
+- **Settings now survive plugin renames too.** The 0.2.2 migration looked for the old
+  `user.toml` in sibling version directories only, but the 0.2.0 slug rename
+  (`marky-skills` -> `marky`) put previous installs under a different directory — so
+  updating from 0.1.x still lost your saved business and cadence. The migration now also
+  searches the old slug's install dirs (newest file wins). `brand-voice.md` migrates
+  alongside.
+- **No more feedback ask on first contact.** When `user.toml` was missing, the session
+  hook claimed a feedback check-in was "due" — so fresh installs (and anyone who hit the
+  migration bug above) got asked for feedback immediately. First run now just initializes
+  state silently; the first cadence prompt comes one interval later, as documented.
+- Genuinely-due cadence prompts now instruct the agent to use a real AskUserQuestion tool
+  call instead of a prose question.
+
 ## [0.2.3] - 2026-07-08
 
 ### Fixed
