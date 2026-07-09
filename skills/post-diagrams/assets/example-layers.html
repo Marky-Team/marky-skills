@@ -1,0 +1,46 @@
+<!doctype html>
+<html><head><meta charset="utf-8"><link rel="stylesheet" href="_base.css">
+<style>
+  .rings { width: 900px; }
+  .ring { border-radius: 36px; padding: 30px 36px 36px; }
+  .ring .label { display: flex; align-items: baseline; gap: 18px; margin-bottom: 26px; }
+  .ring .name { font-size: 40px; font-weight: 800; }
+  .ring .desc { font-size: 26px; color: #3a3140; font-weight: 500; }
+  .l-plugin { background: var(--r1); }
+  .l-skills { background: var(--r2); }
+  .l-mcp    { background: var(--r3); }
+  .l-api {
+    background: var(--accent); border-radius: 28px;
+    padding: 40px 36px; text-align: center;
+  }
+  .l-api .name { font-size: 44px; font-weight: 800; color: #fff; }
+  .l-api .desc { font-size: 26px; color: #f0ddfb; margin-top: 10px; font-weight: 500; }
+</style></head>
+<body>
+  <div>
+    <div class="kicker">Kicker line here</div>
+    <h1>Headline: what the layers add up to</h1>
+    <div class="sub">One-line subhead.</div>
+  </div>
+  <div class="stage">
+    <div class="rings">
+      <div class="ring l-plugin">
+        <div class="label"><span class="name">Layer 4</span><span class="desc">outermost layer, one-line description</span></div>
+        <div class="ring l-skills">
+          <div class="label"><span class="name">Layer 3</span><span class="desc">third layer, one-line description</span></div>
+          <div class="ring l-mcp">
+            <div class="label"><span class="name">Layer 2</span><span class="desc">second layer, one-line description</span></div>
+            <div class="l-api">
+              <div class="name">Core</div>
+              <div class="desc">the core everything builds on</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="footer">
+    <span class="wordmark">brandname</span>
+    
+  </div>
+</body></html>

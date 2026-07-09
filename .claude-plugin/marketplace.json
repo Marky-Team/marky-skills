@@ -1,33 +1,36 @@
 {
-  "name": "marky-skills",
-  "owner": {
-    "name": "Marky",
-    "email": "support@mymarky.ai",
-    "url": "https://app.mymarky.ai"
-  },
-  "renames": {
-    "marky-skills": "marky"
-  },
-  "plugins": [
-    {
-      "name": "marky",
-      "source": "./",
-      "description": "Agent skills for managing social media with Marky: authenticate and connect the API/MCP, create and schedule posts, plan a week of on-brand content, manage topics and your library, review performance, and repurpose what works.",
-      "homepage": "https://docs.mymarky.ai",
-      "license": "Apache-2.0",
-      "skills": [
-        "./skills/marky-api",
-        "./skills/schedule-posts",
-        "./skills/plan-social-content",
-        "./skills/review-performance",
-        "./skills/suggest-topics",
-        "./skills/manage-library",
-        "./skills/event-countdown-posts",
-        "./skills/repurpose-posts",
-        "./skills/posts-from-library-image"
-      ],
-      "commands": ["./commands/marky.md"],
-      "hooks": "./hooks/hooks.json"
-    }
-  ]
+    "name": "marky-skills",
+    "owner": {
+        "name": "Marky",
+        "email": "support@mymarky.ai",
+        "url": "https://app.mymarky.ai"
+    },
+    "renames": {
+        "marky-skills": "marky"
+    },
+    "plugins": [
+        {
+            "name": "marky",
+            "source": "./",
+            "description": "Agent skills for managing social media with Marky: authenticate and connect the API/MCP, create and schedule posts, plan a week of on-brand content, manage topics and your library, review performance, and repurpose what works.",
+            "homepage": "https://docs.mymarky.ai",
+            "license": "Apache-2.0",
+            "skills": [
+                "./skills/marky-api",
+                "./skills/schedule-posts",
+                "./skills/plan-social-content",
+                "./skills/post-diagrams",
+                "./skills/review-performance",
+                "./skills/suggest-topics",
+                "./skills/manage-library",
+                "./skills/event-countdown-posts",
+                "./skills/repurpose-posts",
+                "./skills/posts-from-library-image"
+            ],
+            "commands": [
+                "./commands/marky.md"
+            ],
+            "hooks": "./hooks/hooks.json"
+        }
+    ]
 }
