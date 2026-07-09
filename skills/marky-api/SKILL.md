@@ -493,6 +493,27 @@ choosing or describing visuals. Do this once per session per business and keep i
 mind — don't draft from a generic voice and fix it later. (Marky's own `/posts/generate`
 endpoint applies these automatically; this rule is for content you author directly.)
 
+**Maintain the `brand-voice.md` cache.** In a Claude Code plugin install, the SessionStart
+hook injects a cached brand-voice snapshot into context so sessions start already on-brand
+with no fetch. You keep that cache fresh: **after every `get_business` /
+`GET /businesses/{id}` and after every profile update**, write
+`${CLAUDE_PLUGIN_ROOT}/brand-voice.md` (next to `user.toml`; same location rule) in this
+shape — header lines, blank line, then the voice fields as plain text:
+
+```markdown
+business_id: your-business-uuid
+updated: 2026-07-08T00:00:00Z
+
+tone: Warm, confident, and plain-spoken. No jargon.
+caption_writing_rules: Never use emojis. Keep sentences short.
+caption_suffix: #smallbusiness #local
+imagery_preferences: Bright, natural light. Real people.
+```
+
+If the hook already injected the snapshot this session, draft from it directly and skip
+the fetch. When the user switches business, rewrite the file for the new business — the
+hook only injects it when its `business_id` matches the current workspace.
+
 ### Learn the user's style — persist critiques into the brand profile
 
 When the user critiques generated content — *"I don't like how that wrote"*, *"too many

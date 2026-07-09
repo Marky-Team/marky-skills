@@ -24,3 +24,6 @@ Thumbs.db
 # Logs
 *.log
 npm-debug.log*
+
+# Agent-maintained brand voice cache (per-user, injected by the SessionStart hook)
+brand-voice.md
