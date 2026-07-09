@@ -128,6 +128,15 @@ session — the first time you touch Marky — do this once:**
    404: re-list, re-pick, write back). If it is empty, the first time the user picks a
    business, write the id and name back so later sessions start already oriented. When the
    user asks to switch, list businesses, let them pick, and write the new choice back.
+5. **Honor the file system choice.** `[workspace]` also carries `file_system`
+   (`"marky"` | `"local"`, default `"marky"`). It controls where library files (notes,
+   briefs, knowledge-base docs) are read and written:
+   - `"marky"` → use the API endpoints in the `manage-library` skill; files live in the
+     user's Marky account.
+   - `"local"` → read/write plain files under `~/.marky/fs/<business_id>/` instead
+     (create the directory if missing). Library paths map directly onto that folder,
+     e.g. `/knowledge-base/services.md` → `~/.marky/fs/<business_id>/knowledge-base/services.md`.
+   If the key is missing, treat it as `"marky"` and add it to `user.toml` on the next write.
 
 This is deliberately low-friction: at most one feedback prompt and one contribution prompt
 per cadence window, never every session.
