@@ -509,8 +509,10 @@ endpoint applies these automatically; this rule is for content you author direct
 
 **Maintain the `brand-voice.md` cache.** In a Claude Code plugin install, the SessionStart
 hook injects a cached brand-voice snapshot into context so sessions start already on-brand
-with no fetch. You keep that cache fresh: **after every `get_business` /
-`GET /businesses/{id}` and after every profile update**, write
+with no fetch. **Over MCP the cache maintains itself**: a PostToolUse hook rewrites it
+automatically after every `get_business` / `update_business` call, so you don't need to
+touch the file. On the REST path (or outside the plugin) you keep it fresh yourself:
+**after every `GET /businesses/{id}` and after every profile update**, write
 `~/.marky/brand-voice.md` (next to `user.toml`) in this shape — header lines, blank line, then the voice fields as plain text:
 
 ```markdown
