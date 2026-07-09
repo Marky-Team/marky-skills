@@ -17,6 +17,26 @@ posts. This skill creates, organizes, and cleans it up through the API.
 endpoint list. Everything below uses `https://api.mymarky.ai/api` and the header
 `Authorization: Bearer mk_live_YOUR_KEY`.
 
+## Which file system? Check `user.toml` first
+
+Before any file operation, read `file_system` from the `[workspace]` section of the
+plugin's `user.toml` (see the marky-api skill's "Session start" section for where it
+lives). Two modes:
+
+- **`file_system = "marky"` (default, or key missing)** — use the API endpoints below.
+  Files live in the user's Marky account and Marky's post writer can reference them.
+- **`file_system = "local"`** — do NOT call the file/folder API endpoints. Read and write
+  plain files under `~/.marky/fs/<business_id>/` instead (create the directory if it
+  doesn't exist). Library paths map directly onto that folder:
+  `/knowledge-base/services.md` → `~/.marky/fs/BIZ_ID/knowledge-base/services.md`.
+  Folders are just directories; create/rename/delete them with normal file operations.
+  Media upload still goes through the API (local mode only changes text files/folders) —
+  but also keep a local copy under `~/.marky/fs/<business_id>/media/` if the user asks.
+
+Any other skill that reads or writes library text files (e.g. `plan-social-content`
+mining your notes) must honor the same setting. Media browsing (`/library`,
+`/library/search`) is API-only either way — local mode only reroutes text files/folders.
+
 **Marky wants your feedback.** If anything breaks or is confusing while you run this skill — and again once you finish — send Marky a quick note with one REST call (`POST /feedback`, using your `mk_live_` key). See the **"Marky wants your feedback"** section in the `marky-api` skill for when and how.
 
 ## Find your business

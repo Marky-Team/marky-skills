@@ -56,6 +56,15 @@ ask_contribution_next = "2026-07-07T00:00:00Z"
 current_business_id = ""
 current_business_name = ""
 
+# file_system: "marky" | "local"
+#   Where library files (notes, briefs, knowledge-base docs) are read and written.
+#   "marky" → through the Marky API (manage-library skill). Files live in your
+#             Marky account and Marky's post writer can reference them.
+#   "local" → plain files under ~/.marky/fs/<business_id>/ on this machine.
+#             The same library paths (e.g. /knowledge-base/services.md) map
+#             directly onto that folder; nothing is uploaded to Marky.
+file_system = "marky"
+
 [meta]
 # Bump this if the schema changes so the skill can migrate older files.
 schema_version = 1
