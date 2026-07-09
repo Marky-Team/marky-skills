@@ -43,8 +43,8 @@ never nags every session), and a **`/marky` slash command** that bootstraps a se
 (loads the API reference, checks your key, lists your businesses). That is why it is the
 preferred path on Claude Code.
 
-Your cadence and preferences live in a gitignored `user.toml` in the plugin dir (copy
-`user.toml.example` to start, or let the skill create it on first run). Set `leave_feedback`
+Your cadence and preferences live in `~/.marky/user.toml` (copy `user.toml.example` to
+start, or let the skill create it on first run — it survives plugin updates there). Set `leave_feedback`
 or `suggest_contribution` to `off` there to silence either prompt.
 
 Add the marketplace, then install the plugin:

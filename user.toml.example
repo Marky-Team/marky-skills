@@ -1,4 +1,6 @@
-# user.toml — per-user, cross-session state for the Marky plugin
+# user.toml — per-user, cross-session state for the Marky plugin.
+# Live copy belongs at ~/.marky/user.toml (NOT the plugin dir — that path is
+# replaced on every plugin update).
 #
 # WHY THIS FILE EXISTS
 # Skills and agents are amnesiac: each session starts with no memory of the last

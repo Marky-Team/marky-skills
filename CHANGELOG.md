@@ -3,6 +3,16 @@
 All notable changes to this collection are documented here. The format is based
 on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
+## [0.2.2] - 2026-07-08
+
+### Fixed
+
+- **Your settings now survive plugin updates.** `user.toml` (cadence prefs, your saved
+  business) and `brand-voice.md` moved to `~/.marky/` — each plugin update installs to a
+  fresh directory, so state kept beside the plugin was silently wiped every release.
+  Existing files migrate automatically on the next session (the hook also checks the
+  previous version's install dir).
+
 ## [0.2.1] - 2026-07-08
 
 ### Added

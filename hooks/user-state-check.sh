@@ -2,7 +2,8 @@
 # SessionStart hook for the Marky plugin — cross-session cadence checks.
 #
 # WHY THIS EXISTS: skills are amnesiac (each session starts fresh), so we keep a
-# tiny per-user state file, `user.toml`, in the plugin install dir. This hook
+# tiny per-user state file, `user.toml`, in ~/.marky/ (NOT the plugin dir,
+# which is wiped on every plugin update). This hook
 # reads it at session start and, if a cadence window is due, injects a short
 # prompt into context so a Claude Code plugin user gets the nudge automatically.
 # Non-plugin clients rely on the marky-api skill instructions instead.
@@ -22,8 +23,33 @@
 set -euo pipefail
 
 PLUGIN_ROOT="${CLAUDE_PLUGIN_ROOT:-$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)}"
-TOML_PATH="${PLUGIN_ROOT}/user.toml"
+# State lives in ~/.marky/, NOT the plugin dir: Claude Code installs each plugin
+# version to a new directory, so anything stored beside the plugin is wiped on
+# every update — the user would be re-asked init questions and lose their saved
+# business every release.
+STATE_DIR="${MARKY_STATE_DIR:-${HOME}/.marky}"
+TOML_PATH="${STATE_DIR}/user.toml"
 NOW="$(date -u +%Y-%m-%dT%H:%M:%SZ)"
+
+# One-time migration from the old location(s). Older releases kept user.toml in
+# the plugin dir itself; after an update that file lives in a SIBLING version
+# directory (the previous install), so check the current dir first, then the
+# most recently modified sibling.
+if [[ ! -f "$TOML_PATH" ]]; then
+  migrate_from=""
+  if [[ -f "${PLUGIN_ROOT}/user.toml" ]]; then
+    migrate_from="${PLUGIN_ROOT}/user.toml"
+  else
+    migrate_from="$(ls -t "${PLUGIN_ROOT}"/../*/user.toml 2>/dev/null | head -1 || true)"
+  fi
+
+  if [[ -n "$migrate_from" && -f "$migrate_from" ]]; then
+    mkdir -p "$STATE_DIR"
+    cp "$migrate_from" "$TOML_PATH"
+    old_brand="$(dirname "$migrate_from")/brand-voice.md"
+    [[ -f "$old_brand" && ! -f "${STATE_DIR}/brand-voice.md" ]] && cp "$old_brand" "${STATE_DIR}/brand-voice.md"
+  fi
+fi
 
 # Read a `key = "value"` (or bare) value from a [section] of the TOML file.
 # Minimal, good enough for this flat schema; not a general TOML parser.
@@ -57,7 +83,7 @@ if [[ ! -f "$TOML_PATH" ]]; then
   # agent to create user.toml from the example (the skill documents the defaults).
   feedback_prompt="Marky feedback check-in is due. Ask the user (AskUserQuestion: Yes / No / Don't ask again) whether they want to share quick feedback on how the Marky API is working. Yes -> collect + POST /api/feedback, bump ask_feedback_next. No -> bump ask_feedback_next. Don't ask again -> set leave_feedback = off."
   contribution_prompt="Marky contribution check is due. If the user has locally built a new skill or substantially improved a SKILL.md that is generic/reusable, ask (AskUserQuestion: Yes / No / Don't ask again) whether to contribute it to the community repo Marky-Team/marky-skills-community. Follow CONTRIBUTING.md (sanitize + generalize, user reviews) before any PR. Never auto-open a PR."
-  init_note="No user.toml found in the Marky plugin dir — create it from user.toml.example with defaults (leave_feedback=on, ask_feedback_interval=\"3 weeks\", suggest_contribution=on) per the marky-api skill, then write back the updated timestamps after asking."
+  init_note="No user.toml found at ~/.marky/user.toml — create it from the plugin's user.toml.example with defaults (leave_feedback=on, ask_feedback_interval=\"3 weeks\", suggest_contribution=on) per the marky-api skill, then write back the updated timestamps after asking."
 else
   leave_feedback="$(read_toml feedback leave_feedback || true)"
   ask_feedback_next="$(read_toml feedback ask_feedback_next || true)"
@@ -76,7 +102,7 @@ else
     # every get_business / update_business, per the marky-api skill). We inject it
     # here so the agent writes on-brand from the first message without a fetch.
     # No network call in this hook on purpose — SessionStart blocks the session.
-    BRAND_PATH="${PLUGIN_ROOT}/brand-voice.md"
+    BRAND_PATH="${STATE_DIR}/brand-voice.md"
     if [[ -f "$BRAND_PATH" ]]; then
       cached_id="$(sed -n 's/^business_id:[[:space:]]*//p' "$BRAND_PATH" | head -1)"
       if [[ "$cached_id" == "$current_business_id" ]]; then
@@ -105,7 +131,7 @@ if [[ -z "$feedback_prompt" && -z "$contribution_prompt" && -z "${init_note:-}" 
   exit 0
 fi
 
-REMINDER="Marky plugin session-state check (from user.toml in the plugin dir)."
+REMINDER="Marky plugin session-state check (from ~/.marky/user.toml)."
 [[ -n "$workspace_note" ]] && REMINDER="$REMINDER $workspace_note"
 [[ -n "$brand_note" ]] && REMINDER="$REMINDER $brand_note"
 [[ -n "${init_note:-}" ]] && REMINDER="$REMINDER $init_note"
