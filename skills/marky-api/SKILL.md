@@ -483,6 +483,42 @@ Every field is optional — send only what you want to change. Key brand fields:
 `tagline`, `ctas`, `palettes`, `header_font`, `body_font`, `logo_url`,
 `logo_background_color`, `logo_width`.
 
+### Write like the business — pull the brand profile before drafting
+
+Whenever YOU are about to write social content yourself (captions, hooks, hashtags, post
+copy — anything user-facing), **first read the brand profile** with
+`GET /businesses/{id}` (or `get_business`) and apply it: match `tone`, obey every line of
+`caption_writing_rules`, append `caption_suffix`, and respect `imagery_preferences` when
+choosing or describing visuals. Do this once per session per business and keep it in
+mind — don't draft from a generic voice and fix it later. (Marky's own `/posts/generate`
+endpoint applies these automatically; this rule is for content you author directly.)
+
+### Learn the user's style — persist critiques into the brand profile
+
+When the user critiques generated content — *"I don't like how that wrote"*, *"too many
+emojis"*, *"shorter"*, *"stop saying 'game-changer'"* — do **both** of these, not just the
+first:
+
+1. **Fix the content in front of you** (edit the draft, regenerate, whatever the moment
+   needs).
+2. **Persist the lasting preference into the brand profile** so every future generation —
+   yours and Marky's own — honors it. Read the current values first
+   (`GET /businesses/{id}` or `get_business`), then merge, don't clobber:
+   - Voice/personality feedback → append or refine `tone`.
+   - Concrete do/don't rules (emojis, sentence length, banned words, hashtags) → add a
+     line to `caption_writing_rules`.
+   - Image feedback → `imagery_preferences`.
+   Write back with `PATCH /businesses/{id}` (REST) or `update_business` (MCP). Show the
+   user the updated field text and confirm before writing — these fields steer all future
+   content.
+
+One-off instructions ("make this one more playful") are not lasting preferences — apply
+them and move on. Only persist feedback the user states as a general preference or repeats.
+
+**Routing note:** style critique goes to the *brand profile*, not `POST /feedback`. The
+feedback endpoint reports bugs/friction about Marky itself to the Marky team; it does not
+change how Marky writes for this business.
+
 ### Integrations (connected social accounts)
 
 - `GET /businesses/{business_id}/integrations` — list the social accounts connected to a
