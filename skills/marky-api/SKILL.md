@@ -129,7 +129,7 @@ session — the first time you touch Marky — do this once:**
 
 1. **Find the file.** `user.toml` lives at `~/.marky/user.toml` — a stable home OUTSIDE
    the skill install directory, because plugin updates install to a fresh directory and
-   would wipe anything stored beside the skill. (`brand-voice.md` lives there too.) Older
+   would wipe anything stored beside the skill. (`brand-cache.md` lives there too.) Older
    installs kept it next to `user.toml.example` in the install dir; if you find one there
    and `~/.marky/user.toml` does not exist, move it to `~/.marky/` first.
 2. **Read it. If it is missing, create it from `user.toml.example` with sensible defaults:**
@@ -507,13 +507,16 @@ choosing or describing visuals. Do this once per session per business and keep i
 mind — don't draft from a generic voice and fix it later. (Marky's own `/posts/generate`
 endpoint applies these automatically; this rule is for content you author directly.)
 
-**Maintain the `brand-voice.md` cache.** In a Claude Code plugin install, the SessionStart
-hook injects a cached brand-voice snapshot into context so sessions start already on-brand
-with no fetch. **Over MCP the cache maintains itself**: a PostToolUse hook rewrites it
-automatically after every `get_business` / `update_business` call, so you don't need to
-touch the file. On the REST path (or outside the plugin) you keep it fresh yourself:
-**after every `GET /businesses/{id}` and after every profile update**, write
-`~/.marky/brand-voice.md` (next to `user.toml`) in this shape — header lines, blank line, then the voice fields as plain text:
+**Maintain the `brand-cache.md` cache.** In a Claude Code plugin install, the SessionStart
+hook injects a cached brand snapshot into context so sessions start already on-brand with
+no fetch — both the voice fields (for copy you write) and the design fields (colors,
+fonts, logo — for diagrams, cards, or video frames you render). **Over MCP the cache
+maintains itself**: a PostToolUse hook rewrites it automatically after every
+`get_business` / `update_business` call, so you don't need to touch the file. On the REST
+path (or outside the plugin) you keep it fresh yourself: **after every
+`GET /businesses/{id}` and after every profile update**, write `~/.marky/brand-cache.md`
+(next to `user.toml`) in this shape — header lines, blank line, then one `field: value`
+line each (non-string values as compact JSON):
 
 ```markdown
 business_id: your-business-uuid
@@ -523,14 +526,23 @@ tone: Warm, confident, and plain-spoken. No jargon.
 caption_writing_rules: Never use emojis. Keep sentences short.
 caption_suffix: #smallbusiness #local
 imagery_preferences: Bright, natural light. Real people.
+tagline: Service you can trust.
+ctas: ["Call today","Book online"]
+palettes: [["#0A0A0A","#FFFFFF","#E11D48"]]
+header_font: {"family":"Poppins"}
+body_font: {"family":"Inter"}
+logo_url: https://.../logo.png
 ```
+
+(Pre-0.2.8 installs used `brand-voice.md` with voice fields only; the hooks read the old
+name as a fallback until the next profile touch rewrites the new one.)
 
 **The snapshot orients you; it does not replace the fetch.** The brand profile can be
 edited by anyone at any time in the Marky dashboard (a teammate tweaking the tone, the
 user on their phone), and the cache only updates when an agent touches the profile — so
 treat the injected snapshot as possibly stale. Use it to sound right in conversation, but
 before your FIRST authored-or-scheduled content of a session, make one `get_business`
-call to pick up dashboard edits, then rewrite the cache with what you got. The workspace
+call to pick up dashboard edits (over MCP the sync hook then rewrites the cache for you). The workspace
 is always the source of truth; the file is disposable. When the user switches business,
 rewrite the file for the new business — the hook only injects it when its `business_id`
 matches the current workspace.

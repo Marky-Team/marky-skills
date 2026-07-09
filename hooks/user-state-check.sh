@@ -105,16 +105,19 @@ else
     # every get_business / update_business, per the marky-api skill). We inject it
     # here so the agent writes on-brand from the first message without a fetch.
     # No network call in this hook on purpose — SessionStart blocks the session.
-    BRAND_PATH="${STATE_DIR}/brand-voice.md"
+    BRAND_PATH="${STATE_DIR}/brand-cache.md"
+    # Pre-0.2.8 installs wrote brand-voice.md; read it until the sync hook
+    # rewrites the new name on the next profile touch.
+    [[ -f "$BRAND_PATH" ]] || BRAND_PATH="${STATE_DIR}/brand-voice.md"
     if [[ -f "$BRAND_PATH" ]]; then
       cached_id="$(sed -n 's/^business_id:[[:space:]]*//p' "$BRAND_PATH" | head -1)"
       cached_updated="$(sed -n 's/^updated:[[:space:]]*//p' "$BRAND_PATH" | head -1)"
       if [[ "$cached_id" == "$current_business_id" ]]; then
         # Body = everything after the first blank line; flatten + cap so the
         # reminder stays small. Full/current values come from get_business.
-        brand_body="$(sed '1,/^$/d' "$BRAND_PATH" | tr '\n' ' ' | cut -c1-1200)"
+        brand_body="$(sed '1,/^$/d' "$BRAND_PATH" | tr '\n' ' ' | cut -c1-1600)"
         if [[ -n "${brand_body// /}" ]]; then
-          brand_note="Brand voice for this business (snapshot taken ${cached_updated:-unknown}): ${brand_body} Apply this voice to ANY social copy you author (captions, hooks, hashtags). POSSIBLY STALE: the profile can be edited in the Marky dashboard at any time, so before your first authored-or-scheduled content this session, refresh with one get_business call and rewrite brand-voice.md. PROVENANCE + HOW TO REMEMBER: this is a cached snapshot of the business's brand profile (the tone / caption_writing_rules / imagery_preferences fields on the business object). When the user states a lasting style preference or critique (e.g. 'I don't like em-dashes!'), remember it by updating those fields via update_business / PATCH /businesses/{id} (read-merge-write, confirm wording with the user), then rewrite brand-voice.md next to user.toml so future sessions see it — see 'Learn the user's style' in the marky-api skill."
+          brand_note="Brand cache for this business (snapshot taken ${cached_updated:-unknown}): ${brand_body} Apply the voice fields (tone, caption_writing_rules, caption_suffix) to ANY social copy you author, and the design fields (palettes, fonts, logo, tagline) to ANY visual you render (diagrams, cards, video frames). POSSIBLY STALE: the profile can be edited in the Marky dashboard at any time, so before your first authored-or-scheduled content this session, refresh with one get_business call (over MCP the cache then rewrites itself). PROVENANCE + HOW TO REMEMBER: this is a cached snapshot of the business's brand profile fields on the business object. When the user states a lasting style or design preference (e.g. 'I don't like em-dashes!', 'never use red'), remember it by updating those fields via update_business / PATCH /businesses/{id} (read-merge-write, confirm wording with the user) — see 'Learn the user's style' in the marky-api skill."
         fi
       fi
     fi

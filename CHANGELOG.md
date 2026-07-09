@@ -3,6 +3,18 @@
 All notable changes to this collection are documented here. The format is based
 on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
+## [0.2.8] - 2026-07-09
+
+### Changed
+
+- **`brand-voice.md` is now `brand-cache.md`, and it carries design too.** The cached
+  brand snapshot now includes the design fields (`tagline`, `ctas`, `palettes`,
+  `header_font`, `body_font`, `logo_url`, `logo_background_color`, `logo_width`)
+  alongside the voice fields — so diagrams, cards, and video frames an agent renders
+  start on-brand with no fetch, same as copy. Non-string values serialize as compact
+  JSON, one line per field. The SessionStart hook reads the old `brand-voice.md` as a
+  fallback until the sync hook rewrites the new name on the next profile touch.
+
 ## [0.2.7] - 2026-07-09
 
 ### Added

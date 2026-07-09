@@ -1,8 +1,8 @@
 #!/usr/bin/env bash
-# PostToolUse hook: keep ~/.marky/brand-voice.md in sync automatically.
+# PostToolUse hook: keep ~/.marky/brand-cache.md in sync automatically.
 #
-# WHY: the SessionStart hook injects a cached brand-voice snapshot so agents
-# write on-brand from the first message. Before this hook, refreshing that
+# WHY: the SessionStart hook injects a cached brand snapshot (voice + design
+# fields) so agents write and render on-brand from the first message. Before this hook, refreshing that
 # cache relied on the agent following a skill instruction ("rewrite the file
 # after get_business / update_business") — hope, not enforcement. This hook
 # fires deterministically after every mcp__marky__get_business /
@@ -24,15 +24,21 @@ HOOK_PAYLOAD="$(cat)" python3 - <<'PY' || true
 import json, os, sys
 from datetime import datetime, timezone
 
-# The voice fields worth caching, in display order.
-FIELDS = ["tone", "caption_writing_rules", "caption_suffix", "imagery_preferences"]
+# The brand fields worth caching, in display order: voice first (for copy),
+# then design (for post-diagrams / any visual authoring — colors, fonts, logo).
+VOICE_FIELDS = ["tone", "caption_writing_rules", "caption_suffix", "imagery_preferences"]
+DESIGN_FIELDS = [
+    "tagline", "ctas", "palettes", "header_font", "body_font",
+    "logo_url", "logo_background_color", "logo_width",
+]
+FIELDS = VOICE_FIELDS + DESIGN_FIELDS
 
 def find_business(node):
     """Recursively find a dict that looks like a Marky business (has an id and
     at least one voice field). MCP responses wrap payloads in content blocks
     whose text is itself JSON, so parse string leaves that look like JSON."""
     if isinstance(node, dict):
-        if node.get("id") and any(node.get(f) for f in FIELDS):
+        if node.get("id") and any(node.get(f) for f in VOICE_FIELDS + ["palettes", "logo_url"]):
             return node
         for value in node.values():
             found = find_business(value)
@@ -73,7 +79,7 @@ if not business:
 
 state_dir = os.environ.get("MARKY_STATE_DIR") or os.path.expanduser("~/.marky")
 os.makedirs(state_dir, exist_ok=True)
-path = os.path.join(state_dir, "brand-voice.md")
+path = os.path.join(state_dir, "brand-cache.md")
 
 # On a partial update, keep previously cached fields the response didn't carry —
 # but only when the cache is for the same business.
@@ -92,10 +98,15 @@ except OSError:
 now = datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
 body_lines = []
 for field in FIELDS:
-    value = business.get(field) or previous.get(field)
-    if value:
-        # Flatten so each field stays a single "key: value" line.
-        body_lines.append(f"{field}: {' '.join(str(value).split())}")
+    value = business.get(field)
+    if value is None or value == "" or value == []:
+        value = previous.get(field)
+    if value in (None, "", []):
+        continue
+    if not isinstance(value, str):
+        value = json.dumps(value, separators=(",", ":"))
+    # Flatten so each field stays a single "key: value" line.
+    body_lines.append(f"{field}: {' '.join(value.split())}")
 
 if not body_lines:
     sys.exit(0)
