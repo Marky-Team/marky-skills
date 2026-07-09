@@ -3,7 +3,17 @@
 All notable changes to this collection are documented here. The format is based
 on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
-## [Unreleased]
+## [0.2.1] - 2026-07-08
+
+### Added
+
+- **The plugin now keeps you posted about itself.** A new SessionStart hook
+  (`hooks/update-check.sh`) notices when the installed version changed and opens the
+  next session with a short "here's what's new" summary read from this changelog. If a
+  newer version exists on main and your marketplace isn't set to auto-update, it offers
+  the update once (snoozable, or stop-checking). State lives in `~/.marky/` so it
+  survives version-to-version install paths. Silent on fresh installs, network failure,
+  and when nothing changed.
 
 ### Changed
 
