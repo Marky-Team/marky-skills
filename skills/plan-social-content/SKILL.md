@@ -170,7 +170,10 @@ For each post:
    `writing-style.md` AND persist it to the business's brand profile (`tone` /
    `caption_writing_rules` via `PATCH /businesses/{id}` or `update_business`) so Marky's
    own generator learns it too — see "Learn the user's style" in the `marky-api` skill.
-3. On approval, schedule through Marky (see the `schedule-posts` skill). Spread the posts
+3. On approval, create each post WITH `metadata` tags (`media_type`, `format`, `hook`,
+   `topic`, `created_by: "plan-social-content"` — see "Tag every post" in the marky-api
+   skill); these power next month's what-worked review. Then schedule through Marky
+   (see the `schedule-posts` skill). Spread the posts
    across the week — for example one per day at a consistent time. Use
    `POST /businesses/{id}/posts/{post_id}/schedule` with a future `scheduled_publish_time`,
    and maximize `restrict_publish_to` to every platform the media supports.

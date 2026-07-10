@@ -142,3 +142,10 @@ plan-social-content.
 **Marky wants your feedback.** If anything here breaks or is confusing, send it
 with one REST call — see the "Marky wants your feedback" section in the
 marky-api skill.
+
+## Tag the post
+
+Set `metadata` on the post when you create it — `{"media_type": "diagram", "created_by": "create-post-diagram", "hook": ..., "topic": ...}` — per "Tag every post" in the
+marky-api skill. This is what lets future performance reviews compare this post's
+engagement against other media types.
+

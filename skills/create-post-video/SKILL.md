@@ -91,6 +91,12 @@ duration or resolution and re-render rather than compressing into artifacts.
    target every connected platform whose integration `status` is `valid`.
 5. After the scheduled time, confirm `publish_results` shows `success` per platform.
 
+## Tag the post
+
+Set `metadata` on the post when you create it — `{"media_type": "animated-video" (or "talking-head" for captured footage), "created_by": "create-post-video", "hook": ..., "topic": ...}` — per "Tag every post" in the
+marky-api skill. This is what lets future performance reviews compare this post's
+engagement against other media types.
+
 ## Notes
 
 - Rendering can take a few minutes for longer pieces — tell the user before starting.

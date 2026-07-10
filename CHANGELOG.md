@@ -38,6 +38,17 @@ on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
   asks for your API key, saves it in the right place for that client, and verifies with
   a live call. README leads with the install prompt.
 
+## [0.6.0] - 2026-07-10
+
+### Added
+
+- **Post metadata + the tagging convention.** Marky's API now supports `metadata` on
+  posts (up to 50 string key/value pairs, yours, never interpreted by Marky). The
+  marky-api skill documents it plus a shared tagging vocabulary (`media_type`,
+  `format`, `hook`, `topic`, `created_by`); every creation skill now tags the posts it
+  makes, and `review-performance` groups engagement by tag — so "diagrams out-engage
+  photos 2:1" becomes a queryable fact instead of a hunch.
+
 ## [0.5.1] - 2026-07-10
 
 ### Changed
