@@ -3,6 +3,15 @@
 All notable changes to this collection are documented here. The format is based
 on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
+## [0.9.1] - 2026-07-10
+
+### Added
+
+- Docs for the new top-level `link` field on posts (live in the API): clickable on
+  Facebook (link attachment), Google Business (CTA button), and Pinterest (pin
+  destination); other platforms ignore it. Set it whenever a post has a destination —
+  clickable beats copy-paste. Per-platform links stay in `platform_overrides`.
+
 ## [0.9.0] - 2026-07-10
 
 ### Added

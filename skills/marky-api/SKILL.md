@@ -299,7 +299,9 @@ The calls you will make most, all relative to the base URL and nested under
 `/businesses/{business_id}`:
 
 - **Posts** — `POST /posts` (create: `caption` required, plus `restrict_publish_to`,
-  `media_urls`, `status`, and `metadata` — see "Tag every post" below),
+  `media_urls`, `status`, `link` (clickable on Facebook / Google Business /
+  Pinterest — set it whenever the post has a destination), and `metadata` — see
+  "Tag every post" below),
   `GET /posts?status=NEW` (list, filter by status),
   `GET|PATCH|DELETE /posts/{post_id}` (one post — GET includes `publish_results`),
   `POST /posts/{post_id}/schedule` (`scheduled_publish_time`, ISO 8601, future),
