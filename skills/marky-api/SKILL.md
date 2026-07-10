@@ -274,10 +274,12 @@ source of truth. If you need an operation that is not exposed as a tool, call it
 | `list_categories` | List content categories. |
 | `list_business_integrations` | List connected social accounts (read `platform` + `status`). |
 | `list_google_reviews` | Read your Google Business reviews. |
+| `upload_media_base64` | Upload an image or video as base64 (data URI, or raw base64 + `content_type`; JPEG/PNG/WebP/GIF/MP4/MOV, max 50 MB decoded). Returns the media asset — use its URL in `media_urls` or `logo_url`. |
 | `submit_feedback` | Send a bug report, feature request, or general feedback to the Marky team. |
 
 **REST-only (not MCP tools)** — reach these over REST when you need them: generating draft
-posts (`POST /posts/generate` + polling the job), media upload,
+posts (`POST /posts/generate` + polling the job), multipart media upload (same 50 MB cap
+as the base64 tool, but no base64 inflation),
 designs and templates, library search, the queue listing, per-item topic / category /
 library / file / folder GET-DELETE-UPDATE, the secondary stats endpoints
 (`get_integration_stats`, `list_integration_posts`, `get_external_post_stats`), webhooks,
