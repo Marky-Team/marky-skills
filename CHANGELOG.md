@@ -3,6 +3,14 @@
 All notable changes to this collection are documented here. The format is based
 on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
+## [0.4.2] - 2026-07-09
+
+### Fixed
+
+- **Board images click through to full size.** Cards crop media to a 4:5 tile, which
+  hid the edges of wide diagrams and 16:9 frames — images now link to the original
+  (zoom-in cursor, new tab), so visuals can actually be judged before approving.
+
 ## [0.4.1] - 2026-07-09
 
 ### Added
