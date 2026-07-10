@@ -117,6 +117,10 @@ curl -X POST "https://api.mymarky.ai/api/businesses/BIZ_ID/media" \
   - `media_urls` — image/video URLs to attach (use `original_url` from an upload)
   - `status` — `NEW` (default draft) or `SCHEDULED`
   - `scheduled_publish_time` — ISO 8601 time, required if `status` is `SCHEDULED`
+  - `link` — clickable destination URL, for the platforms that support link posts:
+    the Facebook link attachment, the Google Business CTA button, and the Pinterest
+    pin destination. Other platforms ignore it — put the link in the caption there.
+    Must be http(s). Per-platform links go in `platform_overrides` instead.
   - `metadata` — up to 50 string key/value pairs, YOUR analytics dimensions (see
     "Tag every post" in the main SKILL.md). Returned verbatim on every read; Marky never
     interprets it. Limits: key <=40 chars, value <=500 chars.
@@ -124,7 +128,7 @@ curl -X POST "https://api.mymarky.ai/api/businesses/BIZ_ID/media" \
 - `GET /businesses/{business_id}/posts/{post_id}` — one post, including `publish_results`
   (per-platform outcome) and `scheduled_publish_time`.
 - `PATCH /businesses/{business_id}/posts/{post_id}` — update a post (e.g. change
-  `restrict_publish_to`, `caption`, `media_urls`, or `metadata`).
+  `restrict_publish_to`, `caption`, `media_urls`, `link`, or `metadata`).
 - `DELETE /businesses/{business_id}/posts/{post_id}` — delete a post.
 - `POST /businesses/{business_id}/posts/{post_id}/schedule` — schedule a post.
   - `scheduled_publish_time` (required) — ISO 8601 time, must be in the future
