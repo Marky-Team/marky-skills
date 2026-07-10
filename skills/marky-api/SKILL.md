@@ -257,10 +257,10 @@ source of truth. If you need an operation that is not exposed as a tool, tell Ma
 | :--- | :--- |
 | `list_businesses` | List your workspaces. Grab the `id` you want as `business_id`. |
 | `create_business` | Create a new workspace. |
-| `update_business` | Set the brand profile (tone, palettes, fonts, logo). |
-| `get_business` | Read one business's full brand profile by id. |
+| `update_business` | Set the brand profile (tone, palettes, fonts, logo) and merge-patch `platform_writing_instructions`. |
+| `get_business` | Read one business's full brand profile by id, incl. `platform_writing_instructions`. |
 | `list_posts` | List a business's posts (filter by status). |
-| `create_post` | Create one post yourself (caption + platforms + media). |
+| `create_post` | Create one post yourself (caption + platforms + media + per-platform `platform_overrides` — see `references/platform-rules.md`). |
 | `update_post` | Edit a post (caption, `restrict_publish_to`, media). |
 | `get_post` | Read one post by id, including its `publish_results`. |
 | `schedule_post` | Schedule a post for a future time. |

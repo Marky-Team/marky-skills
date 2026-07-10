@@ -3,6 +3,19 @@
 All notable changes to this collection are documented here. The format is based
 on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
+## [0.9.0] - 2026-07-10
+
+### Added
+
+- **Per-platform tailoring is now the default.** Marky's API (shipped today) added
+  `platform_overrides` to `create_post`/`update_post` — per-platform caption, media,
+  title, link, and first_comment on ONE post — and `platform_writing_instructions`
+  on the business (read on `get_business`; MERGE-patched via `update_business`, so
+  `{"linkedIn": "..."}` touches only that key and null resets it).
+  `schedule-posts` and `plan-social-content` now set overrides on every
+  multi-platform post, and `references/platform-rules.md` documents the full flow:
+  user instructions first, style baseline second, hard limits always.
+
 ## [0.8.0] - 2026-07-10
 
 ### Added
