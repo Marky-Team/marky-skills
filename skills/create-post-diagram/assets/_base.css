@@ -36,5 +36,9 @@ h1 { font-size: 64px; font-weight: 800; line-height: 1.12; letter-spacing: -1px;
   display: flex; justify-content: space-between; align-items: baseline;
   border-top: 2px solid var(--line); padding-top: 28px;
 }
+.logo { height: 48px; max-width: 260px; object-fit: contain; display: block; }
+/* If logo_background_color is set (and not transparent), wrap the img:
+   .logo-chip { background: <logo_background_color>; padding: 8px 14px; border-radius: 10px; } */
+/* Fallback ONLY when the business has no logo_url: */
 .wordmark { font-size: 34px; font-weight: 800; color: var(--accent); letter-spacing: -0.5px; }
 .foot-note { font-size: 26px; color: var(--ink-2); font-weight: 600; }

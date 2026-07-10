@@ -3,6 +3,16 @@
 All notable changes to this collection are documented here. The format is based
 on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
+## [0.3.2] - 2026-07-09
+
+### Changed
+
+- **`create-post-diagram` footers now show the actual logo.** When the business has a
+  `logo_url`, the diagram footer renders the logo image (~48px tall, `object-fit:
+  contain`, on `logo_background_color` when set) instead of a text wordmark. The
+  wordmark (business name in the accent color) is now only the fallback for businesses
+  with no logo. Base CSS + example updated to match.
+
 ## [0.3.1] - 2026-07-09
 
 ### Fixed

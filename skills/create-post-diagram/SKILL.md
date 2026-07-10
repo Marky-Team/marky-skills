@@ -49,8 +49,12 @@ Read these fields:
     (CSS `color-mix(in srgb, ACCENT 8%, white)` etc.)
 - `header_font` / `body_font` — use if set; otherwise the system stack
   (`-apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif`).
-- `name` — the footer wordmark. (`logo_url` exists too, but a text wordmark in
-  the accent color is cleaner at this size.)
+- `logo_url` — the footer mark. Render the actual logo (`<img>` capped at ~48px
+  tall, `object-fit: contain`); if `logo_background_color` is set and isn't
+  transparent, put it behind the image with a little padding and a small
+  radius so the logo sits on the background it was designed for. Only when
+  `logo_url` is empty, fall back to a text wordmark (`name` in the accent
+  color).
 
 ## Stage 2 — Pick the archetype
 
@@ -74,8 +78,8 @@ the brand tokens at the top). Canvas rules:
 - `body` is exactly **1080x1350** (4:5 portrait — the strongest feed crop),
   `overflow: hidden`, generous padding (72px).
 - Structure: **kicker** (small caps, accent) → **headline** (60-64px, weight
-  800) → the diagram in a centered flex `stage` → **footer** (wordmark, top
-  border).
+  800) → the diagram in a centered flex `stage` → **footer** (logo — or wordmark
+  fallback — with a top border).
 - Type floor: nothing under 25px — phones shrink this image to ~400px wide.
 
 Design rules (non-negotiable):
