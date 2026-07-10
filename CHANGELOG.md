@@ -5,6 +5,20 @@ on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ## [Unreleased]
 
+### Added
+
+- **`/marky-status` now includes a performance snapshot.** A fifth gather step pulls
+  engagement for the ~5 most recent posts and reports the best/worst performer with a
+  one-line why, plus unanswered comments. Deep analysis (topics, formats, follower
+  trends) still routes to `review-performance`.
+- **`performance-learnings.md` — audience-measured taste memory.** New "Performance
+  learnings" section in `marky-api`: a per-business markdown file of dated, data-backed
+  lessons ("question-ending posts pull 3-4x comments"), stored in the Marky library or
+  `~/.marky/fs/` per the `file_system` setting. `/marky-status` and `review-performance`
+  offer to append findings (user approves the exact lines); `plan-social-content` reads
+  it before drafting. Complements the feedback log: that file holds what the USER chose,
+  this one holds what the AUDIENCE rewarded.
+
 ### Fixed
 
 - **The connect/reconnect-socials page is now in the marky-api link table:**
