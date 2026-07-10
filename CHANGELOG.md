@@ -5,6 +5,11 @@ on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ## [Unreleased]
 
+### Changed
+
+- README install section slimmed to the agent pointer + one-prompt install; the
+  per-client manual steps live in INSTALL_FOR_AGENTS.md (readable by humans too).
+
 ### Added
 
 - **One-prompt agent install.** New `INSTALL_FOR_AGENTS.md`: paste a single prompt into

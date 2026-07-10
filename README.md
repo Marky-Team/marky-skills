@@ -29,88 +29,32 @@ that lets an agent use it well.
 
 ## Install
 
-### The one-prompt way (any agent)
+> **Are you an agent?** Read [INSTALL_FOR_AGENTS.md](INSTALL_FOR_AGENTS.md) and follow
+> it. It covers every client: what to install, where the API key goes, and how to verify.
 
-Copy this into your AI agent — it detects your client, installs the skills, asks you for
-your API key, and saves everything in the right place:
+**Are you a human?** Copy this into your AI agent and it does the whole install for you —
+detects your client, installs the skills, asks for your API key, saves everything in the
+right place:
 
 ```
 Read https://raw.githubusercontent.com/Marky-Team/marky-skills/main/INSTALL_FOR_AGENTS.md and follow it. Ask me for any API keys you need.
 ```
 
 Works with Claude Code, Cowork, Codex, Cursor, Windsurf, and any agent that supports
-Agent Skills. Prefer to do it by hand? The per-client steps are below.
+[Agent Skills](https://agentskills.io). Manual per-client steps live in
+[INSTALL_FOR_AGENTS.md](INSTALL_FOR_AGENTS.md) too — they read fine for humans.
 
-Pick the path for your client. **Claude Code and Cowork users: install the plugin** — it
-is the preferred path.
+Two notes worth knowing up front:
 
-### Claude Code → install as a plugin (preferred)
+- **Updates:** after any update, your next session opens with a short what's-new summary.
+  On Claude Code, auto-update is off by default for third-party marketplaces — enable it
+  via `/plugin` → Marketplaces → `marky-skills` → **Enable auto-update**, or update
+  manually with `/plugin marketplace update marky-skills`.
+- **Then describe the job.** Once installed, just say what you want done:
 
-Add the marketplace, then install the plugin:
-
-```
-/plugin marketplace add Marky-Team/marky-skills
-/plugin install marky@marky-skills
-```
-
-Then run `/marky` (or just describe the job) to start. (Why the plugin beats a plain
-skills install, and where your preferences live, is covered in
-[How It Works](#how-it-works).)
-
-#### Staying up to date
-
-New versions don't install themselves unless you turn that on: Claude Code only
-auto-updates marketplaces with auto-update enabled, and it is **off by default** for
-third-party marketplaces like this one. Recommended: run `/plugin`, open the
-**Marketplaces** tab, select `marky-skills`, and toggle **Enable auto-update**. New
-versions then land at session start and the what's-new note is all you see. Prefer
-manual? Update any time with:
-
-```
-/plugin marketplace update marky-skills
-```
-
-### Cowork → install the plugin in the UI
-
-Cowork installs the same plugin without a command line:
-
-**Customize → Plugins → Add → Add marketplace → Add from a repository →**
-`Marky-Team/marky-skills`, then click **+** on the **Marky** plugin.
-
-One more step on Cowork: the plugin carries the skills but not the MCP connector — add
-that in the UI too (see step 2 of the [Quickstart](#quickstart-first-action-in-3-steps)).
-
-### Other clients (Codex, Cursor, …) → install the skills
-
-Anything that supports the [Agent Skills](https://agentskills.io) format installs the skills
-directly. Install **globally** (`-g`) so Marky is available in every session, not just one
-project:
-
-```bash
-npx skills add marky-team/marky-skills -g
-```
-
-The installer auto-detects your agent and drops the skills in the right place. `-g` installs
-them user-level (e.g. `~/.claude/skills/`), so you can drive Marky from any directory — which
-is what you want for "run my social from wherever I'm working." (Global is per-machine, so
-run it once on each computer you use.)
-
-Drop the `-g` to scope the skills to the current project instead — handy if you only want
-Marky inside one repo. Add `--skill <name>` (bare name, no leading `/`) to install just one.
-(All of this works in Claude Code too, but the plugin path above is preferred there because
-it carries the hook + command.)
-
-### Then describe the job
-
-Either way, once installed, just say what you want done:
-
-> Using `/plan-social-content`, plan and schedule a week of posts about our new
-> spring blend — mine my notes for material, draft in my voice, and show me
-> everything before scheduling.
-
-The skills teach agents the Marky workflow: authenticate once, find your
-businesses and connected accounts, generate on-brand drafts, schedule them, and
-confirm they published.
+  > Using `/plan-social-content`, plan and schedule a week of posts about our new
+  > spring blend — mine my notes for material, draft in my voice, and show me
+  > everything before scheduling.
 
 ## Skills
 
