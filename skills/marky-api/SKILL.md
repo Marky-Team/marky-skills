@@ -371,7 +371,7 @@ line up across posts:
 
 | Key | Values (extend as needed) |
 | :--- | :--- |
-| `media_type` | `text` \| `photo` \| `diagram` \| `carousel` \| `animated-video` \| `talking-head` \| `screen-demo` |
+| `media_type` | `text` \| `photo` \| `graphic` (designed brand card) \| `diagram` (flows/charts/steps) \| `carousel` \| `animated-video` \| `talking-head` \| `screen-demo` |
 | `format` | `data-take` \| `how-to` \| `hot-take` \| `product-demo` \| `customer-outcome` \| `build-in-public` |
 | `hook` | `number` \| `question` \| `bold-claim` \| `story-open` |
 | `topic` | freeform slug, e.g. `automate-with-ai`, `social-tips` |
