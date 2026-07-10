@@ -577,6 +577,36 @@ them and move on. Only persist feedback the user states as a general preference 
 feedback endpoint reports bugs/friction about Marky itself to the Marky team; it does not
 change how Marky writes for this business.
 
+### The feedback log — taste memory across sessions
+
+The brand profile holds *stated* preferences; the feedback log holds *revealed* ones —
+what the user actually approved, rejected, and picked on review boards
+(`scripts/review-board.py`). It lives at `~/.marky/feedback-log.jsonl`, one JSON object
+per line:
+
+```json
+{"date":"2026-07-09T12:00:00Z","business_id":"...","context":"weekly-posts",
+ "mode":"approve","feedback":{"decisions":{"post-1":"approved"},"comments":{},"overall":"..."},
+ "items":{"post-1":"Mon tip: ..."}}
+```
+
+Two duties, every creation skill:
+
+1. **Write after every board.** When you read a board's `feedback.json`, append a line
+   to the log — include `business_id`, a short `context` (`weekly-posts`,
+   `diagram-styles`, `video-variants`, ...), the feedback verbatim, and an `items` map
+   of id → one-line description so future sessions know what the ids referred to.
+2. **Read before you generate.** Before drafting a batch, picking a diagram archetype,
+   or styling variants, scan the last ~20 log entries for this `business_id` and lean
+   into what won: topics and formats that got approved, styles that got picked,
+   anything repeatedly rejected gets dropped. Comments are gold — they say *why*.
+
+**Escalate patterns to the brand profile.** The log is local to this machine. When the
+same preference shows up ~3+ times (always rejects emoji-heavy captions, always picks
+the layers diagram), it has earned a line in `caption_writing_rules` /
+`imagery_preferences` via `update_business` — confirm with the user, then it applies on
+every machine and in Marky's own generator.
+
 ### Integrations (connected social accounts)
 
 - `GET /businesses/{business_id}/integrations` — list the social accounts connected to a

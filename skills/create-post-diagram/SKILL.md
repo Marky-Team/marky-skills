@@ -128,7 +128,14 @@ by reusing the same base CSS.
 
 ## Approval gate
 
-Diagrams are brand-facing. Show the rendered PNG to the user and get their edits
+Diagrams are brand-facing. If you rendered multiple candidates, let the user pick on
+the review board (`${CLAUDE_PLUGIN_ROOT}/scripts/review-board.py items.json --mode pick`
+— run in background, parse `BOARD_URL:`, AskUserQuestion with the URL, then read
+`feedback.json` for `preferred`/`ratings`/`comments`). Append the result to
+`~/.marky/feedback-log.jsonl` with `context: "diagram-styles"`, and check that log
+BEFORE choosing an archetype — if the user keeps picking the same style, start there
+(see "The feedback log" in the marky-api skill). Otherwise show the rendered PNG
+to the user and get their edits
 or approval **before** the post schedules, same as captions in
 plan-social-content.
 

@@ -73,6 +73,9 @@ history yet, skip this and come back to it later.
 
 Design about 6 posts for the week.
 
+- **Learn from past boards first.** Read the last ~20 entries for this business in
+  `~/.marky/feedback-log.jsonl` (see "The feedback log" in the `marky-api` skill): lean
+  into approved topics/formats, drop anything repeatedly rejected, honor the comments.
 - **Anchor every post to something real** from Stage 1. A post that sounds like a human who
   was actually there beats a generic one every time.
 - **Keep variety** across topics and formats (a tip, a story, a result, a question, a
@@ -110,9 +113,29 @@ For each post:
 
 ### Stage 6 — Approve, then schedule (hard gate)
 
-1. Present the full batch to the user: each post's caption, its media, and which platforms
-   it targets.
-2. **Stop and get explicit approval.** Do not schedule anything until the user says go.
+1. Present the full batch to the user. **Preferred: the review board** (a local browser
+   page — much faster than approving a wall of chat text). It ships with the plugin at
+   `${CLAUDE_PLUGIN_ROOT}/scripts/review-board.py` (for a cloned repo: `scripts/` at the
+   repo root). Needs `python3`; if that's missing or the server fails, fall back to
+   presenting the batch in chat.
+
+   1. Write `items.json` to a temp dir: `{"title": "This week's posts", "items": [{"id",
+      "caption", "media_url", "meta": "Mon 9am - instagram, linkedIn"}, ...]}`.
+   2. Run `python3 .../review-board.py items.json` **in the background**, and parse the
+      `BOARD_URL: http://127.0.0.1:PORT/` line from its output.
+   3. Use AskUserQuestion with the board URL so the user can open it. The board IS the
+      chooser — AskUserQuestion is just the blocking wait; don't also ask per-post
+      questions in it.
+   4. When the user answers, read `feedback.json` next to `items.json`:
+      `decisions` (approved/rejected per post id), `comments` (per-post edits), and
+      `overall`. If there's no feedback file, treat their AskUserQuestion text as the
+      feedback.
+   5. **Persist it**: append the feedback to `~/.marky/feedback-log.jsonl` with
+      `context: "weekly-posts"` — see "The feedback log" in the `marky-api` skill. This
+      is how next week's batch starts smarter than this one.
+2. **Stop and get explicit approval.** Do not schedule anything until the user says go
+   (Submit on the board with at least one approved post counts). Rejected posts don't get
+   scheduled; apply per-post comments as edits and re-show anything that changed.
    Apply their edits. If an edit reveals a lasting voice preference, write it into
    `writing-style.md` AND persist it to the business's brand profile (`tone` /
    `caption_writing_rules` via `PATCH /businesses/{id}` or `update_business`) so Marky's
