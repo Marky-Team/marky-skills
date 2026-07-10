@@ -74,15 +74,27 @@ first person or third. Quote a line or two from the site as evidence. Also colle
 
 - **Tagline** — the hero headline or an explicit slogan, if there is one.
 - **CTAs** — the buttons and asks the site repeats ("Book a call", "Order online").
-- **Words they use / avoid** — recurring vocabulary worth keeping (goes into
-  `caption_writing_rules` only if clear and consistent).
+- **Verbatim phrases** — the exact wording the site repeats ("small-batch", "no
+  contracts, ever"). Capture these word-for-word, not paraphrased — paraphrase is
+  where a voice goes generic (goes into `caption_writing_rules`).
+- **Anti-patterns** — what the brand clearly does NOT do (no emojis anywhere, never
+  discounts, no exclamation marks). Negative rules prevent more off-brand output than
+  positive ones; write them into `caption_writing_rules` as explicit "Never ..." lines.
+  If the user is present, ask directly: "Anything you never want said or shown?"
 
 **Imagery style.** Look at the photos and graphics on the page and describe the pattern
 in one or two sentences ("bright natural light, real staff and customers, warm tones —
 no stock-looking shots"). This becomes `imagery_preferences`.
 
 If the site is thin (a one-page placeholder, a parked domain), say so and fall back to
-interviewing the user for the same ingredients instead of guessing.
+interviewing the user for the same ingredients instead of guessing. Offer two intake
+paths and let them pick: a brain dump (they talk, you extract) or one question at a
+time. Either way, keep their exact phrases — if they say "I hate the word synergy",
+that sentence goes in `caption_writing_rules` verbatim.
+
+Note: the brand profile keeps improving after this skill runs — when the user edits
+your captions, the style-critique protocol in the `marky-api` skill (brand-memory
+section) persists what the edits reveal. Build the kit here; let use refine it.
 
 ## Stage 3 — Show the kit and get approval
 

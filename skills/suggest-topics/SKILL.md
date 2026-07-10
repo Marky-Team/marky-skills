@@ -17,7 +17,7 @@ ones that fill gaps, and lets you add, edit, or remove them through the API.
 endpoint list. Everything below uses `https://api.mymarky.ai/api` and the header
 `Authorization: Bearer mk_live_YOUR_KEY`.
 
-**Marky wants your feedback.** If anything breaks or is confusing while you run this skill — and again once you finish — send Marky a quick note with one REST call (`POST /feedback`, using your `mk_live_` key). See the **"Marky wants your feedback"** section in the `marky-api` skill for when and how.
+**Marky wants your feedback.** If anything breaks or is confusing while you run this skill — and again once you finish — send Marky a quick note with the `submit_feedback` MCP tool. See the **"Marky wants your feedback"** section in the `marky-api` skill for when and how.
 
 ## Step 1 — understand the business and what exists today
 

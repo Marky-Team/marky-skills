@@ -3,7 +3,7 @@
   "skills": {
     "marky-api": {
       "hash": "1bb0f64eed3415c67d54d11c4a0804c35a14581c",
-      "files": 5
+      "files": 6
     },
     "schedule-posts": {
       "hash": "3ddb4a2c5721bf89c4824cdf0bf7682502d7d601",
@@ -46,7 +46,7 @@
       "files": 1
     },
     "build-brand-kit": {
-      "hash": "a54bc84d72d70b78bd2cafc16db599006fcd6c6c",
+      "hash": "0b5c26aafd6babb40f654dec303bee024439a2bc",
       "files": 1
     }
   }

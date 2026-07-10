@@ -64,7 +64,8 @@ it grounded and safe.
 ### Stage 2 — Learn what is working (optional, once you have history)
 
 If the business has posted through Marky for a few weeks, look at the engagement before
-planning. Pull per-post stats (`GET /businesses/{id}/posts/{post_id}/stats`) and account stats, and notice
+planning. Pull per-post stats (`get_post_analytics`) and account stats
+(`get_integration_stats`, `list_integration_posts`), and notice
 patterns: which topics, formats, and platforms get the most reach and engagement. Lean the
 next week toward what works, but keep some variety so you keep learning. If there is no
 history yet, skip this and come back to it later.
@@ -122,8 +123,9 @@ For each post:
 - **Write the caption** in the brand's voice. Pull the business's brand profile first
   (`GET /businesses/{id}` — `tone`, `caption_writing_rules`, `caption_suffix`; see
   "Write like the business" in the `marky-api` skill) and layer `writing-style.md` on top.
-- **Prepare media.** Use the photos, graphics, or video the user provides. Upload each via
-  `POST /businesses/{id}/media` and keep the returned `original_url`.
+- **Prepare media.** Reuse what the business already has before reaching for anything
+  generic — `search_library` finds their own photos and videos by keyword. Upload new
+  files with the `upload_media_base64` tool and keep the returned URL.
 - **Or design a diagram.** When a post announces, teaches, or compares something and no
   photo exists, a branded diagram image often beats stock. Use the `create-post-graphic` skill:
   it pulls the brand colors from the API, authors the diagram as HTML, renders a PNG, and
@@ -131,6 +133,33 @@ For each post:
 - **Or let Marky write it.** For posts where the user just has a topic, use
   `POST /businesses/{id}/posts/generate` (brand voice, colors, and logo come from the
   business automatically), poll the job, and review the drafts.
+
+#### Hooks — the first line earns everything else
+
+The first line decides whether anyone reads the rest. Draft 2-3 candidate hooks per
+post and pick the strongest. Named patterns that work, as a baseline palette:
+
+1. **Contrarian** — "Most {industry} advice gets this backwards."
+2. **Question** — a question the reader actually asks themselves.
+3. **Story open** — drop into the middle of a real moment ("Tuesday, 6am, the oven died.").
+4. **Stat** — one concrete number that surprises ("83% of our orders are regulars.").
+5. **List preview** — "3 things we changed that doubled weekend traffic."
+6. **Bold claim** — a strong statement you then earn in the body.
+7. **Empathy** — name the reader's exact frustration in their words.
+8. **Before/after** — the transformation in one line.
+9. **Confession** — "We almost discontinued our best seller."
+
+Anti-patterns to cut on sight: throat-clearing openers ("We wanted to share...",
+"We're excited to announce..."), starting with the business name, a hashtag as the
+first word, and generic-expert voice that could belong to any business in the
+industry.
+
+**Precedence:** these are a BASELINE. The user's brand profile
+(`caption_writing_rules`, `tone`), their feedback log, and `performance-learnings.md`
+always outrank this list — if their audience rewards plain announcements, or the user
+has said they hate question hooks, follow them, not this palette. Tag the choice in
+post `metadata` (`hook: question`) so `review-performance` can tell you which
+patterns actually win for THIS audience.
 
 ### Stage 6 — Approve, then schedule (hard gate)
 
@@ -192,6 +221,12 @@ When you schedule, target every platform the media supports rather than just one
 - **Video** -> all connected platforms.
 - **Image** -> all except TikTok.
 - **Text-only** -> Facebook and LinkedIn (the others require media).
+
+One caption rarely fits every platform. Read `references/platform-rules.md` (in the
+`marky-api` skill) for the hard limits and per-platform style baseline, and tailor —
+X gets a compressed one-idea version, LinkedIn moves hashtags to the first comment,
+Pinterest gets a keyword-rich title. The user's own platform preferences always win
+over the baseline.
 
 ## Cadence
 

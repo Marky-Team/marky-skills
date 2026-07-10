@@ -47,7 +47,10 @@ variations, or leave it off).
 Decide how many variations (5 is a good default) and what should change. Keep the core
 message, vary the rest:
 
-- **New angle.** Reframe the same idea: question hook, bold claim, story, stat, how-to.
+- **New angle.** Reframe the same idea with a different hook pattern — question, bold
+  claim, story open, stat, contrarian, before/after, confession (the full named palette
+  with anti-patterns lives in the `plan-social-content` skill's "Hooks" section). The
+  user's brand rules and measured learnings outrank the palette.
 - **New wording.** Do not just shuffle words. Each variation should read as its own post.
 - **Optional CTA link.** If the user wants every variation to drive to one link, append it
   to each caption.
