@@ -3,6 +3,34 @@
 All notable changes to this collection are documented here. The format is based
 on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
+## [0.8.0] - 2026-07-10
+
+### Added
+
+- **`references/platform-rules.md`** in `marky-api` — the per-platform hard limits
+  (caption/hashtag/carousel/video caps that cause real publish rejections, straight
+  from Marky's publishing layer) plus the default style baseline per platform.
+  `plan-social-content` tailors multi-platform batches against it. The user's own
+  preferences always outrank the baseline.
+- **Named hook-pattern palette** in `plan-social-content` (contrarian, question,
+  story open, stat, list preview, bold claim, empathy, before/after, confession)
+  with anti-patterns (throat-clearing openers, hashtag-first, generic-expert voice).
+  Baseline only — brand rules, the feedback log, and performance learnings outrank
+  it; hook choice is tagged in post `metadata` so `review-performance` can score
+  patterns per audience.
+- **Four-tier action plan** ends every `review-performance` run: quick wins /
+  strategic shifts / experiments / stop-doing — every rec cites specific posts,
+  benchmarks against the business's OWN averages, and flags thin samples.
+- **`build-brand-kit` captures verbatim phrases and anti-patterns** — exact wording
+  from the site ("no contracts, ever") and explicit "Never ..." rules, plus a
+  brain-dump vs. question-at-a-time interview fallback for thin sites.
+- **Five new MCP tools** (Marky server-side): `search_library`, `list_business_queue`,
+  `get_integration_stats`, `list_integration_posts`, `get_external_post_stats`. The
+  `review-performance` and `manage-library` skills now drive them as tools instead of
+  curl — MCP-only clients (Cowork) can finally run a full performance review.
+  Marky-side post generation and the design flow stay off the MCP deliberately: the
+  agent writes its own posts.
+
 ## [0.7.2] - 2026-07-10
 
 ### Changed

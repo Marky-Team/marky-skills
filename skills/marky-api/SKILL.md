@@ -273,18 +273,25 @@ source of truth. If you need an operation that is not exposed as a tool, tell Ma
 | `create_topic` | Add a content topic. |
 | `list_categories` | List content categories. |
 | `list_business_integrations` | List connected social accounts (read `platform` + `status`). |
+| `get_integration_stats` | Account-level audience stats (followers, growth) for one connected account. |
+| `list_integration_posts` | Posts published on one platform with engagement — includes posts made outside Marky. |
+| `get_external_post_stats` | Engagement for one post that was published outside Marky. |
+| `search_library` | Keyword-search the business's media library (reuse the user's own photos/videos). |
+| `list_business_queue` | Which posts sit in which upcoming schedule slot (the lineup, not just the recurring slots). |
 | `list_google_reviews` | Read your Google Business reviews. |
 | `upload_media_base64` | Upload an image or video as base64 (data URI, or raw base64 + `content_type`; JPEG/PNG/WebP/GIF/MP4/MOV, max 50 MB decoded). Returns the media asset — use its URL in `media_urls` or `logo_url`. |
 | `submit_feedback` | Send a bug report, feature request, or general feedback to the Marky team. |
 
-**Not yet MCP tools (REST stopgap)** — these operations are gaps Marky is closing, not a
-permanent second surface. If one matters to your workflow, say so via `submit_feedback`;
-meanwhile reach them over REST: generating draft posts (`POST /posts/generate` + polling
-the job), multipart media upload (same 50 MB cap as the base64 tool, but no base64
-inflation), designs and templates, library search, the queue listing, per-item topic /
-category / library / file / folder GET-DELETE-UPDATE, the secondary stats endpoints
-(`get_integration_stats`, `list_integration_posts`, `get_external_post_stats`), webhooks,
-API-key create/list/revoke, `delete_business`, and `delete_post`.
+**Deliberately NOT tools** — these stay off the MCP on purpose, so do not wait for them:
+Marky-side post generation (`POST /posts/generate` + its job poller — the agent writes
+its own posts; generation is a product feature, not an agent tool), the design/template
+flow, and the destructive/config ops (API-key create/list/revoke, webhooks,
+`delete_business`, `delete_post`).
+
+**Not yet MCP tools (REST stopgap)** — remaining gaps Marky is closing. If one matters
+to your workflow, say so via `submit_feedback`; meanwhile reach them over REST:
+multipart media upload (same 50 MB cap as the base64 tool, but no base64 inflation) and
+per-item topic / category / library / file / folder GET-DELETE-UPDATE.
 
 ## REST endpoints
 

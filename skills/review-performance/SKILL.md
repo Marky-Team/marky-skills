@@ -18,7 +18,7 @@ specific, data-backed recommendations.
 endpoint list. Everything below uses `https://api.mymarky.ai/api` and the header
 `Authorization: Bearer mk_live_YOUR_KEY`.
 
-**Marky wants your feedback.** If anything breaks or is confusing while you run this skill — and again once you finish — send Marky a quick note with one REST call (`POST /feedback`, using your `mk_live_` key). See the **"Marky wants your feedback"** section in the `marky-api` skill for when and how.
+**Marky wants your feedback.** If anything breaks or is confusing while you run this skill — and again once you finish — send Marky a quick note with the `submit_feedback` MCP tool. See the **"Marky wants your feedback"** section in the `marky-api` skill for when and how.
 
 Everything here uses only read endpoints, so it is safe to run anytime.
 
@@ -34,15 +34,9 @@ per bucket is directional only).
 
 ## Step 1 — find your business and connected accounts
 
-```bash
-# Your workspaces. Copy the id you want as BIZ_ID.
-curl https://api.mymarky.ai/api/businesses \
-  -H "Authorization: Bearer mk_live_YOUR_KEY"
-
-# The social accounts connected to that workspace. Copy each integration id.
-curl https://api.mymarky.ai/api/businesses/BIZ_ID/integrations \
-  -H "Authorization: Bearer mk_live_YOUR_KEY"
-```
+Two MCP tools: `list_businesses` (copy the id you want as `business_id`), then
+`list_business_integrations` on that business (copy each integration `id`, and note
+its `platform` and `status`).
 
 If no accounts are connected, stop and tell the user to connect a social account in the
 [dashboard](https://app.mymarky.ai) first. Stats only exist for connected platforms.
@@ -52,42 +46,27 @@ If no accounts are connected, stop and tell the user to connect a social account
 Pull three things: account-level stats, the posts published on each platform (with their
 engagement), and per-post detail when you want to go deeper.
 
-```bash
-# Account-level audience stats (followers, growth) for one connected account.
-curl https://api.mymarky.ai/api/businesses/BIZ_ID/integrations/INTEGRATION_ID/stats \
-  -H "Authorization: Bearer mk_live_YOUR_KEY"
-
-# Posts published on that platform, each with its engagement numbers.
-curl https://api.mymarky.ai/api/businesses/BIZ_ID/integrations/INTEGRATION_ID/posts \
-  -H "Authorization: Bearer mk_live_YOUR_KEY"
-
-# Engagement for one specific Marky post (across the platforms it went to).
-curl https://api.mymarky.ai/api/businesses/BIZ_ID/posts/POST_ID/stats \
-  -H "Authorization: Bearer mk_live_YOUR_KEY"
-```
+- `get_integration_stats(business_id, integration_id)` — account-level audience stats
+  (followers, growth) for one connected account.
+- `list_integration_posts(business_id, integration_id)` — posts published on that
+  platform, each with its engagement numbers. This includes posts published OUTSIDE
+  Marky, so it is the true account picture; `get_external_post_stats` drills into one
+  of those external posts.
+- `get_post_analytics(business_id, post_id)` — engagement for one specific Marky post
+  (across the platforms it went to).
 
 Repeat the account/posts calls for each connected integration so you can compare platforms.
 
 To tie performance back to what you posted about, also list your posts and topics:
 
-```bash
-# Your post history (filter by status if you like).
-curl "https://api.mymarky.ai/api/businesses/BIZ_ID/posts" \
-  -H "Authorization: Bearer mk_live_YOUR_KEY"
-
-# Your content topics, so you can group results by topic.
-curl "https://api.mymarky.ai/api/businesses/BIZ_ID/topics" \
-  -H "Authorization: Bearer mk_live_YOUR_KEY"
-```
+`list_posts(business_id)` for your post history (filter by status if you like), and
+`list_topics(business_id)` so you can group results by topic.
 
 If the business has a Google Business profile connected, you can also pull customer
 reviews to round out the picture (reviewer, star rating, text, and any reply):
 
-```bash
-# Google Business reviews, newest first. order_by also takes 'rating' or 'rating desc'.
-curl "https://api.mymarky.ai/api/businesses/BIZ_ID/reviews?order_by=rating%20desc" \
-  -H "Authorization: Bearer mk_live_YOUR_KEY"
-```
+`list_google_reviews(business_id, order_by="rating desc")` — newest first by default;
+`order_by` also takes `rating`.
 
 ## Step 3 — find the patterns
 
@@ -102,11 +81,21 @@ Compare across a few dimensions and write down what stands out:
 
 ## Step 4 — recommend and (optionally) act
 
-Present a short, specific plan. Lead with the result, not the metric. For example:
+Present a four-tier action plan. Lead with the result, not the metric, and cite the
+specific posts behind every recommendation — a rec with no post behind it is a guess:
 
-- "Your how-to posts get ~3x the engagement of your promo posts. Post more how-tos."
-- "Video outperforms image on TikTok but image wins on LinkedIn. Match format to platform."
-- "Topic 'client wins' is your best performer and you only posted it twice. Do more."
+- **Quick wins** — do this week, low effort ("Your how-to posts get ~3x the engagement
+  of your promo posts — post two more how-tos").
+- **Strategic shifts** — change the mix ("Video outperforms image on TikTok but image
+  wins on LinkedIn. Match format to platform").
+- **Experiments** — worth testing, not yet proven ("Topic 'client wins' is your best
+  performer on 2 posts — small sample; run 3 more before concluding").
+- **Stop doing** — the negative space most reviews skip ("Hashtag-wall captions are your
+  bottom quartile on LinkedIn — drop them").
+
+Benchmark against the business's OWN averages, not platform folklore — "good" is
+whatever beats their last 90 days. Flag every thin sample (<5 posts per bucket is
+directional only).
 
 Then offer to act on it with the writing skills:
 
