@@ -21,9 +21,9 @@ empty brand profile is the number-one reason generated posts feel off. Ten minut
 pays back on every post afterward.
 
 **Read the `marky-api` skill first** for your `mk_live_` key and the MCP connection.
-This skill drives Marky through the **MCP tools** (`list_businesses`, `get_business`,
-`update_business`, `upload_media_base64`); it only falls back to REST when a step has no
-tool (check the live tool list your client shows — it is the source of truth).
+This skill drives Marky entirely through the **MCP tools** (`list_businesses`,
+`get_business`, `update_business`, `upload_media_base64`) — every step below has a tool,
+so no REST calls are needed.
 
 **The approval gate is mandatory.** The brand profile steers every future caption and
 design, and it may already contain values a teammate set on purpose. Never write to it
@@ -97,11 +97,9 @@ the above" is still required.
 
 ## Stage 4 — Write it to Marky
 
-1. **Upload the logo** with the `upload_media_base64` MCP tool (base64-encode the file;
-   if your client's tool list lacks it, REST `POST /businesses/{id}/media` — multipart,
-   field `file` — does the same job). Use the returned `original_url` as `logo_url`.
-   Hot-linking the site's own image URL is a last resort — sites move and break the logo
-   silently.
+1. **Upload the logo** with the `upload_media_base64` MCP tool (pass a data URI, or raw
+   base64 plus `content_type`). Use the returned media URL as `logo_url`. Hot-linking
+   the site's own image URL is a last resort — sites move and break the logo silently.
 2. **One `update_business` call** with only the approved fields. Shape notes that bite:
    - `palettes` is a list of palette **objects**: 
      `[{"name": "Brand", "colors": ["#101418", "#FFFFFF", "#E11D48"]}]` — colors live at

@@ -3,6 +3,17 @@
 All notable changes to this collection are documented here. The format is based
 on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
+## [Unreleased]
+
+### Changed
+
+- **MCP-first everywhere.** The MCP is the surface agents use; REST is a stopgap for
+  operations with no tool yet — and hitting one is a signal to report via
+  `submit_feedback` so the tool gets added. `marky-api` reframed accordingly (intro,
+  tool-table section, and the feedback section now lead with the `submit_feedback`
+  tool), and every skill's feedback pointer now names the MCP tool instead of a REST
+  call. `build-brand-kit` needs no REST at all.
+
 ## [0.7.1] - 2026-07-10
 
 ### Changed

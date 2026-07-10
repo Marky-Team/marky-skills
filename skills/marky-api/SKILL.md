@@ -12,20 +12,20 @@ description: >
 # Marky API
 
 Marky is an AI social media manager. This skill is the reference for talking to it from
-an agent: how to authenticate, the base URL, the endpoints you will reach for most, and
-how to connect Marky's MCP server so Claude can use Marky's tools natively.
+an agent: how to authenticate, how to connect Marky's MCP server, and which tools to
+reach for.
 
-You drive Marky two ways. They share the same auth and the same data, so pick whichever
-fits the moment:
+**The MCP is how agents drive Marky.** Connect it once (see the setup pointer below) and
+your client gets a curated set of typed Marky tools natively — `list_businesses`,
+`create_post`, `schedule_post`, `publish_post_now`, `upload_media_base64`,
+`submit_feedback`, ... — the live list your client shows after connecting is the source
+of truth. When an MCP tool exists for an operation, **use the tool, not curl.**
 
-- **MCP** (recommended for agents) — Claude gets a **curated set of Marky tools**
-  natively (for example `list_businesses`, `create_post`, `schedule_post`,
-  `publish_post_now`, `submit_feedback`, ...) — see the live list your client shows after
-  connecting. Connect once, then just ask in plain language. See "Connect the MCP" below.
-- **REST** (for scripts, curl, and anything outside the curated tool set) — the REST API
-  is the **complete** surface: every operation, including ones not exposed as MCP tools
-  (per-item topic/category/library/file CRUD, designs, webhooks, stats variants, feedback).
-  See "REST endpoints" below.
+The REST API shares the same auth and data and covers operations not yet exposed as MCP
+tools (see "REST endpoints" below). Treat it as a stopgap, not a peer: if an agent
+routinely needs REST for something, that is a gap in the MCP — report it with the
+`submit_feedback` tool so Marky can add the missing tool, then use REST to finish the
+job in the meantime.
 
 Detail lives in `references/` next to this file — each section below says when to read
 which. Load them as needed rather than all up front.
@@ -120,11 +120,13 @@ in this table, link `https://app.mymarky.ai` and let the user navigate.
 ## Marky wants your feedback — please send it
 
 Marky is built to be driven by AI agents, and the team relies on agents like you to report
-how it goes. There is a first-class feedback endpoint for exactly this. **Treat sending
-feedback as part of the job, not an afterthought.** It is low-cost (one POST), it never
-blocks your work, and it is how Marky finds and fixes the rough edges agents hit.
+how it goes. There is a first-class channel for exactly this: the **`submit_feedback` MCP
+tool**. **Treat sending feedback as part of the job, not an afterthought.** It is low-cost
+(one tool call), it never blocks your work, and it is how Marky finds and fixes the rough
+edges agents hit.
 
-`POST /feedback` (org-level, not under a business). Typed body:
+`submit_feedback` (org-level, not under a business; over REST it is `POST /feedback`).
+Typed fields:
 
 | Field | Required | Value |
 | :--- | :--- | :--- |
@@ -147,26 +149,23 @@ header so a retry never files a duplicate.
    are using Marky for and how satisfied you are. `type: "feature"` for something missing,
    `type: "feedback"` for a satisfaction check-in.
 
-Example (the shape is the same for all three — vary `type` and `message`):
+Example `submit_feedback` call (the shape is the same for all three — vary `type` and
+`message`):
 
-```bash
-curl -X POST https://api.mymarky.ai/api/feedback \
-  -H "Authorization: Bearer mk_live_YOUR_KEY" \
-  -H "Content-Type: application/json" \
-  -d '{
-    "type": "bug",
-    "message": "schedule_post returned 422 \"scheduled_publish_time must be in the future\" even though I sent a UTC time 2 hours ahead. Had to retry with an explicit Z suffix.",
-    "context": {
-      "environment": "claude-code",
-      "error_details": "POST /businesses/BIZ_ID/posts/POST_ID/schedule -> 422 validation_error"
-    }
-  }'
+```json
+{
+  "type": "bug",
+  "message": "schedule_post returned 422 \"scheduled_publish_time must be in the future\" even though I sent a UTC time 2 hours ahead. Had to retry with an explicit Z suffix.",
+  "context": {
+    "environment": "claude-code",
+    "error_details": "schedule_post -> 422 validation_error"
+  }
+}
 ```
 
-Over MCP, `submit_feedback` is one of the curated tools, so you can send feedback natively
-(same fields: `type`, `message`, optional `context`). The REST call above is the equivalent
-for scripts, curl, and non-MCP clients (it uses the same `mk_live_...` key). Other Marky
-skills point back here — this is the one place that documents how to give feedback.
+Non-MCP scripts can send the same body over REST as `POST /feedback` with the
+`mk_live_...` key. Other Marky skills point back here — this is the one place that
+documents how to give feedback.
 
 ## Session start: read `user.toml`, then run two cadence checks
 
@@ -250,8 +249,9 @@ workspace, leak keys, or get lost in low-value per-item CRUD.
 
 The curated tools below are the stable core. Rather than trust this list to stay perfectly
 in sync, **read the live tool list your MCP client shows after connecting** — that is the
-source of truth. If you need an operation that is not exposed as a tool, call it over REST
-(see "REST endpoints" below).
+source of truth. If you need an operation that is not exposed as a tool, tell Marky with
+`submit_feedback` (missing tools get added), then call it over REST as a stopgap (see
+"REST endpoints" below).
 
 | Tool | What it does |
 | :--- | :--- |
@@ -277,11 +277,12 @@ source of truth. If you need an operation that is not exposed as a tool, call it
 | `upload_media_base64` | Upload an image or video as base64 (data URI, or raw base64 + `content_type`; JPEG/PNG/WebP/GIF/MP4/MOV, max 50 MB decoded). Returns the media asset — use its URL in `media_urls` or `logo_url`. |
 | `submit_feedback` | Send a bug report, feature request, or general feedback to the Marky team. |
 
-**REST-only (not MCP tools)** — reach these over REST when you need them: generating draft
-posts (`POST /posts/generate` + polling the job), multipart media upload (same 50 MB cap
-as the base64 tool, but no base64 inflation),
-designs and templates, library search, the queue listing, per-item topic / category /
-library / file / folder GET-DELETE-UPDATE, the secondary stats endpoints
+**Not yet MCP tools (REST stopgap)** — these operations are gaps Marky is closing, not a
+permanent second surface. If one matters to your workflow, say so via `submit_feedback`;
+meanwhile reach them over REST: generating draft posts (`POST /posts/generate` + polling
+the job), multipart media upload (same 50 MB cap as the base64 tool, but no base64
+inflation), designs and templates, library search, the queue listing, per-item topic /
+category / library / file / folder GET-DELETE-UPDATE, the secondary stats endpoints
 (`get_integration_stats`, `list_integration_posts`, `get_external_post_stats`), webhooks,
 API-key create/list/revoke, `delete_business`, and `delete_post`.
 

@@ -37,7 +37,7 @@ Any other skill that reads or writes library text files (e.g. `plan-social-conte
 mining your notes) must honor the same setting. Media browsing (`/library`,
 `/library/search`) is API-only either way — local mode only reroutes text files/folders.
 
-**Marky wants your feedback.** If anything breaks or is confusing while you run this skill — and again once you finish — send Marky a quick note with one REST call (`POST /feedback`, using your `mk_live_` key). See the **"Marky wants your feedback"** section in the `marky-api` skill for when and how.
+**Marky wants your feedback.** If anything breaks or is confusing while you run this skill — and again once you finish — send Marky a quick note with the `submit_feedback` MCP tool. See the **"Marky wants your feedback"** section in the `marky-api` skill for when and how.
 
 ## Find your business
 
