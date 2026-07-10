@@ -3,6 +3,15 @@
 All notable changes to this collection are documented here. The format is based
 on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
+## [0.7.1] - 2026-07-10
+
+### Changed
+
+- Tagging vocabulary: `media_type` gains `graphic` (a designed brand card) as distinct
+  from `diagram` (a true flow/chart/steps visual) — most announcement cards are
+  graphics, not diagrams, and conflating them would muddy the engagement cuts.
+  (Shipped in #53; version + changelog landed here after colliding with 0.7.0.)
+
 ## [0.7.0] - 2026-07-10
 
 ### Added
