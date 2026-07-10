@@ -164,6 +164,21 @@ how to connect Marky's MCP server).
    > "List my Marky businesses, generate 3 posts about our new spring blend, and
    > schedule one each morning this week."
 
+## Every way to make post media
+
+| Media | How | Skill |
+| :--- | :--- | :--- |
+| Branded diagrams | agent-authored HTML → PNG in your colors/fonts/logo | `create-post-diagram` |
+| Photos (camera) | capture studio — webcam, saved straight to the agent | `plan-social-content` Stage 4 |
+| Screenshots / screen recordings | capture studio — screen grab or full recording | `plan-social-content` Stage 4 |
+| Talking-head clips | capture studio — webcam + teleprompter, then captions/packaging via HyperFrames | `plan-social-content` + `create-post-video` |
+| Faceless composed video | HyperFrames renders from HTML, branded from your profile | `create-post-video` |
+| AI-generated images | Marky's own generator (`/posts/generate` designs media for the post) | `schedule-posts` / `plan-social-content` |
+
+Both local tools (review board + capture studio) follow the same pattern: a page opens in
+your browser, you click/record, and the results land right back with the agent — nothing
+to download and re-upload.
+
 ## What You Can Do
 
 - Plan and schedule a full week of on-brand content from your own notes
