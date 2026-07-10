@@ -692,11 +692,14 @@ curl -X POST "https://api.mymarky.ai/api/businesses/BIZ_ID/media" \
   - `media_urls` — image/video URLs to attach (use `original_url` from an upload)
   - `status` — `NEW` (default draft) or `SCHEDULED`
   - `scheduled_publish_time` — ISO 8601 time, required if `status` is `SCHEDULED`
+  - `metadata` — up to 50 string key/value pairs, YOUR analytics dimensions (see
+    "Tag every post" below). Returned verbatim on every read; Marky never interprets it.
+    Limits: key <=40 chars, value <=500 chars.
 - `GET /businesses/{business_id}/posts?status=NEW` — list posts (filter by status).
 - `GET /businesses/{business_id}/posts/{post_id}` — one post, including `publish_results`
   (per-platform outcome) and `scheduled_publish_time`.
 - `PATCH /businesses/{business_id}/posts/{post_id}` — update a post (e.g. change
-  `restrict_publish_to`, `caption`, or `media_urls`).
+  `restrict_publish_to`, `caption`, `media_urls`, or `metadata`).
 - `DELETE /businesses/{business_id}/posts/{post_id}` — delete a post.
 - `POST /businesses/{business_id}/posts/{post_id}/schedule` — schedule a post.
   - `scheduled_publish_time` (required) — ISO 8601 time, must be in the future
@@ -710,6 +713,24 @@ A created post:
 ```json
 { "id": "post-uuid", "business_id": "...", "caption": "...", "status": "NEW", "restrict_publish_to": ["instagram", "linkedIn"] }
 ```
+
+### Tag every post you create — `metadata`
+
+When YOU create a post, always set `metadata` with the dimensions that describe it —
+this is how future performance reviews learn what works instead of eyeballing. Use the
+shared vocabulary so cuts line up across posts:
+
+| Key | Values (extend as needed) |
+| :--- | :--- |
+| `media_type` | `text` \| `photo` \| `diagram` \| `carousel` \| `animated-video` \| `talking-head` \| `screen-demo` |
+| `format` | `data-take` \| `how-to` \| `hot-take` \| `product-demo` \| `customer-outcome` \| `build-in-public` |
+| `hook` | `number` \| `question` \| `bold-claim` \| `story-open` |
+| `topic` | freeform slug, e.g. `automate-with-ai`, `social-tips` |
+| `created_by` | the skill that made it, e.g. `create-post-video`, `plan-social-content` |
+
+Add any keys of your own — Marky stores them verbatim. When reviewing performance
+(`review-performance`), pull posts + stats and group by these keys: that's the whole
+point of tagging.
 
 ### Generate on-brand posts (let Marky write them)
 

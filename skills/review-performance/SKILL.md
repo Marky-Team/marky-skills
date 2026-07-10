@@ -22,6 +22,16 @@ endpoint list. Everything below uses `https://api.mymarky.ai/api` and the header
 
 Everything here uses only read endpoints, so it is safe to run anytime.
 
+
+## Cut by metadata tags
+
+Posts created by agents carry `metadata` (media_type / format / hook / topic — see
+"Tag every post" in the marky-api skill). When enough tagged posts have stats, group
+engagement by each key and report which values win — "diagrams out-engage photos 2:1",
+"question hooks beat bold claims". This is the highest-signal section of the review;
+lead with it when tags exist, and note when the sample is too small to trust (<5 posts
+per bucket is directional only).
+
 ## Step 1 — find your business and connected accounts
 
 ```bash
