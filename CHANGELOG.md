@@ -3,6 +3,26 @@
 All notable changes to this collection are documented here. The format is based
 on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
+## [0.4.0] - 2026-07-09
+
+### Added
+
+- **Review board** (`scripts/review-board.py`, stdlib-python3, zero deps). A local
+  browser page for reviewing agent-produced content, in the design-shotgun style: the
+  agent serves it in the background, hands you the URL in a blocking question, and reads
+  your choices back from `feedback.json` when you submit. Two modes: **approve**
+  (per-post approve/reject + comments — `plan-social-content` now uses it as the
+  preferred Stage 6 approval gate for a weekly/monthly batch) and **pick** (choose one
+  variant + star ratings — wired into `create-post-diagram` style choices and
+  `create-post-video` cuts). Local media files are served by the board itself; binds
+  127.0.0.1 only; falls back to chat review when python3 is unavailable.
+- **Feedback log — taste memory across sessions.** Every board result is appended to
+  `~/.marky/feedback-log.jsonl` (business, context, decisions, comments), and creation
+  skills read the recent entries BEFORE generating: lean into approved topics and
+  picked styles, drop what gets rejected. Preferences that recur ~3+ times escalate to
+  the brand profile (`caption_writing_rules` / `imagery_preferences`) with user
+  confirmation, so Marky's own generator learns them too.
+
 ## [0.3.2] - 2026-07-09
 
 ### Changed

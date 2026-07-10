@@ -45,6 +45,8 @@ const FIELD_ALLOWLIST = new Set([
   "mcpServers", "command", "args", "url", "headers", "type", "env", "transport",
   "Authorization", "MARKY_AUTH", "MARKY_API_KEY", "marky", "marky-api",
   "current_business_id", "current_business_name", "file_system", // user.toml [workspace]
+  "mode", "decisions", "comments", "overall", "context", "items", "feedback", // review-board feedback-log
+  "date", "preferred", "ratings",
 ]);
 
 // Operations the skills invoke as MCP tools (not just mention as REST). Check C

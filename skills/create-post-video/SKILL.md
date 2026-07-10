@@ -71,7 +71,13 @@ duration or resolution and re-render rather than compressing into artifacts.
 1. Write the caption in the brand voice (`tone`, `caption_writing_rules`,
    `caption_suffix` — see "Write like the business" in the marky-api skill).
 2. Create the post with the caption and the uploaded media.
-3. **Show the user the video and caption, and get explicit approval.** Never schedule or
+3. **Show the user the video and caption, and get explicit approval.** For multiple
+   cuts or variants, use the review board in pick mode
+   (`${CLAUDE_PLUGIN_ROOT}/scripts/review-board.py items.json --mode pick` with each
+   variant's local file path or URL as `media_url`; run in background, parse
+   `BOARD_URL:`, AskUserQuestion with the URL, read `feedback.json`). Append the result
+   to `~/.marky/feedback-log.jsonl` with `context: "video-variants"` and read it before
+   styling the next video — see "The feedback log" in the marky-api skill. Never schedule or
    publish a video without it.
 4. On approval, schedule via the `schedule-posts` skill. Video is supported everywhere —
    target every connected platform whose integration `status` is `valid`.
