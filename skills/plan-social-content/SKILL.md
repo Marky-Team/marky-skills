@@ -125,7 +125,7 @@ For each post:
 - **Prepare media.** Use the photos, graphics, or video the user provides. Upload each via
   `POST /businesses/{id}/media` and keep the returned `original_url`.
 - **Or design a diagram.** When a post announces, teaches, or compares something and no
-  photo exists, a branded diagram image often beats stock. Use the `create-post-diagram` skill:
+  photo exists, a branded diagram image often beats stock. Use the `create-post-graphic` skill:
   it pulls the brand colors from the API, authors the diagram as HTML, renders a PNG, and
   uploads it.
 - **Or let Marky write it.** For posts where the user just has a topic, use

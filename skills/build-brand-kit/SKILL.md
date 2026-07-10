@@ -116,7 +116,7 @@ the above" is still required.
 
 Don't end on a settings change; end on evidence. Offer to generate one draft post (the
 `plan-social-content` or `schedule-posts` skill) or render one branded diagram
-(`create-post-diagram`) so the user sees the new kit in action. If the result exposes a
+(`create-post-graphic`) so the user sees the new kit in action. If the result exposes a
 bad extraction (muddy palette, wrong font weight), fix the profile now while the context
 is fresh.
 

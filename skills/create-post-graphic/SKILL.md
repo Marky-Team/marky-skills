@@ -1,5 +1,5 @@
 ---
-name: create-post-diagram
+name: create-post-graphic
 description: >
   Design branded diagram images for social posts — layer diagrams, flows, loops,
   quote + stat cards, sequence diagrams, numbered steps — as hand-authored HTML
@@ -145,7 +145,7 @@ in the marky-api skill.
 
 ## Tag the post
 
-Set `metadata` on the post when you create it — `{"media_type": "diagram", "created_by": "create-post-diagram", "hook": ..., "topic": ...}` (use `"graphic"` instead when the output is a designed brand card rather than a true flow/chart/steps diagram) — per "Tag every post" in the
+Set `metadata` on the post when you create it — `{"media_type": "graphic", "created_by": "create-post-graphic", "hook": ..., "topic": ...}` (use `"diagram"` instead when the output is a true flow/chart/steps diagram rather than a designed brand card) — per "Tag every post" in the
 marky-api skill. This is what lets future performance reviews compare this post's
 engagement against other media types.
 
