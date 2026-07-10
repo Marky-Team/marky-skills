@@ -41,7 +41,12 @@ you already have).
 | Drafts to review | `https://app.mymarky.ai/ws/{business_id}/social-posts/review` |
 | The posting calendar | `https://app.mymarky.ai/ws/{business_id}/post-calendar` |
 | The media/docs library | `https://app.mymarky.ai/ws/{business_id}/library` |
+| Connect / reconnect social accounts | `https://app.mymarky.ai/ws/{business_id}/business/profile` |
 | Business settings | `https://app.mymarky.ai/ws/{business_id}/business/settings` |
+
+When an integration's `status` is not `valid` (or a platform the user wants is missing),
+send them to the **business profile** page — that's where social accounts are connected
+and reconnected. It is NOT under business settings.
 
 Do not invent page paths (there is no `/calendar` at the root, for example) — anything not
 in this table, link `https://app.mymarky.ai` and let the user navigate.

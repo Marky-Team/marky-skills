@@ -5,6 +5,13 @@ on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ## [Unreleased]
 
+### Fixed
+
+- **The connect/reconnect-socials page is now in the marky-api link table:**
+  `/ws/{business_id}/business/profile`. Agents detecting an invalid integration sent
+  users to business *settings*, which is the wrong page — accounts are connected on
+  the business *profile* page.
+
 ### Changed
 
 - README install section slimmed to the agent pointer + one-prompt install; the
