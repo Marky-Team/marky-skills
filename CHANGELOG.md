@@ -3,6 +3,15 @@
 All notable changes to this collection are documented here. The format is based
 on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
+## [Unreleased]
+
+### Added
+
+- **One-prompt agent install.** New `INSTALL_FOR_AGENTS.md`: paste a single prompt into
+  any AI agent (Claude Code, Cowork, Codex, Cursor, ...) and it installs the skills,
+  asks for your API key, saves it in the right place for that client, and verifies with
+  a live call. README leads with the install prompt.
+
 ## [0.5.0] - 2026-07-09
 
 ### Added

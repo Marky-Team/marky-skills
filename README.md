@@ -29,6 +29,18 @@ that lets an agent use it well.
 
 ## Install
 
+### The one-prompt way (any agent)
+
+Copy this into your AI agent — it detects your client, installs the skills, asks you for
+your API key, and saves everything in the right place:
+
+```
+Read https://raw.githubusercontent.com/Marky-Team/marky-skills/main/INSTALL_FOR_AGENTS.md and follow it. Ask me for any API keys you need.
+```
+
+Works with Claude Code, Cowork, Codex, Cursor, Windsurf, and any agent that supports
+Agent Skills. Prefer to do it by hand? The per-client steps are below.
+
 Pick the path for your client. **Claude Code and Cowork users: install the plugin** — it
 is the preferred path.
 
