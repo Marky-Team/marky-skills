@@ -49,6 +49,14 @@ template:
 3. Keep platform constraints in mind: 9:16 for Reels/TikTok/Stories, 1:1 or 16:9 for
    feeds; short (under ~30s) unless the user asks for longer.
 
+**Where the project lives.** Unless the user names a location, create the HyperFrames
+project at `~/.marky/videos/<business_id>/<project-slug>/` — NOT under the current
+working directory. Video workspaces are big (tens of MB) and cwd could be inside
+someone's repo; `~/.marky` keeps them out of git, out of iCloud-synced folders, and
+groups them per business so past projects become reusable templates (the brand-remixed
+`frame.md` and storyboards accumulate there). After rendering, delete the project's
+`capture/` directory — it's regenerable scratch and usually the bulk of the size.
+
 ## Stage 2 — Author and render
 
 Follow the HyperFrames workflow for the video type the user wants (motion graphic, stat

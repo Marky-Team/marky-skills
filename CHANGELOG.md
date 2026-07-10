@@ -38,6 +38,18 @@ on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
   asks for your API key, saves it in the right place for that client, and verifies with
   a live call. README leads with the install prompt.
 
+## [0.5.1] - 2026-07-10
+
+### Changed
+
+- **Video projects get a fixed home.** `create-post-video` now creates HyperFrames
+  projects at `~/.marky/videos/<business_id>/<project-slug>/` instead of the current
+  working directory — video workspaces are tens of MB and cwd might be inside a git
+  repo or an iCloud-synced folder. Past projects accumulate per business as reusable
+  templates (brand-remixed frame.md, storyboards). Skill also says to delete the
+  project's `capture/` scratch after rendering. Verified hyperframes init/lint/validate
+  all run clean from the hidden directory.
+
 ## [0.5.0] - 2026-07-09
 
 ### Added
