@@ -75,7 +75,7 @@ how to connect Marky's MCP server).
 | :--- | :--- |
 | **`schedule-posts`** | You have content ready (your own captions and media, or a topic for Marky to write) and want it on your connected accounts on a schedule. Covers media upload, post creation, on-brand generation, scheduling, and publish confirmation. |
 | **`plan-social-content`** | You want a full week of on-brand posts produced and queued in one conversation. Mines your real material, drafts in your voice, and always gets your approval before scheduling. |
-| **`create-post-diagram`** | A post announces, teaches, or compares something and a designed diagram would beat a stock photo. Authors branded HTML (layers, flows, loops, quote cards, sequences, steps), renders to PNG in your brand colors, and attaches it to the post. |
+| **`create-post-graphic`** | A post announces, teaches, or compares something and a designed diagram would beat a stock photo. Authors branded HTML (layers, flows, loops, quote cards, sequences, steps), renders to PNG in your brand colors, and attaches it to the post. |
 | **`create-post-countdown`** | You have an upcoming event (launch, sale, webinar, opening, holiday promo) and want a sequence of posts that build anticipation and end with a final reminder. |
 | **`create-post-from-image`** | You have one strong image and want maximum mileage from it — several ready-to-review posts with different captions and angles, all using that image. |
 | **`create-post-variations`** | A post did well (or you just like it) and you want fresh variations — new angles, new wording, or a specific call-to-action link. |
@@ -125,7 +125,7 @@ how to connect Marky's MCP server).
 
 | Media | How | Skill |
 | :--- | :--- | :--- |
-| Branded diagrams | agent-authored HTML → PNG in your colors/fonts/logo | `create-post-diagram` |
+| Branded diagrams | agent-authored HTML → PNG in your colors/fonts/logo | `create-post-graphic` |
 | Photos (camera) | capture studio — webcam, saved straight to the agent | `plan-social-content` Stage 4 |
 | Screenshots / screen recordings | capture studio — screen grab or full recording | `plan-social-content` Stage 4 |
 | Talking-head clips | capture studio — webcam + teleprompter, then captions/packaging via HyperFrames | `plan-social-content` + `create-post-video` |
