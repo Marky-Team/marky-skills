@@ -64,9 +64,21 @@ sweet spots, NOT the hard caps above.
 
 One caption almost never fits all platforms. When a post targets more than one,
 write the primary caption for the platform that matters most to the business, then
-tailor the rest — X gets a compressed one-idea version, LinkedIn gets the
-professional angle with hashtags moved to `first_comment`, Pinterest gets a
-keyword title. (Marky's post model supports per-platform content overrides; check
-the live `create_post` tool schema for the `platform_overrides` field — if your
-server version doesn't show it yet, create separate per-platform posts with
-`restrict_publish_to` instead.)
+tailor the rest with **`platform_overrides`** on `create_post` / `update_post` — one
+entry per platform, each able to override `caption`, `media_urls`, `title`, `link`,
+and `first_comment` (unset fields fall back to the post's own). X gets a compressed
+one-idea version, LinkedIn gets the professional angle with hashtags moved to
+`first_comment`, Pinterest gets a keyword `title` + `link`. On `update_post` the
+field REPLACES the whole override set (send the full list; `[]` clears).
+
+**Read the user's own per-platform instructions first.** `get_business` returns
+`platform_writing_instructions` — the map the user customized in their dashboard
+(keys are canonical platform names plus `common`, which applies everywhere). Follow
+the matching entry when writing each override caption; it outranks everything in
+this file. To save a preference the user states ("on LinkedIn never use emojis"),
+PATCH the business with a MERGE-patch — `{"platform_writing_instructions":
+{"linkedIn": "..."}}` touches only that key; a null value resets it.
+
+Set overrides by default, not as a special case: whenever a post targets 2+
+platforms, tailoring the caption per platform is cheap for you and a real
+engagement lift for the user.

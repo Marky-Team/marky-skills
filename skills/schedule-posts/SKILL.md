@@ -38,24 +38,26 @@ Note the `platform` value and `status` of each integration. Only target platform
 
 ### A. You already wrote it
 
-Upload media (if any), then create the post.
+Upload media (if any) with the `upload_media_base64` tool, then create the post with
+`create_post`:
 
-```bash
-# 1. Upload media -> returns original_url
-curl -X POST "https://api.mymarky.ai/api/businesses/BIZ_ID/media" \
-  -H "Authorization: Bearer mk_live_YOUR_KEY" \
-  -F "file=@/path/to/photo.jpg"
-
-# 2. Create the post with that media url (business_id is in the path now)
-curl -X POST https://api.mymarky.ai/api/businesses/BIZ_ID/posts \
-  -H "Authorization: Bearer mk_live_YOUR_KEY" \
-  -H "Content-Type: application/json" \
-  -d '{
-    "caption": "Your caption here.",
-    "media_urls": ["ORIGINAL_URL_FROM_STEP_1"],
-    "restrict_publish_to": ["instagram", "facebook", "linkedIn"]
-  }'
+```json
+{
+  "caption": "Your caption here.",
+  "media_urls": ["URL_FROM_THE_UPLOAD"],
+  "restrict_publish_to": ["instagram", "facebook", "linkedIn", "twitter"],
+  "platform_overrides": [
+    { "platform": "twitter", "caption": "The one-idea 280-char version." },
+    { "platform": "linkedIn", "first_comment": "#hashtags #live #here" }
+  ]
+}
 ```
+
+**Tailor per platform by default.** Whenever a post targets 2+ platforms, add a
+`platform_overrides` entry per platform that needs it (caption, media, title, link,
+first_comment — unset fields fall back to the post's own). Read the business's
+`platform_writing_instructions` (`get_business`) and `references/platform-rules.md`
+in the `marky-api` skill for how each platform differs; the user's instructions win.
 
 Text-only post (no media): drop `media_urls` and target only `facebook` and `linkedIn`
 (the other platforms require media).

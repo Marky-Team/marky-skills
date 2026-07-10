@@ -223,10 +223,11 @@ When you schedule, target every platform the media supports rather than just one
 - **Text-only** -> Facebook and LinkedIn (the others require media).
 
 One caption rarely fits every platform. Read `references/platform-rules.md` (in the
-`marky-api` skill) for the hard limits and per-platform style baseline, and tailor —
-X gets a compressed one-idea version, LinkedIn moves hashtags to the first comment,
-Pinterest gets a keyword-rich title. The user's own platform preferences always win
-over the baseline.
+`marky-api` skill) for the hard limits and per-platform style baseline, then tailor
+with `platform_overrides` on every multi-platform post — X gets a compressed one-idea
+version, LinkedIn moves hashtags to `first_comment`, Pinterest gets a keyword-rich
+`title`. Read the business's `platform_writing_instructions` (on `get_business`)
+first; the user's own platform preferences always win over the baseline.
 
 ## Cadence
 

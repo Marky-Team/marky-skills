@@ -107,6 +107,11 @@ curl -X POST "https://api.mymarky.ai/api/businesses/BIZ_ID/media" \
 
 - `POST /businesses/{business_id}/posts` — create a post.
   - `caption` (required)
+  - `platform_overrides` — per-platform variants: a list of `{platform, caption,
+    media_urls, title, link, first_comment}` objects (all content fields optional;
+    unset falls back to the post's own). On PATCH the list REPLACES the whole set
+    (`[]` clears). Set these on every multi-platform post — see
+    `references/platform-rules.md`.
   - `restrict_publish_to` — target platforms, e.g. `["instagram", "facebook", "linkedIn"]`
     (case-insensitive)
   - `media_urls` — image/video URLs to attach (use `original_url` from an upload)
