@@ -2,7 +2,7 @@
   "name": "marky",
   "displayName": "Marky",
   "description": "Agent skills for driving Marky (social media management): authenticate and connect the API/MCP, create and schedule posts, plan a week of on-brand content, manage topics and your library, review performance, and repurpose what works.",
-  "version": "0.6.0",
+  "version": "0.7.0",
   "author": {
     "name": "Marky",
     "email": "support@mymarky.ai",

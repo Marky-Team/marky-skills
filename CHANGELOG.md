@@ -3,10 +3,20 @@
 All notable changes to this collection are documented here. The format is based
 on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
-## [Unreleased]
+## [0.7.0] - 2026-07-10
 
 ### Added
 
+- **New skill: `build-brand-kit`.** Point the agent at your website and it builds your
+  brand kit in Marky: extracts the logo, colors, fonts, voice, tagline, CTAs, and
+  imagery style from the site, shows you the proposed kit field-by-field (flagging
+  anything it would replace), then writes it with the `update_business` MCP tool and
+  proves it with a sample post or diagram. The natural first step after connecting a
+  business — a thin brand profile is the top reason generated posts feel generic.
+- **One-prompt agent install.** New `INSTALL_FOR_AGENTS.md`: paste a single prompt into
+  any AI agent (Claude Code, Cowork, Codex, Cursor, ...) and it installs the skills,
+  asks for your API key, saves it in the right place for that client, and verifies with
+  a live call. README leads with the install prompt.
 - **`/marky-status` now includes a performance snapshot.** A fifth gather step pulls
   engagement for the ~5 most recent posts and reports the best/worst performer with a
   one-line why, plus unanswered comments. Deep analysis (topics, formats, follower
@@ -40,13 +50,6 @@ on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
   unchanged, so no cross-references broke.
 - README install section slimmed to the agent pointer + one-prompt install; the
   per-client manual steps live in INSTALL_FOR_AGENTS.md (readable by humans too).
-
-### Added
-
-- **One-prompt agent install.** New `INSTALL_FOR_AGENTS.md`: paste a single prompt into
-  any AI agent (Claude Code, Cowork, Codex, Cursor, ...) and it installs the skills,
-  asks for your API key, saves it in the right place for that client, and verifies with
-  a live call. README leads with the install prompt.
 
 ## [0.6.0] - 2026-07-10
 
