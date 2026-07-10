@@ -44,6 +44,10 @@
     "create-post-video": {
       "hash": "2e1ea834d2907311990879948fc3fcf182568938",
       "files": 1
+    },
+    "build-brand-kit": {
+      "hash": "68acb4c3fc3dec0384b7b206c1f25b24f59f4347",
+      "files": 1
     }
   }
 }

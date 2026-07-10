@@ -2,7 +2,7 @@
 
 <p align="center">
   <a href="LICENSE"><img src="https://img.shields.io/badge/license-Apache%202.0-blue.svg" alt="License"></a>
-  <img src="https://img.shields.io/badge/skills-11-brightgreen" alt="11 skills">
+  <img src="https://img.shields.io/badge/skills-12-brightgreen" alt="12 skills">
   <a href="https://agentskills.io"><img src="https://img.shields.io/badge/format-Agent%20Skills-5865F2" alt="Agent Skills format"></a>
   <a href="https://github.com/Marky-Team/marky-skills/issues"><img src="https://img.shields.io/github/issues/Marky-Team/marky-skills.svg" alt="Issues"></a>
 </p>
@@ -58,7 +58,7 @@ Two notes worth knowing up front:
 
 ## Skills
 
-Marky Skills ships **11 skills** agents load on demand. Read **`marky-api`** first —
+Marky Skills ships **12 skills** agents load on demand. Read **`marky-api`** first —
 it is the reference every other skill builds on (auth, base URL, endpoints, and
 how to connect Marky's MCP server).
 
@@ -67,6 +67,7 @@ how to connect Marky's MCP server).
 | Skill | Use when |
 | :--- | :--- |
 | **`marky-api`** | **Read first.** Authenticate to the Marky API, find the base URL and key endpoints, and connect Marky's MCP server to Claude Code, Cowork, or Codex. Every other skill reads its auth and endpoints from here. |
+| **`build-brand-kit`** | You just connected a business, or generated posts feel generic. Point the agent at your website and it extracts your logo, colors, fonts, voice, tagline, and imagery style, shows you the kit for approval, and writes it to your brand profile — so everything Marky makes afterward looks and sounds like you. |
 
 ### Create & schedule
 

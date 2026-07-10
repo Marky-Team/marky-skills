@@ -27,7 +27,8 @@
         "./skills/create-post-countdown",
         "./skills/create-post-variations",
         "./skills/create-post-from-image",
-        "./skills/create-post-video"
+        "./skills/create-post-video",
+        "./skills/build-brand-kit"
       ],
       "commands": [
         "./commands/marky.md",
