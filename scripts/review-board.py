@@ -30,6 +30,7 @@ user submits (or 30 minutes pass), then writes feedback.json and exits.
 
 feedback.json shape:
   approve mode: {"decisions": {"post-1": "approved" | "rejected"},
+                 "edits": {"post-1": "the caption as the user rewrote it"},
                  "comments": {"post-1": "..."}, "overall": "...", "mode": "approve"}
   pick mode:    {"preferred": "post-1", "ratings": {"post-1": 4},
                  "comments": {...}, "overall": "...", "mode": "pick"}
@@ -122,20 +123,33 @@ def render_board(spec, mode):
           <span class="stars" data-item="{item_id}">{stars}</span>
         </div>"""
 
+        if mode == "approve":
+            # Editable in place — users fix captions directly instead of
+            # describing the fix in a comment.
+            caption_block = (
+                f'<div class="caption" contenteditable="true" data-item="{item_id}" '
+                f'oninput="setEdit(this)">{caption}</div>'
+            )
+            comment_placeholder = "Rules / notes (e.g. &quot;never use exclamation marks&quot;)"
+        else:
+            caption_block = f'<p class="caption">{caption}</p>'
+            comment_placeholder = "Comments for this one (optional)"
+
         cards.append(f"""
       <div class="card" id="card-{item_id}">
         {media_tag(item.get('media_url'))}
         <div class="body">
           <div class="meta">{meta}</div>
-          <p class="caption">{caption}</p>
+          {caption_block}
           {controls}
-          <textarea placeholder="Comments / edits for this one (optional)"
+          <textarea placeholder="{comment_placeholder}"
                     oninput="setComment('{item_id}', this.value)"></textarea>
         </div>
       </div>""")
 
     submit_hint = (
-        "Approve or reject each post, add any edits, then submit."
+        "Approve or reject each post. Captions are editable — click into one and fix it. "
+        "Add rules (never / always ...) in the note boxes, then submit."
         if mode == "approve"
         else "Pick your favorite, rate the rest, then submit."
     )
@@ -159,6 +173,10 @@ def render_board(spec, mode):
   .body {{ padding: 14px; display: flex; flex-direction: column; gap: 10px; flex: 1; }}
   .meta {{ font-size: 13px; opacity: .65; }}
   .caption {{ margin: 0; white-space: pre-wrap; flex: 1; }}
+  .caption[contenteditable] {{ border-radius: 8px; padding: 6px; outline: 1px dashed transparent; }}
+  .caption[contenteditable]:hover {{ outline-color: color-mix(in srgb, CanvasText 30%, transparent); }}
+  .caption[contenteditable]:focus {{ outline: 2px solid #2563eb; }}
+  .caption.edited {{ background: color-mix(in srgb, #2563eb 8%, transparent); }}
   .controls {{ display: flex; gap: 8px; align-items: center; }}
   button {{ font: inherit; padding: 8px 14px; border-radius: 8px; border: 1px solid transparent; cursor: pointer; }}
   .approve {{ background: #16a34a; color: white; }}
@@ -183,7 +201,22 @@ def render_board(spec, mode):
   <button class="submit" onclick="submit()">Submit</button>
 </div>
 <script>
-const state = {{ mode: {json.dumps(mode)}, decisions: {{}}, ratings: {{}}, comments: {{}}, preferred: null }};
+const state = {{ mode: {json.dumps(mode)}, decisions: {{}}, ratings: {{}}, comments: {{}}, edits: {{}}, preferred: null }};
+const originals = {{}};
+document.querySelectorAll('.caption[contenteditable]').forEach(el => {{
+  originals[el.dataset.item] = el.innerText;
+}});
+
+function setEdit(el) {{
+  const id = el.dataset.item;
+  if (el.innerText === originals[id]) {{
+    delete state.edits[id];
+    el.classList.remove('edited');
+  }} else {{
+    state.edits[id] = el.innerText;
+    el.classList.add('edited');
+  }}
+}}
 
 function card(id) {{ return document.getElementById('card-' + id); }}
 

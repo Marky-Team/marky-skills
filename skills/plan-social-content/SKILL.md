@@ -127,9 +127,18 @@ For each post:
       chooser — AskUserQuestion is just the blocking wait; don't also ask per-post
       questions in it.
    4. When the user answers, read `feedback.json` next to `items.json`:
-      `decisions` (approved/rejected per post id), `comments` (per-post edits), and
-      `overall`. If there's no feedback file, treat their AskUserQuestion text as the
-      feedback.
+      `decisions` (approved/rejected per post id), `edits` (captions the user rewrote
+      in place — use their version verbatim), `comments`, and `overall`. If there's no
+      feedback file, treat their AskUserQuestion text as the feedback.
+      **Learn from the edits and rules:**
+      - Diff each edit against your draft — what they changed IS the preference
+        (shortened it, cut the emoji, unhyped the verbs). Apply the pattern to the
+        rest of the batch, not just the edited post.
+      - Any comment phrased as a rule ("never ...", "always ...", "stop ...") is an
+        explicit lasting preference: persist it to the brand profile
+        (`caption_writing_rules` via `update_business`) NOW, with the user's wording —
+        don't wait for it to recur. Confirm the field text, then write.
+   
    5. **Persist it**: append the feedback to `~/.marky/feedback-log.jsonl` with
       `context: "weekly-posts"` — see "The feedback log" in the `marky-api` skill. This
       is how next week's batch starts smarter than this one.

@@ -596,6 +596,10 @@ Two duties, every creation skill:
    to the log — include `business_id`, a short `context` (`weekly-posts`,
    `diagram-styles`, `video-variants`, ...), the feedback verbatim, and an `items` map
    of id → one-line description so future sessions know what the ids referred to.
+   Board `edits` (captions rewritten in place) are the strongest signal — diff them
+   against what you drafted; the delta is the preference. And any comment phrased as a
+   rule ("never ...", "always ...") skips the recurrence bar below: persist it to the
+   brand profile immediately, with confirmation.
 2. **Read before you generate.** Before drafting a batch, picking a diagram archetype,
    or styling variants, scan the last ~20 log entries for this `business_id` and lean
    into what won: topics and formats that got approved, styles that got picked,

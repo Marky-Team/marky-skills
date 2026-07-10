@@ -3,6 +3,20 @@
 All notable changes to this collection are documented here. The format is based
 on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
+## [0.4.1] - 2026-07-09
+
+### Added
+
+- **Captions are editable right on the review board.** In approve mode, click into any
+  caption and rewrite it — edited cards highlight, and your version lands in
+  `feedback.json` under `edits` and is used verbatim. The agent diffs your edit against
+  its draft and applies the pattern to the rest of the batch (the delta IS the
+  preference).
+- **"Never / always" rules persist immediately.** A board note phrased as a rule
+  ("never use exclamation marks") is written to the brand profile's
+  `caption_writing_rules` right away (with confirmation) instead of waiting for the
+  feedback-log recurrence bar.
+
 ## [0.4.0] - 2026-07-09
 
 ### Added
