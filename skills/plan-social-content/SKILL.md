@@ -90,9 +90,26 @@ Design about 6 posts for the week.
 ### Stage 4 — Ask for what only the user can give
 
 Some posts need input only the user has: a photo, a screen recording, a short talking-head
-clip, a specific number, a quote they want to use. List those clearly and concisely so the
-user can gather them in one short sitting. If a post needs footage they cannot provide this
-week, swap it for one that needs nothing extra.
+clip, a specific number, a quote they want to use.
+
+**Preferred: the capture studio** — a local browser page that records everything in one
+sitting and saves files straight back to the agent (no Downloads-folder shuffle). It ships
+at `${CLAUDE_PLUGIN_ROOT}/scripts/capture-studio.py` (cloned repo: `scripts/`); needs
+`python3` — fall back to listing the asks in chat without it.
+
+1. Write `tasks.json` to a temp dir: `{"title": "Clips for this week", "items": [{"id",
+   "kind": "talking-head" | "screen" | "photo" | "screenshot", "title", "script"
+   (teleprompter text for video kinds), "note"}, ...]}`.
+2. Run `python3 .../capture-studio.py tasks.json` **in the background**; parse the
+   `STUDIO_URL: http://127.0.0.1:PORT/` line.
+3. AskUserQuestion with the URL (the blocking wait). The user records each item —
+   talking-head gets a scrolling teleprompter of your script — and clicks Finish.
+4. Read `captures.json` next to `tasks.json`: `captures` maps ids to files under
+   `captures/`, plus per-item `notes` and `overall`. Upload each file via
+   `POST /businesses/{id}/media` and attach to its post.
+
+Numbers and quotes are still just questions — ask them in chat. If a post needs footage
+the user cannot provide this week, swap it for one that needs nothing extra.
 
 ### Stage 5 — Produce the drafts
 

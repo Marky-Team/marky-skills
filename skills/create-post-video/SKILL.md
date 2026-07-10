@@ -86,6 +86,10 @@ duration or resolution and re-render rather than compressing into artifacts.
 ## Notes
 
 - Rendering can take a few minutes for longer pieces — tell the user before starting.
-- A video the user supplies (rather than one you render) skips straight to Stage 3.
+- A video the user supplies (rather than one you render) skips straight to Stage 3. To
+  COLLECT user footage (a talking-head clip with a teleprompter, a screen demo), use the
+  capture studio — `${CLAUDE_PLUGIN_ROOT}/scripts/capture-studio.py` (see Stage 4 of
+  `plan-social-content` for the flow) — then hand the file to HyperFrames for captions /
+  packaging, or straight to Stage 3.
 - If HyperFrames fails to render, report the actual error and stop — don't silently fall
   back to an image post the user didn't ask for.

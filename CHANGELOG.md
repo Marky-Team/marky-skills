@@ -3,6 +3,22 @@
 All notable changes to this collection are documented here. The format is based
 on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
+## [0.5.0] - 2026-07-09
+
+### Added
+
+- **Capture studio** (`scripts/capture-studio.py`, stdlib-python3). A local browser page
+  for collecting the media only the user can provide — talking-head clips (webcam with a
+  scrolling teleprompter of the agent's script), screen recordings, webcam photos, and
+  screenshots — in one sitting. Captures POST straight back to the local server and land
+  in a `captures/` folder next to the agent (no Downloads shuffle); Finish writes a
+  `captures.json` manifest with per-item notes. Wired in as the preferred Stage 4 flow
+  in `plan-social-content` and as the user-footage source for `create-post-video`.
+  Binds 127.0.0.1 only; upload ids validated against tasks.json (no path traversal).
+- README "Every way to make post media" matrix: diagrams, camera photos, screenshots /
+  screen recordings, talking-head clips, faceless HyperFrames video, and Marky's own
+  AI-generated images — with the skill that owns each.
+
 ## [0.4.2] - 2026-07-09
 
 ### Fixed
