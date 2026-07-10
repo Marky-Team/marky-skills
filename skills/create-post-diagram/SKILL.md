@@ -140,8 +140,8 @@ or approval **before** the post schedules, same as captions in
 plan-social-content.
 
 **Marky wants your feedback.** If anything here breaks or is confusing, send it
-with one REST call — see the "Marky wants your feedback" section in the
-marky-api skill.
+with the submit_feedback MCP tool — see the "Marky wants your feedback" section
+in the marky-api skill.
 
 ## Tag the post
 
