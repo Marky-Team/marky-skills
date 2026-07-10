@@ -96,7 +96,10 @@ def media_tag(url):
     if any(ext in url.lower() for ext in (".mp4", ".webm", ".mov")):
         return f'<video src="{safe}" controls muted playsinline></video>'
 
-    return f'<img src="{safe}" alt="post media" loading="lazy">'
+    # Cards crop to a 4:5 tile, so link the image to its full-size original —
+    # you can't judge a wide diagram from a cropped thumbnail.
+    return (f'<a href="{safe}" target="_blank" title="Open full size">'
+            f'<img src="{safe}" alt="post media" loading="lazy"></a>')
 
 
 def render_board(spec, mode):
@@ -170,6 +173,7 @@ def render_board(spec, mode):
   .card.rejected {{ outline: 3px solid #dc2626; opacity: .55; }}
   .card.preferred {{ outline: 3px solid #2563eb; }}
   .card img, .card video {{ width: 100%; aspect-ratio: 4/5; object-fit: cover; display: block; }}
+  .card a {{ display: block; line-height: 0; cursor: zoom-in; }}
   .body {{ padding: 14px; display: flex; flex-direction: column; gap: 10px; flex: 1; }}
   .meta {{ font-size: 13px; opacity: .65; }}
   .caption {{ margin: 0; white-space: pre-wrap; flex: 1; }}
