@@ -27,6 +27,72 @@ fits the moment:
   (per-item topic/category/library/file CRUD, designs, webhooks, stats variants, feedback).
   See "REST endpoints" below.
 
+Detail lives in `references/` next to this file — each section below says when to read
+which. Load them as needed rather than all up front.
+
+## Base URL and auth
+
+```
+Base URL:  https://api.mymarky.ai/api
+Auth:      Authorization: Bearer mk_live_YOUR_KEY
+```
+
+Every request needs the Bearer header:
+
+```bash
+curl https://api.mymarky.ai/api/businesses \
+  -H "Authorization: Bearer mk_live_YOUR_KEY"
+```
+
+Error responses:
+
+| Status | Meaning |
+|--------|---------|
+| `401` | Missing or invalid API key |
+| `403` | Business does not belong to your org |
+| `404` | Business or resource not found |
+| `429` | Rate limit exceeded (check the `Retry-After` header) |
+
+Rate limits: 100 requests per minute per org.
+
+**No key yet, or need to connect the MCP to a client?** Read `references/setup.md` — it
+covers creating an `mk_live_` key in the dashboard, persisting it in `MARKY_API_KEY`,
+and connecting the MCP server (`https://api.mymarky.ai/api/mcp`, streamable HTTP, same
+Bearer header) to Claude Code, Cowork, Codex, Cursor, or any other client. In a Claude
+Code plugin install the MCP server is already bundled — only the env var is needed.
+
+## The shape: everything is scoped to a business
+
+Almost every resource lives **under a business** (your workspace). The path always starts
+with the business id:
+
+```
+/api/businesses/{business_id}/posts
+/api/businesses/{business_id}/topics
+/api/businesses/{business_id}/library
+/api/businesses/{business_id}/integrations
+...
+```
+
+So the first call you make is always `GET /businesses` to get your `business_id`, then you
+slot that id into every path after it. Only a few org-level resources (`/keys`,
+`/webhooks`, `/feedback`) sit outside a business.
+
+### Pagination (list endpoints)
+
+List endpoints (`GET /businesses`, `/posts`, `/topics`, ...) return **at most 20 items per
+page** in a cursor-paginated envelope:
+
+```json
+{ "data": [ ... ], "has_more": true, "next_cursor": "..." }
+```
+
+If `has_more` is `true`, there are more results. Pass `?limit=100` to get a bigger page, or
+page through with `?cursor=NEXT_CURSOR` until `has_more` is `false`. **This matters on the
+very first call:** if your org has more than 20 workspaces, the one you want may not be on
+page 1 of `GET /businesses` — use `?limit=100` (or page with the cursor) so you do not miss
+it. Same for finding a specific post or topic in a long history.
+
 ## Opening the app for the user
 
 When the user asks to *see* something (their scheduled posts, the calendar, the library),
@@ -71,54 +137,31 @@ header so a retry never files a duplicate.
 
 **When to send feedback — three triggers:**
 
-1. **IMMEDIATELY on any bug or friction.** A call failed, an error was confusing, a tool
-   did something unexpected, a workflow was harder than it should be — file it right away as
-   `type: "bug"` with exactly what broke (the call you made and the error you got). Do this
-   the moment it happens, before you work around it.
-
-   ```bash
-   curl -X POST https://api.mymarky.ai/api/feedback \
-     -H "Authorization: Bearer mk_live_YOUR_KEY" \
-     -H "Content-Type: application/json" \
-     -d '{
-       "type": "bug",
-       "message": "schedule_post returned 422 \"scheduled_publish_time must be in the future\" even though I sent a UTC time 2 hours ahead. Had to retry with an explicit Z suffix.",
-       "context": {
-         "environment": "claude-code",
-         "error_details": "POST /businesses/BIZ_ID/posts/POST_ID/schedule -> 422 validation_error"
-       }
-     }'
-   ```
-
+1. **IMMEDIATELY on any bug or friction** — a call failed, an error was confusing, a tool
+   did something unexpected, a workflow was harder than it should be. File it as
+   `type: "bug"` with exactly what broke (the call you made and the error you got), the
+   moment it happens, before you work around it.
 2. **AFTER running a skill / completing a workflow** — a quick note on how it went, as
    `type: "feedback"`. Did it work end to end? What was confusing or slower than expected?
-   What would have helped?
+3. **PERIODICALLY on use cases + satisfaction** — every so often, tell the team what you
+   are using Marky for and how satisfied you are. `type: "feature"` for something missing,
+   `type: "feedback"` for a satisfaction check-in.
 
-   ```bash
-   curl -X POST https://api.mymarky.ai/api/feedback \
-     -H "Authorization: Bearer mk_live_YOUR_KEY" \
-     -H "Content-Type: application/json" \
-     -d '{
-       "type": "feedback",
-       "message": "Ran plan-social-content end to end: generated and scheduled 7 posts. Worked well. One snag — it was not obvious that schedule_post wanted the time with an explicit Z suffix; a note in the error would help.",
-       "context": { "environment": "claude-code" }
-     }'
-   ```
+Example (the shape is the same for all three — vary `type` and `message`):
 
-3. **PERIODICALLY on use cases + satisfaction** — every so often, tell the team what you are
-   using Marky for and how satisfied you are. Use `type: "feature"` when it is a request for
-   something missing, or `type: "feedback"` for a satisfaction check-in.
-
-   ```bash
-   curl -X POST https://api.mymarky.ai/api/feedback \
-     -H "Authorization: Bearer mk_live_YOUR_KEY" \
-     -H "Content-Type: application/json" \
-     -d '{
-       "type": "feature",
-       "message": "Main use case: planning a weekly batch of on-brand posts for 3 client businesses. Overall happy. Biggest gap: no MCP tool to bulk-reschedule the whole queue at once.",
-       "context": { "environment": "claude-code" }
-     }'
-   ```
+```bash
+curl -X POST https://api.mymarky.ai/api/feedback \
+  -H "Authorization: Bearer mk_live_YOUR_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "type": "bug",
+    "message": "schedule_post returned 422 \"scheduled_publish_time must be in the future\" even though I sent a UTC time 2 hours ahead. Had to retry with an explicit Z suffix.",
+    "context": {
+      "environment": "claude-code",
+      "error_details": "POST /businesses/BIZ_ID/posts/POST_ID/schedule -> 422 validation_error"
+    }
+  }'
+```
 
 Over MCP, `submit_feedback` is one of the curated tools, so you can send feedback natively
 (same fields: `type`, `message`, optional `context`). The REST call above is the equivalent
@@ -186,227 +229,18 @@ gates the *periodic check-in prompt*, not real-time bug reports.
 
 ### Check 2 — Contribution nudge
 
-If `suggest_contribution == "on"` **and** now > `ask_contribution_next`, check whether the
-user has locally built something worth sharing back with the community:
+If `suggest_contribution == "on"` **and** now > `ask_contribution_next`, read
+`references/contribution-nudge.md` and follow it: detect locally built or substantially
+edited skills, judge whether the work is generic enough to share, and (only then) offer
+to contribute it back to the community repo with AskUserQuestion. Whatever the user
+picks, bump `ask_contribution_next` (or set `suggest_contribution = "off"`) and write
+`user.toml` back. If the condition is not met, skip — do not read the reference.
 
-1. **Detect local skill work.** Compare the locally installed skills against the pristine
-   published versions to find a NEW skill directory (one not in the published set) or a
-   `SKILL.md` that has been substantially edited. The simplest reliable way is a content
-   compare against the upstream repo — for a git checkout:
+Two guardrails worth knowing even without reading the file: never nudge about a skill
+that carries private prompts or client data, and never open a PR without an explicit yes
+AND user review of the sanitized content.
 
-   ```bash
-   git -C "$SKILL_INSTALL_DIR" fetch origin main --quiet
-   git -C "$SKILL_INSTALL_DIR" status --porcelain skills/
-   git -C "$SKILL_INSTALL_DIR" diff --stat origin/main -- skills/
-   ```
-
-   New untracked `skills/<name>/SKILL.md` files or non-trivial diffs to an existing
-   `SKILL.md` are the signal. If the install is not a git checkout, compare file contents
-   against the published copies the same way (re-fetch the upstream `SKILL.md` and diff). No
-   local changes → nothing to offer; skip to the timestamp bump.
-
-2. **Judge whether it is genuinely shareable.** Only proceed if it is a generic, reusable
-   social-media job any Marky user could use — NOT a skill stuffed with the user's private
-   prompts, client lists, internal business logic, or one-off specifics. When in doubt, do
-   not nudge. (The full sanitize/generalize bar lives in `CONTRIBUTING.md`.)
-
-3. **Ask with AskUserQuestion** — same three-option shape as the feedback prompt. Ask
-   something like *"You've built/improved the `<name>` skill — want to contribute it back to
-   the Marky community so others can use it?"*:
-
-   | Option | What you do |
-   | :--- | :--- |
-   | **Yes** | **Read and follow `CONTRIBUTING.md`** — it is the canonical guide. Sanitize + generalize the skill first (strip business ids/keys/private context, rewrite so it is reusable for any Marky user), let the user review the final diff, then open the PR to the community repo. Bump `ask_contribution_next = now + 2 weeks` and write back. |
-   | **No** | Bump `ask_contribution_next = now + 2 weeks` (a cooldown) and move on. Write back. |
-   | **Don't ask again** | Set `suggest_contribution = "off"` in `user.toml` and write back. Never offer again. |
-
-   Whichever they pick, update `ask_contribution_next` (or the flag) and write `user.toml`
-   back before moving on.
-
-#### Hard guardrails (always apply)
-
-- **Generic and reusable only.** Never nudge to contribute a skill that carries the user's
-  private prompts, client data, or internal business logic. When in doubt, do not nudge.
-- **Never auto-open a PR.** A PR only happens after an explicit **Yes** AND the user has
-  reviewed the sanitized content. No silent or automatic PRs, ever.
-- **`CONTRIBUTING.md` is the canonical guide.** Do not re-derive the rules here — when the
-  user says Yes, read `CONTRIBUTING.md` and follow its "Sanitize and generalize before you
-  open a PR" section plus the quality bar and frontmatter spec.
-- **Where it goes.** The contribution target is the community-tier repo
-  `Marky-Team/marky-skills-community`. If that repo does not exist yet, tell the user it is
-  coming and that their skill can target it once it is live — do not push to the private
-  `Marky-Team/marky-skills` repo as a fallback.
-
-## The shape: everything is scoped to a business
-
-Almost every resource lives **under a business** (your workspace). The path always starts
-with the business id:
-
-```
-/api/businesses/{business_id}/posts
-/api/businesses/{business_id}/topics
-/api/businesses/{business_id}/library
-/api/businesses/{business_id}/integrations
-...
-```
-
-So the first call you make is always `GET /businesses` to get your `business_id`, then you
-slot that id into every path after it. Only a few org-level resources (`/keys`,
-`/webhooks`, `/feedback`) sit outside a business.
-
-### Pagination (list endpoints)
-
-List endpoints (`GET /businesses`, `/posts`, `/topics`, ...) return **at most 20 items per
-page** in a cursor-paginated envelope:
-
-```json
-{ "data": [ ... ], "has_more": true, "next_cursor": "..." }
-```
-
-If `has_more` is `true`, there are more results. Pass `?limit=100` to get a bigger page, or
-page through with `?cursor=NEXT_CURSOR` until `has_more` is `false`. **This matters on the
-very first call:** if your org has more than 20 workspaces, the one you want may not be on
-page 1 of `GET /businesses` — use `?limit=100` (or page with the cursor) so you do not miss
-it. Same for finding a specific post or topic in a long history.
-
-## Get your API key
-
-1. Sign in at [app.mymarky.ai](https://app.mymarky.ai).
-2. Open **Organization Settings -> API Keys** (left sidebar -> Settings, then scroll to
-   API Keys).
-3. Click **Create API Key**, name it, and copy the `mk_live_...` value. It is only shown
-   once, so save it somewhere safe.
-4. **If you use this plugin in Claude Code**, put the key in the `MARKY_API_KEY`
-   environment variable (the bundled MCP server reads it). Persist it — a bare
-   `export` lasts only until the terminal closes. Pick one:
-
-   - **Recommended:** add it to Claude Code's own settings so it works no matter how
-     Claude Code is launched (terminal, desktop app, IDE). In `~/.claude/settings.json`:
-
-     ```json
-     { "env": { "MARKY_API_KEY": "mk_live_YOUR_KEY" } }
-     ```
-
-     (Merge into the existing file if it already has other keys.)
-
-   - Or add the export to your shell profile (`~/.zshrc` for zsh, `~/.bashrc` for bash):
-
-     ```bash
-     echo 'export MARKY_API_KEY="mk_live_YOUR_KEY"' >> ~/.zshrc
-     ```
-
-     Note: GUI-launched apps do not read your shell profile, so prefer the
-     settings.json option if you use the Claude desktop app or an IDE.
-
-Notes:
-- You must be an **org admin** to create keys.
-- A key has access to every workspace (business) in your organization.
-- Keep the key in an environment variable or `.env` file, never in source control.
-- Each org can have up to 10 active keys. Revoke a leaked key from the same page.
-
-## Base URL and auth
-
-```
-Base URL:  https://api.mymarky.ai/api
-Auth:      Authorization: Bearer mk_live_YOUR_KEY
-```
-
-Every request needs the Bearer header:
-
-```bash
-curl https://api.mymarky.ai/api/businesses \
-  -H "Authorization: Bearer mk_live_YOUR_KEY"
-```
-
-Error responses:
-
-| Status | Meaning |
-|--------|---------|
-| `401` | Missing or invalid API key |
-| `403` | Business does not belong to your org |
-| `404` | Business or resource not found |
-| `429` | Rate limit exceeded (check the `Retry-After` header) |
-
-Rate limits: 100 requests per minute per org.
-
-## Connect the MCP
-
-The Marky MCP server lets an agent call Marky's tools directly instead of you pasting REST
-instructions.
-
-```
-MCP endpoint:  https://api.mymarky.ai/api/mcp
-Transport:     streamable HTTP
-Auth:          Authorization: Bearer mk_live_YOUR_KEY
-```
-
-### Claude Code CLI
-
-**If you installed this plugin, the MCP server is already bundled** (in the plugin's
-`.mcp.json`) — you only need your key in the `MARKY_API_KEY` environment variable.
-Persist it in `~/.claude/settings.json` (or your shell profile) — see "Get your API
-key" above for both options; a one-off `export` disappears when the terminal closes:
-
-```json
-{ "env": { "MARKY_API_KEY": "mk_live_YOUR_KEY" } }
-```
-
-Then ask: *"List my Marky businesses."* Claude calls `list_businesses` and shows your
-workspaces. Each has an `id` you use as `business_id` for everything else.
-
-**Not using the plugin?** Register the server manually (replace `mk_live_YOUR_KEY`):
-
-```bash
-claude mcp add --transport http marky https://api.mymarky.ai/api/mcp \
-  --header "Authorization: Bearer mk_live_YOUR_KEY"
-```
-
-### Cowork
-
-Cowork adds remote MCP servers as **custom connectors** in the UI — even with the Marky
-plugin installed, the connector is a separate manual step (the plugin carries skills,
-hooks, and the `/marky` command; Cowork does not read the plugin's `.mcp.json`):
-
-1. **Settings → Connectors → Add → Add custom connector**
-2. Name: `Marky`; URL: `https://api.mymarky.ai/api/mcp`
-3. Leave the OAuth Client ID/Secret fields blank, click **Add**, and paste your
-   `mk_live_...` key when asked for the API key / bearer token.
-
-Marky's tools then appear in the tools menu for every Cowork session.
-
-### Codex CLI
-
-Codex talks to local (stdio) MCP servers, so bridge to Marky's remote HTTP server with the
-open-source `mcp-remote` package (run on demand via `npx`, no install). Add to
-`~/.codex/config.toml`:
-
-```toml
-[mcp_servers.marky]
-command = "npx"
-args = ["-y", "mcp-remote", "https://api.mymarky.ai/api/mcp", "--header", "Authorization:${MARKY_AUTH}"]
-env = { "MARKY_AUTH" = "Bearer mk_live_YOUR_KEY" }
-```
-
-(The key sits in the `env` block on purpose, so the space in `Bearer mk_live_...` is
-passed as one piece and not split apart.)
-
-### Any other MCP client (Cursor, custom agents)
-
-Most clients take a config like this:
-
-```json
-{
-  "mcpServers": {
-    "marky": {
-      "transport": "http",
-      "url": "https://api.mymarky.ai/api/mcp",
-      "headers": { "Authorization": "Bearer mk_live_YOUR_KEY" }
-    }
-  }
-}
-```
-
-### The MCP tools (the curated set)
+## The MCP tools (the curated set)
 
 The MCP does **not** mirror the whole REST API. It exposes a **curated set of typed
 tools** — the high-value content actions an autonomous agent actually needs. Everything
@@ -451,274 +285,87 @@ API-key create/list/revoke, `delete_business`, and `delete_post`.
 
 ## REST endpoints
 
-All paths are relative to `https://api.mymarky.ai/api`. All need the Bearer header. Almost
-every path is nested under `/businesses/{business_id}`.
+The calls you will make most, all relative to the base URL and nested under
+`/businesses/{business_id}`:
 
-### Businesses (workspaces)
+- **Posts** — `POST /posts` (create: `caption` required, plus `restrict_publish_to`,
+  `media_urls`, `status`, and `metadata` — see "Tag every post" below),
+  `GET /posts?status=NEW` (list, filter by status),
+  `GET|PATCH|DELETE /posts/{post_id}` (one post — GET includes `publish_results`),
+  `POST /posts/{post_id}/schedule` (`scheduled_publish_time`, ISO 8601, future),
+  `POST /posts/{post_id}/queue` (next open schedule slot),
+  `POST /posts/{post_id}/publish` (now).
+- **Generate** — `POST /posts/generate` (Marky writes on-brand drafts; returns a
+  `job_id`), then poll `GET /jobs/{job_id}` until `completed` and list the new
+  `status=NEW` drafts.
+- **Media** — `POST /media` (multipart, field `file`, ≤50 MB; returns `original_url` to
+  pass in `media_urls`).
+- **Integrations** — `GET /integrations` (connected accounts; read `platform` + `status`,
+  target only `valid` ones). Accounts are connected in the dashboard, never via API.
+- **Stats** — `GET /posts/{post_id}/stats`, plus per-integration account/post stats.
+- **Businesses** — `GET /businesses` (org-level list), `GET|PATCH /businesses/{id}`
+  (the PATCH is also how you set the brand profile — flat fields like `tone`,
+  `caption_writing_rules`, `palettes`; there is no separate brand endpoint).
+- **Topics & schedule** — `GET|POST /topics`, `GET|PUT /posting-schedule`,
+  `GET /queue`.
 
-- `GET /businesses` — list your workspaces. Copy the `id` you want; that is your
-  `business_id` for every other call.
-- `GET /businesses/{business_id}` — one workspace (includes the brand profile fields).
-- `POST /businesses` — create a workspace (`name` is required).
-- `PATCH /businesses/{business_id}` — update a workspace, **including the brand profile**
-  (see below).
-- `DELETE /businesses/{business_id}` — delete a workspace (REST only, not an MCP tool).
+**Everything else** — library / folders / files, reviews, templates, designs, categories,
+webhooks, API keys, full request/response shapes and field lists for the calls above —
+is in `references/rest-endpoints.md`. Read it when you need a resource not listed here
+or the exact fields of one that is.
 
-A business in the response looks like:
+## Brand voice and memory
 
-```json
-{ "id": "your-business-uuid", "name": "My Business", "industry": "Marketing", "website": "https://mybusiness.com", "language": "English" }
-```
-
-### Brand profile (flat fields on the business)
-
-There is **no separate brand-profile endpoint**. The brand lives as flat fields on the
-business object — read them with `GET /businesses/{id}` and set them with
-`PATCH /businesses/{id}`. Marky applies them automatically whenever it writes captions or
-renders designs:
-
-```bash
-curl -X PATCH https://api.mymarky.ai/api/businesses/BIZ_ID \
-  -H "Authorization: Bearer mk_live_YOUR_KEY" \
-  -H "Content-Type: application/json" \
-  -d '{
-    "tone": "Warm, confident, and plain-spoken. No jargon.",
-    "caption_writing_rules": "Never use emojis. Keep sentences short.",
-    "caption_suffix": "\n\n#smallbusiness #local",
-    "imagery_preferences": "Bright, natural light. Real people, not stock-looking shots.",
-    "tagline": "Service you can trust.",
-    "ctas": ["Call today", "Book online"],
-    "palettes": [{ "name": "Brand", "colors": ["#0A0A0A", "#FFFFFF", "#E11D48"] }],
-    "header_font": { "family": "Poppins" },
-    "body_font": { "family": "Inter" },
-    "logo_url": "https://.../logo.png",
-    "logo_background_color": "#00000000",
-    "logo_width": 240
-  }'
-```
-
-Every field is optional — send only what you want to change. **Shape note:** on the
-business object, `palettes` is a list of palette OBJECTS (`{name, colors, text_color}`),
-so the colors live at `palettes[0].colors`. (The bare nested-array form
-`[["#hex", ...]]` is only accepted by the generate endpoints' `palettes` override.)
-Key brand fields: `tone`,
-`caption_writing_rules`, `caption_suffix`, `custom_caption_prompt`, `imagery_preferences`,
-`tagline`, `ctas`, `palettes`, `header_font`, `body_font`, `logo_url`,
-`logo_background_color`, `logo_width`.
+Marky agents get better with use because four stores carry what was learned. The duties
+are summarized here; `references/brand-memory.md` has the full protocol — file formats,
+cache maintenance, examples, escalation rules. **Read it before your first
+content-creation work of a session.**
 
 ### Write like the business — pull the brand profile before drafting
 
-Whenever YOU are about to write social content yourself (captions, hooks, hashtags, post
-copy — anything user-facing), **first read the brand profile** with
-`GET /businesses/{id}` (or `get_business`) and apply it: match `tone`, obey every line of
-`caption_writing_rules`, append `caption_suffix`, and respect `imagery_preferences` when
-choosing or describing visuals. Do this once per session per business and keep it in
-mind — don't draft from a generic voice and fix it later. (Marky's own `/posts/generate`
-endpoint applies these automatically; this rule is for content you author directly.)
-
-**Maintain the `brand-cache.md` cache.** In a Claude Code plugin install, the SessionStart
-hook injects a cached brand snapshot into context so sessions start already on-brand with
-no fetch — both the voice fields (for copy you write) and the design fields (colors,
-fonts, logo — for diagrams, cards, or video frames you render). **Over MCP the cache
-maintains itself**: a PostToolUse hook rewrites it automatically after every
-`get_business` / `update_business` call, so you don't need to touch the file. On the REST
-path (or outside the plugin) you keep it fresh yourself: **after every
-`GET /businesses/{id}` and after every profile update**, write `~/.marky/brand-cache.md`
-(next to `user.toml`) in this shape — header lines, blank line, then one `field: value`
-line each (non-string values as compact JSON):
-
-```markdown
-business_id: your-business-uuid
-updated: 2026-07-08T00:00:00Z
-
-tone: Warm, confident, and plain-spoken. No jargon.
-caption_writing_rules: Never use emojis. Keep sentences short.
-caption_suffix: #smallbusiness #local
-imagery_preferences: Bright, natural light. Real people.
-tagline: Service you can trust.
-ctas: ["Call today","Book online"]
-palettes: [{"name":"Brand","colors":["#0A0A0A","#FFFFFF","#E11D48"]}]
-header_font: {"family":"Poppins"}
-body_font: {"family":"Inter"}
-logo_url: https://.../logo.png
-```
-
-(Pre-0.2.8 installs used `brand-voice.md` with voice fields only; the hooks read the old
-name as a fallback until the next profile touch rewrites the new one.)
-
-**The snapshot orients you; it does not replace the fetch.** The brand profile can be
-edited by anyone at any time in the Marky dashboard (a teammate tweaking the tone, the
-user on their phone), and the cache only updates when an agent touches the profile — so
-treat the injected snapshot as possibly stale. Use it to sound right in conversation, but
-before your FIRST authored-or-scheduled content of a session, make one `get_business`
-call to pick up dashboard edits (over MCP the sync hook then rewrites the cache for you). The workspace
-is always the source of truth; the file is disposable. When the user switches business,
-rewrite the file for the new business — the hook only injects it when its `business_id`
-matches the current workspace.
+Whenever YOU are about to write social content yourself (captions, hooks, hashtags,
+anything user-facing), first read the brand profile (`get_business` /
+`GET /businesses/{id}`) and apply it: match `tone`, obey every line of
+`caption_writing_rules`, append `caption_suffix`, respect `imagery_preferences`. Once per
+session per business — don't draft from a generic voice and fix it later. A cached
+snapshot (`~/.marky/brand-cache.md`) is injected by the plugin's SessionStart hook to
+orient you, but it can be stale: before your first authored content of a session, make
+one fresh `get_business` call. Cache format and maintenance rules are in the reference.
 
 ### Learn the user's style — persist critiques into the brand profile
 
-When the user critiques generated content — *"I don't like how that wrote"*, *"too many
-emojis"*, *"shorter"*, *"stop saying 'game-changer'"* — do **both** of these, not just the
-first:
-
-1. **Fix the content in front of you** (edit the draft, regenerate, whatever the moment
-   needs).
-2. **Persist the lasting preference into the brand profile** so every future generation —
-   yours and Marky's own — honors it. Read the current values first
-   (`GET /businesses/{id}` or `get_business`), then merge, don't clobber:
-   - Voice/personality feedback → append or refine `tone`.
-   - Concrete do/don't rules (emojis, sentence length, banned words, hashtags) → add a
-     line to `caption_writing_rules`.
-   - Image feedback → `imagery_preferences`.
-   Write back with `PATCH /businesses/{id}` (REST) or `update_business` (MCP). Show the
-   user the updated field text and confirm before writing — these fields steer all future
-   content.
-
-One-off instructions ("make this one more playful") are not lasting preferences — apply
-them and move on. Only persist feedback the user states as a general preference or repeats.
-
-**Routing note:** style critique goes to the *brand profile*, not `POST /feedback`. The
-feedback endpoint reports bugs/friction about Marky itself to the Marky team; it does not
-change how Marky writes for this business.
+When the user critiques generated content ("too many emojis", "stop saying
+'game-changer'"), fix the content in front of you AND persist the lasting preference
+into the brand profile (`tone`, `caption_writing_rules`, `imagery_preferences`) — merge,
+don't clobber, and confirm with the user before writing. One-off instructions are not
+lasting preferences. Style critique goes to the brand profile, not `POST /feedback`.
 
 ### The feedback log — taste memory across sessions
 
-The brand profile holds *stated* preferences; the feedback log holds *revealed* ones —
-what the user actually approved, rejected, and picked on review boards
-(`scripts/review-board.py`). It lives at `~/.marky/feedback-log.jsonl`, one JSON object
-per line:
-
-```json
-{"date":"2026-07-09T12:00:00Z","business_id":"...","context":"weekly-posts",
- "mode":"approve","feedback":{"decisions":{"post-1":"approved"},"comments":{},"overall":"..."},
- "items":{"post-1":"Mon tip: ..."}}
-```
-
-Two duties, every creation skill:
-
-1. **Write after every board.** When you read a board's `feedback.json`, append a line
-   to the log — include `business_id`, a short `context` (`weekly-posts`,
-   `diagram-styles`, `video-variants`, ...), the feedback verbatim, and an `items` map
-   of id → one-line description so future sessions know what the ids referred to.
-   Board `edits` (captions rewritten in place) are the strongest signal — diff them
-   against what you drafted; the delta is the preference. And any comment phrased as a
-   rule ("never ...", "always ...") skips the recurrence bar below: persist it to the
-   brand profile immediately, with confirmation.
-2. **Read before you generate.** Before drafting a batch, picking a diagram archetype,
-   or styling variants, scan the last ~20 log entries for this `business_id` and lean
-   into what won: topics and formats that got approved, styles that got picked,
-   anything repeatedly rejected gets dropped. Comments are gold — they say *why*.
-
-**Escalate patterns to the brand profile.** The log is local to this machine. When the
-same preference shows up ~3+ times (always rejects emoji-heavy captions, always picks
-the layers diagram), it has earned a line in `caption_writing_rules` /
-`imagery_preferences` via `update_business` — confirm with the user, then it applies on
-every machine and in Marky's own generator.
+`~/.marky/feedback-log.jsonl` records what the user actually approved, rejected, and
+edited on review boards. Two duties for every creation skill: **append a line after
+every board** (feedback verbatim + an `items` map), and **scan the last ~20 entries for
+this business before you generate** — lean into what won, drop what got rejected. When
+the same preference shows up ~3+ times, escalate it into the brand profile. Entry format
+and escalation detail are in the reference.
 
 ### Performance learnings — what the NUMBERS taught us
 
-The feedback log holds what the user chose; `performance-learnings.md` holds what the
-audience rewarded — data-backed lessons from real engagement ("first-person posts that
-end with a question get 3-4x the comments", "video beats image on TikTok, image wins on
-LinkedIn"). It is a plain markdown file of dated bullets, one learning per line, stored
-per business where library files live (honor the `file_system` choice in `user.toml`):
+`performance-learnings.md` (a per-business file: library file `/performance-learnings.md`
+when `file_system = "marky"`, else `~/.marky/fs/<business_id>/performance-learnings.md`)
+holds dated, data-backed lessons from real engagement — what the AUDIENCE rewarded, as
+opposed to what the user chose. **Read it before drafting any batch** (it outranks
+generic best practices — it was measured on this audience). **Offer to append** when a
+performance review shows a real pattern — show the exact lines, write only on a yes.
+User-taste statements go to the brand profile, not here. Format in the reference.
 
-- `file_system = "marky"` → library file `/performance-learnings.md`
-  (`POST /businesses/{id}/library/files` to create, files endpoints to read/update)
-- `file_system = "local"` → `~/.marky/fs/<business_id>/performance-learnings.md`
-
-Format — newest first, each line dated and concrete enough to act on:
-
-```markdown
-# Performance learnings
-
-- 2026-07-10: First-person posts ending with a question/"LMK" pull 3-4x the comments
-  of polished announcement copy (10 comments vs ≤1 on Facebook).
-- 2026-07-10: Founder reliability stories are the best LinkedIn reach (128 imp vs ~30
-  typical). Behind-the-scenes engineering > product promo there.
-```
-
-Two duties:
-
-1. **Read before you create.** Before drafting any batch of posts, read this file
-   (alongside the feedback log and brand profile) and let it steer topic, format, and
-   voice choices. Learnings here outrank generic best practices — they are measured on
-   THIS audience.
-2. **Write when the data speaks.** After reviewing performance (`/marky-status` step 5,
-   or the `review-performance` skill), if a real pattern shows up — a clear winner or
-   loser, not one-post noise — offer to append it. Show the user the exact lines first;
-   write only on a yes. Prune entries the data later contradicts instead of letting the
-   file accumulate stale rules.
-
-Routing note: statements of user TASTE ("I hate emojis") go to the brand profile /
-feedback log, not here. This file is only for what measured engagement showed.
-
-### Integrations (connected social accounts)
-
-- `GET /businesses/{business_id}/integrations` — list the social accounts connected to a
-  business. **You connect accounts in the dashboard, not via the API** — the API can see
-  them but cannot add new ones.
-
-Each integration has:
-
-```json
-{ "id": "...", "platform": "instagram", "username": "...", "status": "valid", "selected_page_name": "..." }
-```
-
-The field that names the platform is **`platform`** (e.g. `facebook`, `instagram`,
-`linkedIn`, `tiktok`, `instagramStory`). Read it here before you choose `restrict_publish_to`
-targets so you only post to platforms the account actually has connected. Target only
-integrations whose `status` is `valid`.
-
-### Media
-
-- `POST /businesses/{business_id}/media` — upload an image or video. Multipart form, field
-  name `file`, up to 50 MB. Optional `alt_text` query param. Returns a `MediaResponse` with
-  `original_url`. Pass that URL in a post's `media_urls`.
-
-```bash
-curl -X POST "https://api.mymarky.ai/api/businesses/BIZ_ID/media" \
-  -H "Authorization: Bearer mk_live_YOUR_KEY" \
-  -F "file=@/path/to/photo.jpg"
-```
-
-### Posts
-
-- `POST /businesses/{business_id}/posts` — create a post.
-  - `caption` (required)
-  - `restrict_publish_to` — target platforms, e.g. `["instagram", "facebook", "linkedIn"]`
-    (case-insensitive)
-  - `media_urls` — image/video URLs to attach (use `original_url` from an upload)
-  - `status` — `NEW` (default draft) or `SCHEDULED`
-  - `scheduled_publish_time` — ISO 8601 time, required if `status` is `SCHEDULED`
-  - `metadata` — up to 50 string key/value pairs, YOUR analytics dimensions (see
-    "Tag every post" below). Returned verbatim on every read; Marky never interprets it.
-    Limits: key <=40 chars, value <=500 chars.
-- `GET /businesses/{business_id}/posts?status=NEW` — list posts (filter by status).
-- `GET /businesses/{business_id}/posts/{post_id}` — one post, including `publish_results`
-  (per-platform outcome) and `scheduled_publish_time`.
-- `PATCH /businesses/{business_id}/posts/{post_id}` — update a post (e.g. change
-  `restrict_publish_to`, `caption`, `media_urls`, or `metadata`).
-- `DELETE /businesses/{business_id}/posts/{post_id}` — delete a post.
-- `POST /businesses/{business_id}/posts/{post_id}/schedule` — schedule a post.
-  - `scheduled_publish_time` (required) — ISO 8601 time, must be in the future
-  - `restrict_publish_to` — defaults to all connected platforms if omitted
-- `POST /businesses/{business_id}/posts/{post_id}/queue` — drop the post into the
-  business's posting schedule (the next open slot) instead of a fixed time.
-- `POST /businesses/{business_id}/posts/{post_id}/publish` — publish immediately.
-
-A created post:
-
-```json
-{ "id": "post-uuid", "business_id": "...", "caption": "...", "status": "NEW", "restrict_publish_to": ["instagram", "linkedIn"] }
-```
-
-### Tag every post you create — `metadata`
+## Tag every post you create — `metadata`
 
 When YOU create a post, always set `metadata` with the dimensions that describe it —
-this is how future performance reviews learn what works instead of eyeballing. Use the
-shared vocabulary so cuts line up across posts:
+this is how future performance reviews learn what works instead of eyeballing. Posts
+take up to 50 string key/value pairs (key <=40 chars, value <=500 chars), returned
+verbatim on every read; Marky never interprets them. Use the shared vocabulary so cuts
+line up across posts:
 
 | Key | Values (extend as needed) |
 | :--- | :--- |
@@ -731,90 +378,6 @@ shared vocabulary so cuts line up across posts:
 Add any keys of your own — Marky stores them verbatim. When reviewing performance
 (`review-performance`), pull posts + stats and group by these keys: that's the whole
 point of tagging.
-
-### Generate on-brand posts (let Marky write them)
-
-- `POST /businesses/{business_id}/posts/generate` — generate draft posts. Brand voice,
-  colors, and logo are pulled from the business automatically.
-  - `content` — what to post about (used as the topic)
-  - `website_url` — a page to scrape for context (alternative to `content`)
-  - `custom_idea` — skip ideation and use this exact idea for every post
-  - `count` — how many to generate (1-10)
-  - `creative_formats` — which post formats to round-robin (e.g. `["image"]`, `["video"]`)
-  - `ai_image_type` — sub-type when generating AI images: `design`, `photo`, `infographic`,
-    or `meme`
-  - `ai_image_style` — visual style for AI images (e.g. `corporate-flat`, `isometric`)
-  - `template_ids` — restrict design generation to specific templates
-  - `voice` — override the brand tone for this generation only
-  - `include_stock` — allow stock photos (Unsplash/Pexels)
-  - `aspect_ratio` — media aspect, e.g. `1:1`, `9:16`
-  - Returns a `job_id`.
-- `GET /businesses/{business_id}/jobs/{job_id}` — poll until `status` is `completed`. Then
-  list the new drafts with `GET /businesses/{business_id}/posts?status=NEW`.
-
-### Stats (engagement)
-
-- `GET /businesses/{business_id}/posts/{post_id}/stats` — engagement for one Marky post.
-- `GET /businesses/{business_id}/integrations/{integration_id}/posts` — posts published on
-  a platform, with stats.
-- `GET /businesses/{business_id}/integrations/{integration_id}/stats` — account-level
-  audience stats.
-- `GET /businesses/{business_id}/integrations/{integration_id}/posts/{external_post_id}/stats`
-  — stats for one already-published post by its provider id.
-
-### Topics, categories, posting schedule
-
-- `GET|POST /businesses/{business_id}/topics`,
-  `GET|PATCH|DELETE /businesses/{business_id}/topics/{topic_id}` — content topics.
-- `GET|POST /businesses/{business_id}/categories`,
-  `GET|PATCH|DELETE /businesses/{business_id}/categories/{category_id}` — content
-  categories. A topic can reference a `category_id`.
-- `GET|PUT /businesses/{business_id}/posting-schedule` — the weekly recurring time slots
-  used when you `queue` a post. PUT takes `timeslots` like `["MON 15:00", "FRI 09:00"]`
-  and an optional `jitter_minutes`.
-- `GET /businesses/{business_id}/queue` — the current queued/scheduled lineup.
-
-### Library, folders, files
-
-- `GET /businesses/{business_id}/library` — your uploaded media library.
-- `GET /businesses/{business_id}/library/search?query=...` — search the library.
-- `POST /businesses/{business_id}/library/files` — create a text file (`path` + `content`).
-- `GET|DELETE /businesses/{business_id}/library/{media_id}` — one media item.
-- `GET|POST /businesses/{business_id}/folders`,
-  `GET|PATCH|DELETE /businesses/{business_id}/folders/{folder_id}` — organize files.
-- `GET /businesses/{business_id}/files`,
-  `GET|PUT|DELETE /businesses/{business_id}/files/{file_id}` — text docs / knowledge base.
-- `POST /businesses/{business_id}/files/{file_id}/media` — attach uploaded media to a file
-  (body: `{ "media_ids": ["MEDIA_ID"] }`).
-
-### Reviews, templates, designs
-
-- `GET /businesses/{business_id}/reviews` — your Google Business reviews (reviewer, star
-  rating, text, reply). `order_by` accepts `updateTime desc` (default), `rating`, or
-  `rating desc`.
-- `GET /businesses/{business_id}/templates` — list available design templates (each item
-  has a `template_id`, `name`, `page_count`, `preview_url`).
-- `POST /businesses/{business_id}/templates/search` — find the best-matching template for
-  filters like `is_meme` / `has_image_slot`. Returns a **single** template object under a
-  `template` key (with its full `pages` / `image_slots`), not a list. Use the `template_id`
-  from it in `POST /designs`.
-- `POST /businesses/{business_id}/designs` — render a design from a template
-  (`template_id`, `text_content`, `palette`, `logo_url`, `filler_media`, ...). Returns the
-  rendered `image_urls`.
-- `POST /businesses/{business_id}/posts/{post_id}/design/edit` — revise a post's design with
-  a plain-language `instruction` (e.g. "make the headline tan").
-
-### Org-level (not under a business)
-
-- `GET|POST /webhooks`, `DELETE /webhooks/{webhook_id}`,
-  `GET /webhooks/{webhook_id}/deliveries` — get notified when posts publish
-  (`post.published`). Deliveries are signed with HMAC-SHA256 in the `X-Marky-Signature`
-  header.
-- `GET|POST /keys`, `DELETE /keys/{key_id}` — manage API keys (REST only; key
-  create/revoke are not MCP tools).
-- `POST /feedback` — send feedback to the Marky team. Body: `type` (`bug` / `feature` /
-  `feedback`), `message`, optional `context`. See "Marky wants your feedback" near the top
-  for when and how to use it — please do.
 
 ## Platform name reference
 
