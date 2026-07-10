@@ -483,7 +483,7 @@ curl -X PATCH https://api.mymarky.ai/api/businesses/BIZ_ID \
     "imagery_preferences": "Bright, natural light. Real people, not stock-looking shots.",
     "tagline": "Service you can trust.",
     "ctas": ["Call today", "Book online"],
-    "palettes": [["#0A0A0A", "#FFFFFF", "#E11D48"]],
+    "palettes": [{ "name": "Brand", "colors": ["#0A0A0A", "#FFFFFF", "#E11D48"] }],
     "header_font": { "family": "Poppins" },
     "body_font": { "family": "Inter" },
     "logo_url": "https://.../logo.png",
@@ -492,7 +492,11 @@ curl -X PATCH https://api.mymarky.ai/api/businesses/BIZ_ID \
   }'
 ```
 
-Every field is optional — send only what you want to change. Key brand fields: `tone`,
+Every field is optional — send only what you want to change. **Shape note:** on the
+business object, `palettes` is a list of palette OBJECTS (`{name, colors, text_color}`),
+so the colors live at `palettes[0].colors`. (The bare nested-array form
+`[["#hex", ...]]` is only accepted by the generate endpoints' `palettes` override.)
+Key brand fields: `tone`,
 `caption_writing_rules`, `caption_suffix`, `custom_caption_prompt`, `imagery_preferences`,
 `tagline`, `ctas`, `palettes`, `header_font`, `body_font`, `logo_url`,
 `logo_background_color`, `logo_width`.
@@ -528,7 +532,7 @@ caption_suffix: #smallbusiness #local
 imagery_preferences: Bright, natural light. Real people.
 tagline: Service you can trust.
 ctas: ["Call today","Book online"]
-palettes: [["#0A0A0A","#FFFFFF","#E11D48"]]
+palettes: [{"name":"Brand","colors":["#0A0A0A","#FFFFFF","#E11D48"]}]
 header_font: {"family":"Poppins"}
 body_font: {"family":"Inter"}
 logo_url: https://.../logo.png

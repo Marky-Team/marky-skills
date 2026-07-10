@@ -3,6 +3,18 @@
 All notable changes to this collection are documented here. The format is based
 on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
+## [0.3.1] - 2026-07-09
+
+### Fixed
+
+- **Correct `palettes` shape in the brand-profile docs.** On the business object,
+  `palettes` is a list of palette objects (`{name, colors, text_color}`) — colors live at
+  `palettes[0].colors`. The marky-api PATCH example showed the bare nested-array form,
+  which only the generate endpoints' override accepts and would fail against
+  `PATCH /businesses`. The brand-cache example is fixed to match.
+- `create-post-diagram` now starts from the injected `brand-cache.md` snapshot and only
+  fetches the business when the cache is missing or stale.
+
 ## [0.3.0] - 2026-07-09
 
 ### Added

@@ -30,6 +30,10 @@ CSS line, not a re-roll.
 
 ## Stage 1 — Pull the brand
 
+In a plugin install the SessionStart hook already injected a `brand-cache.md` snapshot
+with these fields — start from that. If it's missing or possibly stale (see "Write like
+the business" in the marky-api skill), fetch fresh:
+
 ```bash
 curl "https://api.mymarky.ai/api/businesses/BIZ_ID" \
   -H "Authorization: Bearer mk_live_YOUR_KEY"
