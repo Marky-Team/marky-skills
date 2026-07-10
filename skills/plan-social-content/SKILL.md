@@ -76,6 +76,10 @@ Design about 6 posts for the week.
 - **Learn from past boards first.** Read the last ~20 entries for this business in
   `~/.marky/feedback-log.jsonl` (see "The feedback log" in the `marky-api` skill): lean
   into approved topics/formats, drop anything repeatedly rejected, honor the comments.
+- **Learn from the numbers too.** Read the business's `performance-learnings.md` (see
+  "Performance learnings" in the `marky-api` skill) and let its data-backed lessons
+  steer topic, format, and voice — they are measured on this audience and outrank
+  generic best practices.
 - **Anchor every post to something real** from Stage 1. A post that sounds like a human who
   was actually there beats a generic one every time.
 - **Keep variety** across topics and formats (a tip, a story, a result, a question, a

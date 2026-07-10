@@ -616,6 +616,44 @@ the layers diagram), it has earned a line in `caption_writing_rules` /
 `imagery_preferences` via `update_business` — confirm with the user, then it applies on
 every machine and in Marky's own generator.
 
+### Performance learnings — what the NUMBERS taught us
+
+The feedback log holds what the user chose; `performance-learnings.md` holds what the
+audience rewarded — data-backed lessons from real engagement ("first-person posts that
+end with a question get 3-4x the comments", "video beats image on TikTok, image wins on
+LinkedIn"). It is a plain markdown file of dated bullets, one learning per line, stored
+per business where library files live (honor the `file_system` choice in `user.toml`):
+
+- `file_system = "marky"` → library file `/performance-learnings.md`
+  (`POST /businesses/{id}/library/files` to create, files endpoints to read/update)
+- `file_system = "local"` → `~/.marky/fs/<business_id>/performance-learnings.md`
+
+Format — newest first, each line dated and concrete enough to act on:
+
+```markdown
+# Performance learnings
+
+- 2026-07-10: First-person posts ending with a question/"LMK" pull 3-4x the comments
+  of polished announcement copy (10 comments vs ≤1 on Facebook).
+- 2026-07-10: Founder reliability stories are the best LinkedIn reach (128 imp vs ~30
+  typical). Behind-the-scenes engineering > product promo there.
+```
+
+Two duties:
+
+1. **Read before you create.** Before drafting any batch of posts, read this file
+   (alongside the feedback log and brand profile) and let it steer topic, format, and
+   voice choices. Learnings here outrank generic best practices — they are measured on
+   THIS audience.
+2. **Write when the data speaks.** After reviewing performance (`/marky-status` step 5,
+   or the `review-performance` skill), if a real pattern shows up — a clear winner or
+   loser, not one-post noise — offer to append it. Show the user the exact lines first;
+   write only on a yes. Prune entries the data later contradicts instead of letting the
+   file accumulate stale rules.
+
+Routing note: statements of user TASTE ("I hate emojis") go to the brand profile /
+feedback log, not here. This file is only for what measured engagement showed.
+
 ### Integrations (connected social accounts)
 
 - `GET /businesses/{business_id}/integrations` — list the social accounts connected to a

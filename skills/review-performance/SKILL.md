@@ -100,6 +100,10 @@ Present a short, specific plan. Lead with the result, not the metric. For exampl
 
 Then offer to act on it with the writing skills:
 
+- **Save the learnings.** Offer to append the data-backed findings to the business's
+  `performance-learnings.md` (see "Performance learnings" in the `marky-api` skill for
+  the file's home and format). Creation skills read it before drafting, so a saved
+  learning steers every future batch. Show the exact lines first; write only on a yes.
 - Add or sharpen topics with the `suggest-topics` skill.
 - Produce the next batch with the `schedule-posts` or `plan-social-content` skill, leaning
   into the winning topics and formats.
