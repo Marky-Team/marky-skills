@@ -28,6 +28,16 @@ on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ### Changed
 
+- **`marky-api` restructured for progressive disclosure** (per Anthropic's skill-creator
+  best practices: keep SKILL.md under ~500 lines, move lookup material to `references/`).
+  The SKILL.md (834 → ~400 lines) keeps auth, the business-scoped shape, the app link
+  table, the feedback contract, the session-start protocol, the MCP tool table, a
+  most-used-endpoints cheat sheet, and the four brand-memory duties. Full detail moved to
+  `references/setup.md` (key creation + per-client MCP connect), `references/rest-endpoints.md`
+  (complete REST reference), `references/brand-memory.md` (brand cache, style critiques,
+  feedback log, performance learnings — full formats), and `references/contribution-nudge.md`
+  (session-start Check 2 procedure). All section headings other skills point at are
+  unchanged, so no cross-references broke.
 - README install section slimmed to the agent pointer + one-prompt install; the
   per-client manual steps live in INSTALL_FOR_AGENTS.md (readable by humans too).
 
