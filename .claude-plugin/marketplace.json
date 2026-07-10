@@ -1,5 +1,6 @@
 {
   "name": "marky-skills",
+  "description": "Run your social media from your AI agent. Marky writes, designs, schedules, and publishes on-brand posts; these skills and the bundled MCP server teach any agent to drive it.",
   "owner": {
     "name": "Marky",
     "email": "support@mymarky.ai",
