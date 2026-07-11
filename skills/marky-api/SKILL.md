@@ -103,6 +103,7 @@ you already have).
 
 | To show the user... | Open |
 | :--- | :--- |
+| A single post | `https://app.mymarky.ai/post/{post_id}` |
 | Scheduled posts | `https://app.mymarky.ai/ws/{business_id}/social-posts?tab=scheduled` |
 | Drafts to review | `https://app.mymarky.ai/ws/{business_id}/social-posts/review` |
 | The posting calendar | `https://app.mymarky.ai/ws/{business_id}/post-calendar` |
