@@ -215,12 +215,20 @@ the interactive UI.)
 - Bugs and feature requests: [GitHub Issues](https://github.com/Marky-Team/marky-skills/issues)
 - Security reports: [SECURITY.md](SECURITY.md)
 
+## Community skills
+
+This repo is the **officially curated, maintained** set. For community-contributed
+skills — open to anyone, use at your own risk, not officially maintained — see the
+companion repo: [**`Marky-Team/marky-skills-community`**](https://github.com/Marky-Team/marky-skills-community).
+A proven community skill can **graduate** into this repo.
+
 ## Contributing
 
 Contributions are welcome — a new skill is just a well-written `SKILL.md`. See
 [CONTRIBUTING.md](CONTRIBUTING.md) for the frontmatter spec, the quality bar, and
 the checklist for adding a skill. Please also read our
-[Code of Conduct](CODE_OF_CONDUCT.md).
+[Code of Conduct](CODE_OF_CONDUCT.md). For experimental or niche skills, contribute
+to [`marky-skills-community`](https://github.com/Marky-Team/marky-skills-community) instead.
 
 ## License
 
