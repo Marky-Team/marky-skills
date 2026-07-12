@@ -32,6 +32,15 @@
             "command": "bash \"${CLAUDE_PLUGIN_ROOT}/hooks/brand-cache-sync.sh\""
           }
         ]
+      },
+      {
+        "matcher": "mcp__marky__create_post|mcp__marky__schedule_post|mcp__marky__queue_post|mcp__marky__publish_post_now|mcp__marky__update_post",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash \"${CLAUDE_PLUGIN_ROOT}/hooks/post-review-link.sh\""
+          }
+        ]
       }
     ]
   }
