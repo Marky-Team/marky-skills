@@ -3,6 +3,19 @@
 All notable changes to this collection are documented here. The format is based
 on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
+## [0.11.0] - 2026-07-12
+
+### Added
+
+- **Post review links, automatically.** A new `PostToolUse` hook fires after every
+  post-writing MCP call (`create_post`, `schedule_post`, `queue_post`,
+  `publish_post_now`, `update_post`) and injects the exact Marky app links —
+  `app.mymarky.ai/post/{id}` plus the scheduled-queue view and queue position —
+  into the agent's context, so the agent always hands the user a review link
+  instead of describing the post. Deterministic; no longer relies on the agent
+  remembering the app-links table.
+
+
 ## [0.10.1] - 2026-07-12
 
 ### Fixed
