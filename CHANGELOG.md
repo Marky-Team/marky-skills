@@ -3,6 +3,16 @@
 All notable changes to this collection are documented here. The format is based
 on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
+## [0.10.1] - 2026-07-12
+
+### Fixed
+
+- The low-queue hook now finds your API key in MCP-only setups: if `MARKY_API_KEY`
+  isn't in the environment, it recovers the key from the marky MCP server's
+  Authorization header in `~/.claude.json`. Without this the check silently never
+  fired for standard plugin installs. Also fixed a nonzero exit (surfaced as a hook
+  error) on machines with no key at all.
+
 ## [0.10.0] - 2026-07-12
 
 ### Added
