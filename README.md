@@ -91,29 +91,27 @@ how to connect Marky's MCP server).
 
 ## Quickstart (first action in 3 steps)
 
-1. **Get a key.** Sign in at [app.mymarky.ai](https://app.mymarky.ai), open
-   **Organization Settings -> API Keys**, click **Create API Key**, and copy the
-   `mk_live_...` value (shown once).
+1. **Have a Marky account.** Sign up at [app.mymarky.ai](https://app.mymarky.ai) —
+   that account is what you'll sign in with below. (Only building automation? You
+   can create an `mk_live_` API key under **Organization Settings -> API Keys**
+   instead; both credentials work everywhere.)
 
-2. **Connect Marky's MCP** so the agent can use Marky's tools natively.
+2. **Connect Marky's MCP** so the agent can use Marky's tools natively. Interactive
+   clients sign in with OAuth — no key to copy:
 
-   **Claude Code (with this plugin installed): nothing to configure.** The plugin
-   ships Marky's MCP server (`.mcp.json`), so all it needs is your key in an
-   environment variable. Set it before launching Claude Code:
+   **Claude Code (with this plugin installed):** the plugin ships Marky's MCP
+   server (`.mcp.json`), wired to your key: set `MARKY_API_KEY="mk_live_..."` in
+   the environment and the tools appear automatically. Prefer OAuth sign-in
+   instead? Register the server yourself — `claude mcp add --transport http marky
+   https://api.mymarky.ai/api/mcp` — then `/mcp` → **marky** → **Authenticate**.
 
-   ```bash
-   export MARKY_API_KEY="mk_live_YOUR_KEY"
-   ```
-
-   That's it — Marky's tools appear automatically. (No key set yet? The `marky-api`
-   skill walks you through getting one and setting it.)
-
-   **Cowork: add the MCP as a custom connector** (the plugin carries the skills,
-   not the connector): **Settings → Connectors → Add → Add custom connector**,
-   name `Marky`, URL `https://api.mymarky.ai/api/mcp`, leave the OAuth fields
-   blank, and paste your `mk_live_...` key when asked. **Other clients (Codex /
-   Cursor):** configure the MCP manually — full instructions, including the REST
-   option, live in the `marky-api` skill.
+   **Cowork / claude.ai: add the MCP as a custom connector** (the plugin carries
+   the skills, not the connector): **Settings → Connectors → Add → Add custom
+   connector**, name `Marky`, URL `https://api.mymarky.ai/api/mcp`, leave the
+   OAuth fields blank, click **Add**, then **Connect** — approve on Marky's
+   consent page and pick your organization. **Other clients (Codex / Cursor):**
+   configure the MCP manually — full instructions, including the REST option,
+   live in the `marky-api` skill.
 
 3. **First post.** Connect a social account in the Marky dashboard first (the API
    can see accounts but cannot add them), then ask your agent:

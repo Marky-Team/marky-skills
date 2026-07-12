@@ -48,8 +48,19 @@ instructions.
 ```
 MCP endpoint:  https://api.mymarky.ai/api/mcp
 Transport:     streamable HTTP
-Auth:          Authorization: Bearer mk_live_YOUR_KEY
+Auth:          OAuth (sign in with your Marky account) OR Authorization: Bearer mk_live_YOUR_KEY
 ```
+
+**Which auth?** Two credentials, split by who holds them — both work on the MCP and the
+REST API:
+
+- **Sign in (OAuth)** — the default when a person is present. Claude Code, claude.ai,
+  Claude Desktop/mobile, and Cowork all walk you through it: click connect/authenticate,
+  approve in the browser, pick your organization, done. No key to copy. Revoke any time
+  from **Settings → API Keys → Connected agents**.
+- **API key (`mk_live_`)** — for automation: CI, scripts, cron/headless agents,
+  server-to-server. No browser available, or the credential belongs to a system rather
+  than a person? Use a key.
 
 ### Claude Code CLI
 
@@ -65,25 +76,39 @@ key" above for both options; a one-off `export` disappears when the terminal clo
 Then ask: *"List my Marky businesses."* Claude calls `list_businesses` and shows your
 workspaces. Each has an `id` you use as `business_id` for everything else.
 
-**Not using the plugin?** Register the server manually (replace `mk_live_YOUR_KEY`):
+**Prefer OAuth sign-in, or not using the plugin?** Register the server yourself and
+authenticate — no key needed:
+
+```bash
+claude mcp add --transport http marky https://api.mymarky.ai/api/mcp
+```
+
+Then run `/mcp` → **marky** → **Authenticate**: your browser opens Marky's consent
+page; approve and you're connected. Prefer a static key instead (e.g. for headless
+use)? Pass it as a header:
 
 ```bash
 claude mcp add --transport http marky https://api.mymarky.ai/api/mcp \
   --header "Authorization: Bearer mk_live_YOUR_KEY"
 ```
 
-### Cowork
+### Cowork / claude.ai custom connector
 
-Cowork adds remote MCP servers as **custom connectors** in the UI — even with the Marky
-plugin installed, the connector is a separate manual step (the plugin carries skills,
-hooks, and the `/marky` command; Cowork does not read the plugin's `.mcp.json`):
+Cowork and claude.ai add remote MCP servers as **custom connectors** — even with the
+Marky plugin installed, the connector is a separate manual step (the plugin carries
+skills, hooks, and the `/marky` command; Cowork does not read the plugin's `.mcp.json`).
+Custom connectors are OAuth-only (there is no API-key field), and Marky supports that
+natively:
 
 1. **Settings → Connectors → Add → Add custom connector**
 2. Name: `Marky`; URL: `https://api.mymarky.ai/api/mcp`
-3. Leave the OAuth Client ID/Secret fields blank, click **Add**, and paste your
-   `mk_live_...` key when asked for the API key / bearer token.
+3. Leave the OAuth Client ID/Secret fields blank and click **Add**.
+4. Click **Connect** — your browser opens Marky's consent page. Sign in if needed,
+   pick the organization to connect (multi-org accounts get a picker), and click
+   **Allow**.
 
-Marky's tools then appear in the tools menu for every Cowork session.
+Marky's tools then appear in the tools menu for every Cowork session. Disconnect any
+time from Marky's **Settings → API Keys → Connected agents**.
 
 ### Codex CLI
 
