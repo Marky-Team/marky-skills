@@ -38,7 +38,9 @@ Note the `platform` value and `status` of each integration. Only target platform
 
 ### A. You already wrote it
 
-Upload media (if any) with the `upload_media_base64` tool, then create the post with
+Upload media (if any) first: small files go as base64 (`upload_media_base64`); a real
+photo or video from disk goes through `create_media_upload` (returns a 1-hour URL + a
+curl command — PUT the raw bytes, get the media asset back). Then create the post with
 `create_post`:
 
 ```json

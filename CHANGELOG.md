@@ -3,6 +3,13 @@
 All notable changes to this collection are documented here. The format is based
 on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
+## [0.11.2] - 2026-07-12
+
+### Added
+- `create_media_upload` documented: the upload path for files on a local/sandbox disk
+  with no public URL (base64 tops out far below a phone photo). Returns a 1-hour
+  presigned URL + ready-to-run curl; the PUT response is the created media asset.
+
 ## [0.11.1] - 2026-07-12
 
 ### Changed
