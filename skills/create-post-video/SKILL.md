@@ -63,6 +63,27 @@ Follow the HyperFrames workflow for the video type the user wants (motion graphi
 count-up, product promo, explainer, captioned clip). Show the user the plan — scenes, copy,
 duration — before rendering long pieces. Render to MP4.
 
+### Sound effects and music — free paths first
+
+A video with no sound design feels unfinished. You do not need a paid account to fix that:
+
+1. **Bundled SFX library (free, offline, use this first).** HyperFrames' `media-use` skill
+   ships ~19 ready-to-use effects (whoosh, key-press, typing, click, chime, pop, riser,
+   impact-bass, sparkle, glitch) at `<skills-root>/media-use/audio/assets/sfx/`. Resolve
+   one by intent with `node <media-use>/scripts/resolve.mjs --type sfx --intent "whoosh"`,
+   or copy the file straight into your project's `assets/sfx/` and cue it from the
+   workflow's audio metadata. Keep SFX volume at 0.2–0.3 so narration stays on top.
+2. **HeyGen catalog (free-usage allowance).** With `npx hyperframes auth login` (OAuth),
+   SFX and background-music retrieval ride HeyGen's free allowance — signing in does not
+   require a paid plan. The workflow's `fetch-sfx` / BGM steps then work out of the box.
+3. **CC0 web libraries (when the bundle lacks the sound).** freesound.org (filter license
+   to CC0) and pixabay.com/sound-effects are safe for commercial posts with no
+   attribution. Download the file into `assets/sfx/` and cue it like a bundled one.
+
+Match effects to on-screen beats (a whoosh on the hook, key clicks under typing, a chime
+on the CTA) rather than scattering them; background music, if any, sits well under the
+voiceover (~0.2 volume).
+
 ## Stage 3 — Upload to Marky
 
 ```bash
