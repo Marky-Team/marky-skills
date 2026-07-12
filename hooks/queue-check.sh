@@ -89,8 +89,17 @@ if [[ "$cached_biz" == "$business_id" && -n "$cached_at" ]] \
   queued_count="$(read_cache queued_count)"
   run_out="$(read_cache run_out)"
 else
-  [[ -z "${MARKY_API_KEY:-}" ]] && exit 0
-  body="$(curl -fsS -m 3 -H "Authorization: Bearer ${MARKY_API_KEY}" \
+  # Key discovery: env var first; else recover it from the marky MCP server's
+  # Authorization header in ~/.claude.json — MCP-only setups (the common plugin
+  # install) never export MARKY_API_KEY, and without this fallback the check
+  # would silently never fire for exactly the users the plugin targets.
+  api_key="${MARKY_API_KEY:-}"
+  if [[ -z "$api_key" ]]; then
+    api_key="$(grep -o '"Bearer mk_live_[A-Za-z0-9_.~-]*"' "${CLAUDE_CONFIG_PATH:-${HOME}/.claude.json}" 2>/dev/null \
+      | head -1 | sed 's/^"Bearer //; s/"$//' || true)"
+  fi
+  [[ -z "$api_key" ]] && exit 0
+  body="$(curl -fsS -m 3 -H "Authorization: Bearer ${api_key}" \
     "${API_BASE}/businesses/${business_id}/queue/summary" 2>/dev/null || true)"
   if [[ -n "$body" ]]; then
     queued_count="$(printf '%s' "$body" | sed -n 's/.*"queued_count"[[:space:]]*:[[:space:]]*\([0-9]*\).*/\1/p' | head -1)"
