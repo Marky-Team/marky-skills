@@ -295,7 +295,8 @@ source of truth. If you need an operation that is not exposed as a tool, tell Ma
 | `list_business_queue` | Which posts sit in which upcoming schedule slot (the lineup, not just the recurring slots). Paginated (`CursorPage`: items under `data`, follow `next_cursor`). |
 | `get_queue_summary` | How full the daily queue is + when it runs dry: `queued_count`, `next_estimated_publish_time`, `last_estimated_publish_time`. One cheap call before deciding to top up — no need to page the full queue. |
 | `list_google_reviews` | Read your Google Business reviews. |
-| `upload_media_base64` | Upload an image or video as base64 (data URI, or raw base64 + `content_type`; JPEG/PNG/WebP/GIF/MP4/MOV, max 50 MB decoded). Returns the media asset — use its URL in `media_urls` or `logo_url`. |
+| `upload_media_base64` | Upload an image or video as base64 (data URI, or raw base64 + `content_type`; JPEG/PNG/WebP/GIF/MP4/MOV, max 50 MB decoded). Fine for small files; a real photo is too many base64 chars for one tool call — use `create_media_upload` instead. |
+| `create_media_upload` | THE upload path when the file is on a disk you can shell to (a code-exec sandbox, the user's machine) and has no public URL. Returns a 1-hour `upload_url` + a ready-to-run curl command; PUT the raw bytes there and the response is the created media asset (its `original_url` feeds `media_urls`/`logo_url`). Re-PUTting the same bytes safely returns the same asset. On hosted Claude clients, run the curl in the code-execution sandbox (the user may need to allow `api.mymarky.ai` under Settings → Capabilities → Code execution → Additional allowed domains). |
 | `submit_feedback` | Send a bug report, feature request, or general feedback to the Marky team. |
 
 **Deliberately NOT tools** — these stay off the MCP on purpose, so do not wait for them:
