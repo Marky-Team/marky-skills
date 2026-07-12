@@ -3,6 +3,27 @@
 All notable changes to this collection are documented here. The format is based
 on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
+## [0.10.0] - 2026-07-12
+
+### Added
+
+- **Low-queue notifications.** New opt-out `[notifications]` settings in `user.toml`
+  (`low_queue_reminder`, `low_queue_threshold_days`, default on / 3 days) and a
+  SessionStart hook (`hooks/queue-check.sh`) that checks the saved business's posting
+  queue via the new `GET /queue/summary` endpoint (3s timeout, cached 6h in
+  `~/.marky/queue-cache`, silent on any failure) and tells you at session start when
+  the queue is about to run dry, with an offer to top it up. Needs `MARKY_API_KEY`
+  in the environment. Non-plugin clients get the same behavior via the marky-api
+  skill's Session start section.
+- Docs for `get_queue_summary` (MCP + `GET /queue/summary`): `queued_count` plus
+  next/last estimated publish times — the cheap "when does my queue run dry?" call.
+
+### Changed
+
+- **BREAKING (API):** `GET /businesses/{id}/queue` / `list_business_queue` now returns
+  a paginated `CursorPage` (items under `data`, `limit`/`cursor` params) instead of a
+  bare array, matching every other list endpoint. Docs updated.
+
 ## [0.9.1] - 2026-07-10
 
 ### Added

@@ -12,9 +12,10 @@ user pick before continuing.
 
 Gather these five things (in parallel where you can), then report:
 
-1. **Queue — what's going out.** `GET /businesses/{id}/queue` (or `list_posts` filtered
-   to `SCHEDULED`). Show the next few scheduled posts: when, which platforms, and a
-   short caption preview.
+1. **Queue — what's going out.** `get_queue_summary` (`GET /businesses/{id}/queue/summary`)
+   for the headline (how many queued, when the queue runs dry), then
+   `GET /businesses/{id}/queue` (paginated — items under `data`) or `list_posts` filtered
+   to `SCHEDULED` for the next few posts: when, which platforms, a short caption preview.
 
 2. **Recently published — did it land?** Pull recently published posts and read each
    `publish_results`. Every platform entry should be `success`. Call out any `failed`

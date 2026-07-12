@@ -205,6 +205,17 @@ session — the first time you touch Marky — do this once:**
      (create the directory if missing). Library paths map directly onto that folder,
      e.g. `/knowledge-base/services.md` → `~/.marky/fs/<business_id>/knowledge-base/services.md`.
    If the key is missing, treat it as `"marky"` and add it to `user.toml` on the next write.
+6. **Honor the low-queue notification setting.** `user.toml` may carry a `[notifications]`
+   section: `low_queue_reminder` (`"on"` | `"off"`, missing = `"on"`) and
+   `low_queue_threshold_days` (number, default 3). In the Claude Code plugin a SessionStart
+   hook does the check automatically (via `GET /queue/summary`, cached 6h in
+   `~/.marky/queue-cache`) and injects a `LOW_QUEUE` note — just follow it. On non-plugin
+   clients, when the setting is on and you have the saved business, make one
+   `get_queue_summary` call early in the session; if `last_estimated_publish_time` is within
+   the threshold (or the queue is empty), tell the user in one line and offer to top up.
+   When the user says "stop reminding me about my queue" (or similar), set
+   `low_queue_reminder = "off"` and write `user.toml` back; a number ("only warn me at 2
+   days") goes to `low_queue_threshold_days`.
 
 This is deliberately low-friction: at most one feedback prompt and one contribution prompt
 per cadence window, never every session.
@@ -278,7 +289,8 @@ source of truth. If you need an operation that is not exposed as a tool, tell Ma
 | `list_integration_posts` | Posts published on one platform with engagement — includes posts made outside Marky. |
 | `get_external_post_stats` | Engagement for one post that was published outside Marky. |
 | `search_library` | Keyword-search the business's media library (reuse the user's own photos/videos). |
-| `list_business_queue` | Which posts sit in which upcoming schedule slot (the lineup, not just the recurring slots). |
+| `list_business_queue` | Which posts sit in which upcoming schedule slot (the lineup, not just the recurring slots). Paginated (`CursorPage`: items under `data`, follow `next_cursor`). |
+| `get_queue_summary` | How full the daily queue is + when it runs dry: `queued_count`, `next_estimated_publish_time`, `last_estimated_publish_time`. One cheap call before deciding to top up — no need to page the full queue. |
 | `list_google_reviews` | Read your Google Business reviews. |
 | `upload_media_base64` | Upload an image or video as base64 (data URI, or raw base64 + `content_type`; JPEG/PNG/WebP/GIF/MP4/MOV, max 50 MB decoded). Returns the media asset — use its URL in `media_urls` or `logo_url`. |
 | `submit_feedback` | Send a bug report, feature request, or general feedback to the Marky team. |
@@ -320,7 +332,8 @@ The calls you will make most, all relative to the base URL and nested under
   (the PATCH is also how you set the brand profile — flat fields like `tone`,
   `caption_writing_rules`, `palettes`; there is no separate brand endpoint).
 - **Topics & schedule** — `GET|POST /topics`, `GET|PUT /posting-schedule`,
-  `GET /queue`.
+  `GET /queue` (paginated), `GET /queue/summary` (count + next/last estimated
+  publish times — the cheap "when does my queue run dry?" call).
 
 **Everything else** — library / folders / files, reviews, templates, designs, categories,
 webhooks, API keys, full request/response shapes and field lists for the calls above —

@@ -183,7 +183,13 @@ A created post:
 - `GET|PUT /businesses/{business_id}/posting-schedule` — the weekly recurring time slots
   used when you `queue` a post. PUT takes `timeslots` like `["MON 15:00", "FRI 09:00"]`
   and an optional `jitter_minutes`.
-- `GET /businesses/{business_id}/queue` — the current queued/scheduled lineup.
+- `GET /businesses/{business_id}/queue` — the current queued lineup, soonest first.
+  Paginated (`CursorPage`: items under `data`, `limit`/`cursor` params, follow
+  `next_cursor` while `has_more`).
+- `GET /businesses/{business_id}/queue/summary` — aggregate queue health in one call:
+  `queued_count`, `next_estimated_publish_time`, `last_estimated_publish_time` (when
+  the queue runs dry). Use this instead of paging the list when you only need "is the
+  queue low?".
 
 ## Library, folders, files
 
