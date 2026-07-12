@@ -67,6 +67,21 @@ current_business_name = ""
 #             directly onto that folder; nothing is uploaded to Marky.
 file_system = "marky"
 
+[notifications]
+# low_queue_reminder: "on" | "off"
+#   "on"  → at session start, if your saved business's posting queue is within
+#           low_queue_threshold_days of running dry, the agent tells you and
+#           offers to top it up. Checked via GET /queue/summary with a 3s
+#           timeout, cached 6h in ~/.marky/queue-cache; needs MARKY_API_KEY in
+#           the environment (silently skipped otherwise).
+#   "off" → never check, never mention it.
+# A missing key counts as "on" — an empty queue is the product failing at its
+# job, so this is opt-out rather than opt-in.
+low_queue_reminder = "on"
+
+# Start notifying when this many days (or fewer) of queued posts remain.
+low_queue_threshold_days = 3
+
 [meta]
 # Bump this if the schema changes so the skill can migrate older files.
 schema_version = 1
