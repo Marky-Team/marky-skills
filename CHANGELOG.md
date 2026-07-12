@@ -3,6 +3,15 @@
 All notable changes to this collection are documented here. The format is based
 on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
+## [0.11.1] - 2026-07-12
+
+### Changed
+- Connecting the MCP now leads with **OAuth sign-in** (browser consent, org picker) for
+  interactive clients — Claude Code (`/mcp` → Authenticate), claude.ai / Cowork custom
+  connectors (previously documented as key-paste, which those surfaces never supported).
+  `mk_live_` keys remain the documented path for automation (CI, scripts, headless
+  agents) and keep working everywhere.
+
 ## [0.11.0] - 2026-07-12
 
 ### Added

@@ -55,11 +55,14 @@ Error responses:
 
 Rate limits: 100 requests per minute per org.
 
-**No key yet, or need to connect the MCP to a client?** Read `references/setup.md` — it
-covers creating an `mk_live_` key in the dashboard, persisting it in `MARKY_API_KEY`,
-and connecting the MCP server (`https://api.mymarky.ai/api/mcp`, streamable HTTP, same
-Bearer header) to Claude Code, Cowork, Codex, Cursor, or any other client. In a Claude
-Code plugin install the MCP server is already bundled — only the env var is needed.
+**Not connected yet?** Read `references/setup.md` — it covers connecting the MCP server
+(`https://api.mymarky.ai/api/mcp`, streamable HTTP) to Claude Code, Cowork, Codex,
+Cursor, or any other client. Interactive clients sign in with **OAuth** (browser consent,
+no key to paste — Cowork/claude.ai custom connectors use this automatically); automation
+(CI, scripts, headless agents) uses an `mk_live_` key, which setup.md also covers
+creating and persisting in `MARKY_API_KEY`. In a Claude Code plugin install the MCP
+server is already bundled and reads the `MARKY_API_KEY` env var; for OAuth instead,
+register the server manually per setup.md.
 
 ## The shape: everything is scoped to a business
 
