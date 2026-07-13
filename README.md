@@ -27,6 +27,10 @@ schedule a week of content, review what is working, and repurpose your best post
 Marky is the API- and MCP-driven social tool. These skills are the cheat sheet
 that lets an agent use it well.
 
+**Watch the 4-minute setup walkthrough:**
+
+https://github.com/user-attachments/assets/06e1f9c7-cb18-4c18-914e-a1d93655dc10
+
 ## Install
 
 > **Are you an agent?** Read [INSTALL_FOR_AGENTS.md](INSTALL_FOR_AGENTS.md) and follow
