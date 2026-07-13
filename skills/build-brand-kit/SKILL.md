@@ -22,7 +22,7 @@ pays back on every post afterward.
 
 **Read the `marky-api` skill first** for your `mk_live_` key and the MCP connection.
 This skill drives Marky entirely through the **MCP tools** (`list_businesses`,
-`get_business`, `update_business`, `upload_media_base64`) — every step below has a tool,
+`get_business`, `update_business`, `create_media_upload`) — every step below has a tool,
 so no REST calls are needed.
 
 **The approval gate is mandatory.** The brand profile steers every future caption and
@@ -109,7 +109,8 @@ the above" is still required.
 
 ## Stage 4 — Write it to Marky
 
-1. **Upload the logo** with the `upload_media_base64` MCP tool (pass a data URI, or raw
+1. **Upload the logo**: if it's already at a URL, `upload_media_from_url`; if it's a
+   local file, `create_media_upload` then PUT the bytes (pass a data URI, or raw
    base64 plus `content_type`). Use the returned media URL as `logo_url`. Hot-linking
    the site's own image URL is a last resort — sites move and break the logo silently.
 2. **One `update_business` call** with only the approved fields. Shape notes that bite:

@@ -17,7 +17,7 @@ reach for.
 
 **The MCP is how agents drive Marky.** Connect it once (see the setup pointer below) and
 your client gets a curated set of typed Marky tools natively — `list_businesses`,
-`create_post`, `schedule_post`, `publish_post_now`, `upload_media_base64`,
+`create_post`, `schedule_post`, `publish_post_now`, `create_media_upload`,
 `submit_feedback`, ... — the live list your client shows after connecting is the source
 of truth. When an MCP tool exists for an operation, **use the tool, not curl.**
 
@@ -295,7 +295,6 @@ source of truth. If you need an operation that is not exposed as a tool, tell Ma
 | `list_business_queue` | Which posts sit in which upcoming schedule slot (the lineup, not just the recurring slots). Paginated (`CursorPage`: items under `data`, follow `next_cursor`). |
 | `get_queue_summary` | How full the daily queue is + when it runs dry: `queued_count`, `next_estimated_publish_time`, `last_estimated_publish_time`. One cheap call before deciding to top up — no need to page the full queue. |
 | `list_google_reviews` | Read your Google Business reviews. |
-| `upload_media_base64` | Upload an image or video as base64 (data URI, or raw base64 + `content_type`; JPEG/PNG/WebP/GIF/MP4/MOV, max 50 MB decoded). Fine for small files; a real photo is too many base64 chars for one tool call — use `create_media_upload` instead. |
 | `create_media_upload` | THE upload path when the file is on a disk you can shell to (a code-exec sandbox, the user's machine) and has no public URL. Returns a 1-hour `upload_url` + a ready-to-run curl command; PUT the raw bytes there and the response is the created media asset (its `original_url` feeds `media_urls`/`logo_url`). Re-PUTting the same bytes safely returns the same asset. On hosted Claude clients, run the curl in the code-execution sandbox (the user may need to allow `api.mymarky.ai` under Settings → Capabilities → Code execution → Additional allowed domains). |
 | `submit_feedback` | Send a bug report, feature request, or general feedback to the Marky team. |
 

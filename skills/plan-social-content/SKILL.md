@@ -125,7 +125,8 @@ For each post:
   "Write like the business" in the `marky-api` skill) and layer `writing-style.md` on top.
 - **Prepare media.** Reuse what the business already has before reaching for anything
   generic — `search_library` finds their own photos and videos by keyword. Upload new
-  files with the `upload_media_base64` tool and keep the returned URL.
+  files with `create_media_upload` (PUT the bytes to the returned URL) or
+  `upload_media_from_url` for media already online, and keep the returned URL.
 - **Or design a diagram.** When a post announces, teaches, or compares something and no
   photo exists, a branded diagram image often beats stock. Use the `create-post-graphic` skill:
   it pulls the brand colors from the API, authors the diagram as HTML, renders a PNG, and

@@ -3,6 +3,12 @@
 All notable changes to this collection are documented here. The format is based
 on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
+## [0.11.3] - 2026-07-13
+
+### Removed
+- `upload_media_base64` (removed from the API — zero calls ever). Media on the web →
+  `upload_media_from_url`; files on disk → `create_media_upload` (presigned PUT).
+
 ## [0.11.2] - 2026-07-12
 
 ### Added
