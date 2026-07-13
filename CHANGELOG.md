@@ -3,6 +3,13 @@
 All notable changes to this collection are documented here. The format is based
 on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
+## [0.11.4] - 2026-07-13
+
+### Changed
+- Agent install guide: Cowork / Claude Desktop / claude.ai connect with OAuth sign-in
+  (Connect -> Allow -> pick org) — no API key on those surfaces. Keys remain the path
+  for Claude Code, Codex, Cursor, and automation.
+
 ## [0.11.3] - 2026-07-13
 
 ### Removed
