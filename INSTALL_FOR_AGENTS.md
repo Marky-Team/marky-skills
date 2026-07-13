@@ -19,11 +19,13 @@ If those CLI commands are unavailable, tell the user to type `/plugin marketplac
 Marky-Team/marky-skills` and then `/plugin install marky@marky-skills` in their next
 prompt.
 
-**Cowork / Claude Desktop** — you cannot install this yourself; give the user these two
-UI steps: (1) Customize -> Plugins -> Add -> Add marketplace -> Add from a repository ->
-`Marky-Team/marky-skills`, then + on the Marky plugin. (2) Settings -> Connectors ->
-Add -> Add custom connector; name `Marky`, URL `https://api.mymarky.ai/api/mcp`, leave
-the OAuth fields blank, paste the API key from step 2 when asked.
+**Cowork / Claude Desktop / claude.ai** — you cannot install this yourself; give the
+user these two UI steps: (1) Customize -> Plugins -> Add -> Add marketplace -> Add from
+a repository -> `Marky-Team/marky-skills`, then + on the Marky plugin. (2) Settings ->
+Connectors -> Add -> Add custom connector; name `Marky`, URL
+`https://api.mymarky.ai/api/mcp`, leave the OAuth fields blank, click Add, then
+Connect — their browser opens Marky's sign-in page; they click Allow and pick their
+organization. **No API key is needed on these surfaces** — skip steps 2 and 3.
 
 **Codex, Cursor, Windsurf, or any other agent that supports Agent Skills:**
 
@@ -34,9 +36,11 @@ npx skills add marky-team/marky-skills -g
 (`-g` installs user-level so Marky works from any directory, which is what you want for
 "run my social media from wherever I'm working".)
 
-## 2. Get the API key
+## 2. Get the API key (Claude Code / Codex / Cursor only)
 
-Ask the user for their Marky API key (`mk_live_...`). If they don't have one, send them
+Cowork, Claude Desktop, and claude.ai signed in with OAuth in step 1 — skip to step 4.
+For every other client, ask the user for their Marky API key (`mk_live_...`). If they
+don't have one, send them
 to **https://app.mymarky.ai/connect-claude** — one click creates it (org admins only; a
 key is shown in full exactly once, so tell them to copy it right away). No account? They
 can start free at https://app.mymarky.ai.
