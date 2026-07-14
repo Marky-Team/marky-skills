@@ -29,7 +29,7 @@ https://github.com/user-attachments/assets/06e1f9c7-cb18-4c18-914e-a1d93655dc10
 
 ## Install
 
-Copy this into your AI agent and it does the whole install for you:
+Paste this into your agent. It will take it from there...
 
 ```
 Read https://raw.githubusercontent.com/Marky-Team/marky-skills/main/INSTALL_FOR_AGENTS.md and follow it.
