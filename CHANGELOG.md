@@ -3,6 +3,15 @@
 All notable changes to this collection are documented here. The format is based
 on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
+## [0.12.1] - 2026-07-13
+
+### Changed
+- **Agents never touch API keys.** INSTALL_FOR_AGENTS has zero key steps: every
+  client — Claude Code, Cowork/Desktop, Codex, Cursor, anything via `mcp-remote` —
+  signs in with OAuth (verified live: mcp-remote runs the full browser flow against
+  api.mymarky.ai). API keys are for the REST API only, documented in the marky-api
+  skill's API sections.
+
 ## [0.12.0] - 2026-07-13
 
 ### Changed

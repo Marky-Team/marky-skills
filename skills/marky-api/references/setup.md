@@ -113,30 +113,27 @@ time from Marky's **Settings → API Keys → Connected agents**.
 ### Codex CLI
 
 Codex talks to local (stdio) MCP servers, so bridge to Marky's remote HTTP server with the
-open-source `mcp-remote` package (run on demand via `npx`, no install). Add to
+open-source `mcp-remote` package (run on demand via `npx`, no install). It signs in with
+OAuth — the browser opens, the user clicks Allow and picks their organization. Add to
 `~/.codex/config.toml`:
 
 ```toml
 [mcp_servers.marky]
 command = "npx"
-args = ["-y", "mcp-remote", "https://api.mymarky.ai/api/mcp", "--header", "Authorization:${MARKY_AUTH}"]
-env = { "MARKY_AUTH" = "Bearer mk_live_YOUR_KEY" }
+args = ["-y", "mcp-remote", "https://api.mymarky.ai/api/mcp"]
 ```
-
-(The key sits in the `env` block on purpose, so the space in `Bearer mk_live_...` is
-passed as one piece and not split apart.)
 
 ### Any other MCP client (Cursor, custom agents)
 
-Most clients take a config like this:
+Most clients take a config like this — clients that speak OAuth natively sign the user
+in; stdio-only clients go through `mcp-remote` (which handles the sign-in itself):
 
 ```json
 {
   "mcpServers": {
     "marky": {
-      "transport": "http",
-      "url": "https://api.mymarky.ai/api/mcp",
-      "headers": { "Authorization": "Bearer mk_live_YOUR_KEY" }
+      "command": "npx",
+      "args": ["-y", "mcp-remote", "https://api.mymarky.ai/api/mcp"]
     }
   }
 }
