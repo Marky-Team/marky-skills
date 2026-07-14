@@ -3,6 +3,12 @@
 All notable changes to this collection are documented here. The format is based
 on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
+## [0.12.2] - 2026-07-13
+
+### Changed
+- INSTALL_FOR_AGENTS radically simplified: three client branches + an after-connecting
+  step (list businesses, remember the pick, suggest next prompts). ~60% shorter.
+
 ## [0.12.1] - 2026-07-13
 
 ### Changed
