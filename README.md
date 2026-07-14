@@ -41,7 +41,7 @@ detects your client, installs the skills, asks for your API key, saves everythin
 right place:
 
 ```
-Read https://raw.githubusercontent.com/Marky-Team/marky-skills/main/INSTALL_FOR_AGENTS.md and follow it. Ask me for any API keys you need.
+Read https://raw.githubusercontent.com/Marky-Team/marky-skills/main/INSTALL_FOR_AGENTS.md and follow it. Prefer OAuth sign-in; only ask me for an API key if this client cannot open a browser.
 ```
 
 Works with Claude Code, Cowork, Codex, Cursor, Windsurf, and any agent that supports
@@ -104,10 +104,10 @@ how to connect Marky's MCP server).
    clients sign in with OAuth — no key to copy:
 
    **Claude Code (with this plugin installed):** the plugin ships Marky's MCP
-   server (`.mcp.json`), wired to your key: set `MARKY_API_KEY="mk_live_..."` in
-   the environment and the tools appear automatically. Prefer OAuth sign-in
-   instead? Register the server yourself — `claude mcp add --transport http marky
-   https://api.mymarky.ai/api/mcp` — then `/mcp` → **marky** → **Authenticate**.
+   server. Run `/mcp` → **marky** → **Authenticate**, approve in the browser,
+   pick your organization — done, no key. (Headless/CI? Use an API key instead:
+   `claude mcp add --transport http marky-key https://api.mymarky.ai/api/mcp
+   --header "Authorization: Bearer mk_live_..."`.)
 
    **Cowork / claude.ai: add the MCP as a custom connector** (the plugin carries
    the skills, not the connector): **Settings → Connectors → Add → Add custom
