@@ -39,9 +39,6 @@ Paste this into your agent. It will take it from there...
 Read https://raw.githubusercontent.com/Marky-Team/marky-skills/main/INSTALL_FOR_AGENTS.md and follow it.
 ```
 
-Also works with Cursor, Windsurf, and any agent that supports
-[Agent Skills](https://agentskills.io).
-
 ## Skills
 
 Marky Skills ships **12 skills** agents load on demand. Read **`marky-api`** first —
