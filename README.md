@@ -41,7 +41,7 @@ detects your client, installs the skills, asks for your API key, saves everythin
 right place:
 
 ```
-Read https://raw.githubusercontent.com/Marky-Team/marky-skills/main/INSTALL_FOR_AGENTS.md and follow it. Prefer OAuth sign-in; only ask me for an API key if this client cannot open a browser.
+Read https://raw.githubusercontent.com/Marky-Team/marky-skills/main/INSTALL_FOR_AGENTS.md and follow it.
 ```
 
 Works with Claude Code, Cowork, Codex, Cursor, Windsurf, and any agent that supports
