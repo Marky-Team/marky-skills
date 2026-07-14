@@ -68,75 +68,30 @@ how to connect Marky's MCP server).
 
 ### Start here
 
-| Skill | Use when |
+| Skill | Example |
 | :--- | :--- |
-| **`marky-api`** | **Read first.** Authenticate to the Marky API, find the base URL and key endpoints, and connect Marky's MCP server to Claude Code, Cowork, or Codex. Every other skill reads its auth and endpoints from here. |
-| **`build-brand-kit`** | You just connected a business, or generated posts feel generic. Point the agent at your website and it extracts your logo, colors, fonts, voice, tagline, and imagery style, shows you the kit for approval, and writes it to your brand profile — so everything Marky makes afterward looks and sounds like you. |
+| **`marky-api`** | "Connect me to Marky" — the agent reads this first for auth, endpoints, and the MCP connection. |
+| **`build-brand-kit`** | "`/build-brand-kit` for my website nike.com" |
 
 ### Create & schedule
 
-| Skill | Use when |
+| Skill | Example |
 | :--- | :--- |
-| **`schedule-posts`** | You have content ready (your own captions and media, or a topic for Marky to write) and want it on your connected accounts on a schedule. Covers media upload, post creation, on-brand generation, scheduling, and publish confirmation. |
-| **`plan-social-content`** | You want a full week of on-brand posts produced and queued in one conversation. Mines your real material, drafts in your voice, and always gets your approval before scheduling. |
-| **`create-post-graphic`** | A post announces, teaches, or compares something and a designed diagram would beat a stock photo. Authors branded HTML (layers, flows, loops, quote cards, sequences, steps), renders to PNG in your brand colors, and attaches it to the post. |
-| **`create-post-countdown`** | You have an upcoming event (launch, sale, webinar, opening, holiday promo) and want a sequence of posts that build anticipation and end with a final reminder. |
-| **`create-post-from-image`** | You have one strong image and want maximum mileage from it — several ready-to-review posts with different captions and angles, all using that image. |
-| **`create-post-variations`** | A post did well (or you just like it) and you want fresh variations — new angles, new wording, or a specific call-to-action link. |
-| **`create-post-video`** | You want a video post — a promo, stat animation, explainer, or captioned clip. Renders with [HyperFrames](https://github.com/heygen-com/hyperframes) in your brand colors, fonts, and logo, then uploads, captions, and schedules through Marky. |
+| **`schedule-posts`** | "Schedule this post for Friday at 9am on Instagram and LinkedIn" |
+| **`plan-social-content`** | "Plan a week of posts for my business. Ask me what's coming up first." |
+| **`create-post-graphic`** | "Turn these 4 steps into a branded diagram for the post" |
+| **`create-post-countdown`** | "Make a countdown series for our July 30 launch" |
+| **`create-post-from-image`** | "Here's a photo from the job site — make 3 posts out of it" |
+| **`create-post-variations`** | "That review post did great — make 5 fresh variations" |
+| **`create-post-video`** | "Make a short video post about our weekend sale" |
 
 ### Steer & measure
 
-| Skill | Use when |
+| Skill | Example |
 | :--- | :--- |
-| **`review-performance`** | You want to know your top posts, follower growth, and which topics, formats, and platforms get the best engagement — then get specific recommendations and optionally act on them. |
-| **`suggest-topics`** | Your posts feel repetitive or off-target and you want fresh things to post about, or you want to add, edit, enable, disable, or remove the topics Marky writes from. |
-| **`manage-library`** | You want to give Marky reference material to draw on — upload media, organize folders, and create or edit notes, briefs, and knowledge-base docs. |
-
-## Quickstart (first action in 3 steps)
-
-1. **Have a Marky account.** Sign up at [app.mymarky.ai](https://app.mymarky.ai) —
-   that account is what you'll sign in with below. (Only building automation? You
-   can create an `mk_live_` API key under **Organization Settings -> API Keys**
-   instead; both credentials work everywhere.)
-
-2. **Connect Marky's MCP** so the agent can use Marky's tools natively. Interactive
-   clients sign in with OAuth — no key to copy:
-
-   **Claude Code (with this plugin installed):** the plugin ships Marky's MCP
-   server. Run `/mcp` → **marky** → **Authenticate**, approve in the browser,
-   pick your organization — done, no key. (Headless/CI? Use an API key instead:
-   `claude mcp add --transport http marky-key https://api.mymarky.ai/api/mcp
-   --header "Authorization: Bearer mk_live_..."`.)
-
-   **Cowork / claude.ai: add the MCP as a custom connector** (the plugin carries
-   the skills, not the connector): **Settings → Connectors → Add → Add custom
-   connector**, name `Marky`, URL `https://api.mymarky.ai/api/mcp`, leave the
-   OAuth fields blank, click **Add**, then **Connect** — approve on Marky's
-   consent page and pick your organization. **Other clients (Codex / Cursor):**
-   configure the MCP manually — full instructions, including the REST option,
-   live in the `marky-api` skill.
-
-3. **First post.** Connect a social account in the Marky dashboard first (the API
-   can see accounts but cannot add them), then ask your agent:
-
-   > "List my Marky businesses, generate 3 posts about our new spring blend, and
-   > schedule one each morning this week."
-
-## Every way to make post media
-
-| Media | How | Skill |
-| :--- | :--- | :--- |
-| Branded diagrams | agent-authored HTML → PNG in your colors/fonts/logo | `create-post-graphic` |
-| Photos (camera) | capture studio — webcam, saved straight to the agent | `plan-social-content` Stage 4 |
-| Screenshots / screen recordings | capture studio — screen grab or full recording | `plan-social-content` Stage 4 |
-| Talking-head clips | capture studio — webcam + teleprompter, then captions/packaging via HyperFrames | `plan-social-content` + `create-post-video` |
-| Faceless composed video | HyperFrames renders from HTML, branded from your profile | `create-post-video` |
-| AI-generated images | Marky's own generator (`/posts/generate` designs media for the post) | `schedule-posts` / `plan-social-content` |
-
-Both local tools (review board + capture studio) follow the same pattern: a page opens in
-your browser, you click/record, and the results land right back with the agent — nothing
-to download and re-upload.
+| **`review-performance`** | "What were my top posts last month? Repurpose the best one." |
+| **`suggest-topics`** | "Suggest 10 topics my audience would love" |
+| **`manage-library`** | "Save this pricing sheet so Marky can reference it in posts" |
 
 ## What You Can Do
 
@@ -167,63 +122,9 @@ You -> Agent -> loads skill (SKILL.md) -> calls Marky API / MCP -> your socials
 - Nothing is scheduled without your go-ahead. The planning skills always show you
   the drafts and ask for approval first.
 
-### The Claude Code plugin
-
-Claude Code can install this repo as a **plugin**, not just a bundle of skills. The plugin
-carries the same 11 skills **plus** the extras a plain skills install can't: a
-**feedback-reminder hook** that loads Marky's "please send feedback" expectation into context
-at the start of every session, a **session-state hook** that reads your local `user.toml` and
-surfaces a feedback or contribution prompt only when one is actually due (cadence-gated, so it
-never nags every session), and a **`/marky` slash command** that bootstraps a session
-(loads the API reference, checks your key, lists your businesses). That is why it is the
-preferred path on Claude Code.
-
-Your cadence and preferences live in `~/.marky/user.toml` (copy `user.toml.example` to
-start, or let the skill create it on first run — it survives plugin updates there). Set
-`leave_feedback` or `suggest_contribution` to `off` there to silence either prompt.
-
-(`marky@marky-skills` is `plugin-name@marketplace-name` — the plugin is `marky`, hosted in
-the `marky-skills` repo. Run `/plugin` with no arguments to browse, manage, or remove it in
-the interactive UI.)
-
-## Why Marky Skills?
-
-- **Plain language in, scheduled posts out.** No dashboards, no copy-paste — just
-  describe the job.
-- **On-brand by default.** Generation pulls from your business profile, topics,
-  and library, so drafts sound like you.
-- **Agent-native.** Works through Marky's MCP server (native tool calls) or plain
-  REST. Use whichever your agent supports.
-- **Approval-first.** The agent drafts and proposes; you approve before anything
-  publishes.
-- **Open and portable.** Apache-2.0-licensed Markdown skills that install into any
-  agent that supports the Agent Skills format.
-
-## Requirements
-
-- A [Marky](https://app.mymarky.ai) account with at least one connected social account.
-- An API key (`mk_live_...`) — see step 1 of the Quickstart.
-- An agent that supports Agent Skills (Claude Code, Cowork, Codex, Cursor, ...).
-
-## Documentation
-
-- Marky app: [app.mymarky.ai](https://app.mymarky.ai)
-- API & MCP docs: [docs.mymarky.ai](https://docs.mymarky.ai)
-- Agent Skills format: [agentskills.io](https://agentskills.io)
-
 ## Community
 
 - Questions about your account, billing, or connected socials: support@mymarky.ai
 - Bugs and feature requests: [GitHub Issues](https://github.com/Marky-Team/marky-skills/issues)
 - Security reports: [SECURITY.md](SECURITY.md)
 
-## Contributing
-
-Contributions are welcome — a new skill is just a well-written `SKILL.md`. See
-[CONTRIBUTING.md](CONTRIBUTING.md) for the frontmatter spec, the quality bar, and
-the checklist for adding a skill. Please also read our
-[Code of Conduct](CODE_OF_CONDUCT.md).
-
-## License
-
-[Apache 2.0](LICENSE)
