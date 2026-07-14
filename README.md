@@ -48,18 +48,6 @@ Works with Claude Code, Cowork, Codex, Cursor, Windsurf, and any agent that supp
 [Agent Skills](https://agentskills.io). Manual per-client steps live in
 [INSTALL_FOR_AGENTS.md](INSTALL_FOR_AGENTS.md) too — they read fine for humans.
 
-Two notes worth knowing up front:
-
-- **Updates:** after any update, your next session opens with a short what's-new summary.
-  On Claude Code, auto-update is off by default for third-party marketplaces — enable it
-  via `/plugin` → Marketplaces → `marky-skills` → **Enable auto-update**, or update
-  manually with `/plugin marketplace update marky-skills`.
-- **Then describe the job.** Once installed, just say what you want done:
-
-  > Using `/plan-social-content`, plan and schedule a week of posts about our new
-  > spring blend — mine my notes for material, draft in my voice, and show me
-  > everything before scheduling.
-
 ## Skills
 
 Marky Skills ships **12 skills** agents load on demand. Read **`marky-api`** first —
@@ -95,6 +83,7 @@ how to connect Marky's MCP server).
 
 ## Community
 
+- Follow Marky: [Facebook](https://www.facebook.com/mymarkyai) · [Instagram](https://www.instagram.com/mymarky.ai/)
 - Questions about your account, billing, or connected socials: support@mymarky.ai
 - Bugs and feature requests: [GitHub Issues](https://github.com/Marky-Team/marky-skills/issues)
 - Security reports: [SECURITY.md](SECURITY.md)
