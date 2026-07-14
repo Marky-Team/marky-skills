@@ -2,10 +2,7 @@
   "mcpServers": {
     "marky": {
       "type": "http",
-      "url": "https://api.mymarky.ai/api/mcp",
-      "headers": {
-        "Authorization": "Bearer ${MARKY_API_KEY:-}"
-      }
+      "url": "https://api.mymarky.ai/api/mcp"
     }
   }
 }

@@ -3,6 +3,16 @@
 All notable changes to this collection are documented here. The format is based
 on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
+## [0.12.0] - 2026-07-13
+
+### Changed
+- **The bundled MCP server now signs in with OAuth.** Run `/mcp` -> marky ->
+  Authenticate (browser consent, org picker) — no `MARKY_API_KEY` needed for
+  interactive Claude Code. Existing installs: your next session shows the server
+  as "needs authentication"; authenticate once and you're back. Headless/CI keeps
+  using a key via a manually-added server (see INSTALL_FOR_AGENTS.md step 3).
+  `MARKY_API_KEY` is still read by the skills for REST calls.
+
 ## [0.11.4] - 2026-07-13
 
 ### Changed

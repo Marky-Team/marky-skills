@@ -19,6 +19,11 @@ If those CLI commands are unavailable, tell the user to type `/plugin marketplac
 Marky-Team/marky-skills` and then `/plugin install marky@marky-skills` in their next
 prompt.
 
+Then have the user **sign in**: they type `/mcp`, pick **marky**, choose
+**Authenticate** — their browser opens Marky's page, they click Allow and pick their
+organization. That is the whole auth setup: **no API key needed.** (Headless/CI use
+is the exception — see step 2.) Skip to step 4.
+
 **Cowork / Claude Desktop / claude.ai** — you cannot install this yourself; give the
 user these two UI steps: (1) Customize -> Plugins -> Add -> Add marketplace -> Add from
 a repository -> `Marky-Team/marky-skills`, then + on the Marky plugin. (2) Settings ->
@@ -36,11 +41,12 @@ npx skills add marky-team/marky-skills -g
 (`-g` installs user-level so Marky works from any directory, which is what you want for
 "run my social media from wherever I'm working".)
 
-## 2. Get the API key (Claude Code / Codex / Cursor only)
+## 2. Get the API key (Codex / Cursor / headless only)
 
-Cowork, Claude Desktop, and claude.ai signed in with OAuth in step 1 — skip to step 4.
-For every other client, ask the user for their Marky API key (`mk_live_...`). If they
-don't have one, send them
+Claude Code, Cowork, Claude Desktop, and claude.ai all signed in with OAuth in
+step 1 — skip to step 4. An API key is only needed for clients that can't open a
+browser to sign in (Codex, Cursor, other MCP clients) and for headless/CI runs.
+Ask the user for their Marky API key (`mk_live_...`). If they don't have one, send them
 to **https://app.mymarky.ai/connect-claude** — one click creates it (org admins only; a
 key is shown in full exactly once, so tell them to copy it right away). No account? They
 can start free at https://app.mymarky.ai.
@@ -49,15 +55,15 @@ can start free at https://app.mymarky.ai.
 
 Pick the location for YOUR client. Never write the key into a repository.
 
-**Claude Code** — merge it into `~/.claude/settings.json` (this exact command works
-whether or not the file exists, and never clobbers other settings):
+**Claude Code (headless/CI only — interactive sessions use OAuth, step 1)** — merge
+the key into `~/.claude/settings.json` for REST calls, and register a key-authed MCP
+server (the bundled server uses OAuth and won't read the key):
 
 ```bash
 node -e 'const fs=require("fs"),os=require("os"),d=os.homedir()+"/.claude",p=d+"/settings.json";fs.mkdirSync(d,{recursive:true});let s={};try{s=JSON.parse(fs.readFileSync(p,"utf8"))}catch{};s.env={...s.env,MARKY_API_KEY:"mk_live_THE_KEY"};fs.writeFileSync(p,JSON.stringify(s,null,2));console.log("Saved "+p)'
+claude mcp add --transport http marky-key https://api.mymarky.ai/api/mcp \
+  --header "Authorization: Bearer mk_live_THE_KEY"
 ```
-
-The bundled MCP server reads `MARKY_API_KEY` — nothing else to configure. Tell the user
-to restart Claude Code once.
 
 **Codex** — add to `~/.codex/config.toml` (the key sits in `env` on purpose so the space
 in `Bearer ...` survives):
@@ -88,11 +94,13 @@ user's shell profile and call the REST API per the `marky-api` skill:
 ## 4. Verify
 
 Call the `list_businesses` MCP tool (or `GET https://api.mymarky.ai/api/businesses` with
-`Authorization: Bearer mk_live_...`). Seeing the user's workspaces = installed correctly.
-Tell the user it worked and show them their business names.
+`Authorization: Bearer mk_live_...` on the key path). Seeing the user's workspaces =
+installed correctly. Tell the user it worked and show them their business names.
 
-If it fails: 401 means the key is wrong or wasn't picked up (restart the client);
-anything else, read the `marky-api` skill's troubleshooting notes.
+If it fails: "needs authentication" means the user hasn't finished the OAuth sign-in
+(`/mcp` -> marky -> Authenticate); a 401 on the key path means the key is wrong or
+wasn't picked up (restart the client); anything else, read the `marky-api` skill's
+troubleshooting notes.
 
 ## 5. Show the user what they can do now
 
