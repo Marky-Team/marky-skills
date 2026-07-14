@@ -48,18 +48,6 @@ Works with Claude Code, Cowork, Codex, Cursor, Windsurf, and any agent that supp
 [Agent Skills](https://agentskills.io). Manual per-client steps live in
 [INSTALL_FOR_AGENTS.md](INSTALL_FOR_AGENTS.md) too — they read fine for humans.
 
-Two notes worth knowing up front:
-
-- **Updates:** after any update, your next session opens with a short what's-new summary.
-  On Claude Code, auto-update is off by default for third-party marketplaces — enable it
-  via `/plugin` → Marketplaces → `marky-skills` → **Enable auto-update**, or update
-  manually with `/plugin marketplace update marky-skills`.
-- **Then describe the job.** Once installed, just say what you want done:
-
-  > Using `/plan-social-content`, plan and schedule a week of posts about our new
-  > spring blend — mine my notes for material, draft in my voice, and show me
-  > everything before scheduling.
-
 ## Skills
 
 Marky Skills ships **12 skills** agents load on demand. Read **`marky-api`** first —
@@ -93,37 +81,9 @@ how to connect Marky's MCP server).
 | **`suggest-topics`** | "Suggest 10 topics my audience would love" |
 | **`manage-library`** | "Save this pricing sheet so Marky can reference it in posts" |
 
-## What You Can Do
-
-- Plan and schedule a full week of on-brand content from your own notes
-- Generate posts about a topic and queue them across every connected platform
-- Build a countdown campaign for a launch, sale, or event
-- Turn one great photo into a batch of posts with different angles
-- Repurpose your best-performing posts into fresh variations
-- Review performance and get a concrete, data-backed content plan
-- Keep your topics and content library tidy so every draft stays on-brand
-
-## How It Works
-
-Each skill is a plain Markdown `SKILL.md` file. When your agent hits a matching
-job ("schedule these posts", "what's working", "plan my week"), it loads the
-skill and follows the steps inside — which Marky endpoints to call, in what order,
-with example requests and responses.
-
-```
-You -> Agent -> loads skill (SKILL.md) -> calls Marky API / MCP -> your socials
-```
-
-- **`marky-api`** holds the shared contract: how to authenticate with your
-  `mk_live_...` key, the base URL (`https://api.mymarky.ai/api`), and the key
-  endpoints (businesses, integrations, media, posts, generate, schedule, stats).
-- The other skills are **job-shaped** — each one composes those endpoints into a
-  complete workflow and defers to `marky-api` for the details.
-- Nothing is scheduled without your go-ahead. The planning skills always show you
-  the drafts and ask for approval first.
-
 ## Community
 
+- Follow Marky: [Facebook](https://www.facebook.com/mymarkyai) · [Instagram](https://www.instagram.com/mymarky.ai/)
 - Questions about your account, billing, or connected socials: support@mymarky.ai
 - Bugs and feature requests: [GitHub Issues](https://github.com/Marky-Team/marky-skills/issues)
 - Security reports: [SECURITY.md](SECURITY.md)
