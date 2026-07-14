@@ -17,15 +17,11 @@
   <a href="#contributing">Contributing</a>
 </p>
 
-Marky Skills is a collection of [Agent Skills](https://agentskills.io) that teach
-coding agents how to drive [Marky](https://app.mymarky.ai) — AI social media
-management — through its API and MCP server. Install them into Claude Code,
-Cowork, Codex, Cursor, or any agent that supports skills, then run your
-whole social workflow in plain language: generate on-brand posts, upload media,
-schedule a week of content, review what is working, and repurpose your best posts.
-
-Marky is the API- and MCP-driven social tool. These skills are the cheat sheet
-that lets an agent use it well.
+Marky Skills gives your agent the ability to automate your social media. Out of
+the box it can create content — posts, graphics, and videos in your brand style.
+Upload and post it yourself, or sign up for a [Marky](https://app.mymarky.ai)
+account to publish straight from your agent, optimize based on what's working,
+and so much more.
 
 **Watch the 4-minute setup walkthrough:**
 
