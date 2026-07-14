@@ -24,13 +24,12 @@ Then have the user **sign in**: they type `/mcp`, pick **marky**, choose
 organization. That is the whole auth setup: **no API key needed.** (Headless/CI use
 is the exception — see step 2.) Skip to step 4.
 
-**Cowork / Claude Desktop / claude.ai** — you cannot install this yourself; give the
-user these two UI steps: (1) Customize -> Plugins -> Add -> Add marketplace -> Add from
-a repository -> `Marky-Team/marky-skills`, then + on the Marky plugin. (2) Settings ->
-Connectors -> Add -> Add custom connector; name `Marky`, URL
-`https://api.mymarky.ai/api/mcp`, leave the OAuth fields blank, click Add, then
-Connect — their browser opens Marky's sign-in page; they click Allow and pick their
-organization. **No API key is needed on these surfaces** — skip steps 2 and 3.
+**Claude Cowork / Desktop** — you cannot install this yourself; give the user these
+two UI steps: (1) Customize -> Plugins -> Add -> Add marketplace -> Add from a
+repository -> `Marky-Team/marky-skills`, then **Add** the Marky plugin. (2) Installing
+the plugin surfaces the **Marky connector (MCP)** — click **Connect**; their browser
+opens Marky's sign-in page, they click Allow and pick their organization. **No API key
+is needed on these surfaces** — skip steps 2 and 3.
 
 **Codex, Cursor, Windsurf, or any other agent that supports Agent Skills:**
 
