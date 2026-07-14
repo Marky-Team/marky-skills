@@ -23,11 +23,15 @@ Upload and post it yourself, or sign up for a [Marky](https://app.mymarky.ai)
 account to publish straight from your agent, optimize based on what's working,
 and so much more.
 
-**Watch the 4-minute setup walkthrough:**
+## Install
+
+### Claude Cowork
+
+Watch the 4-minute setup walkthrough:
 
 https://github.com/user-attachments/assets/06e1f9c7-cb18-4c18-914e-a1d93655dc10
 
-## Install
+### Claude Code (or Codex)
 
 Paste this into your agent. It will take it from there...
 
@@ -35,7 +39,7 @@ Paste this into your agent. It will take it from there...
 Read https://raw.githubusercontent.com/Marky-Team/marky-skills/main/INSTALL_FOR_AGENTS.md and follow it.
 ```
 
-Works with Claude Code, Cowork, Codex, Cursor, Windsurf, and any agent that supports
+Also works with Cursor, Windsurf, and any agent that supports
 [Agent Skills](https://agentskills.io).
 
 ## Skills
