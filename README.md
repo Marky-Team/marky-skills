@@ -29,20 +29,14 @@ https://github.com/user-attachments/assets/06e1f9c7-cb18-4c18-914e-a1d93655dc10
 
 ## Install
 
-> **Are you an agent?** Read [INSTALL_FOR_AGENTS.md](INSTALL_FOR_AGENTS.md) and follow
-> it. It covers every client: what to install, where the API key goes, and how to verify.
-
-**Are you a human?** Copy this into your AI agent and it does the whole install for you —
-detects your client, installs the skills, asks for your API key, saves everything in the
-right place:
+Copy this into your AI agent and it does the whole install for you:
 
 ```
 Read https://raw.githubusercontent.com/Marky-Team/marky-skills/main/INSTALL_FOR_AGENTS.md and follow it.
 ```
 
 Works with Claude Code, Cowork, Codex, Cursor, Windsurf, and any agent that supports
-[Agent Skills](https://agentskills.io). Manual per-client steps live in
-[INSTALL_FOR_AGENTS.md](INSTALL_FOR_AGENTS.md) too — they read fine for humans.
+[Agent Skills](https://agentskills.io).
 
 ## Skills
 
