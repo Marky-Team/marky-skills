@@ -47,7 +47,15 @@ directly; see the `marky-api` skill.)
 
 Call the `list_businesses` MCP tool and ask your user which business they want to
 work on first — remember that preference (the `marky-api` skill's `user.toml` covers
-where). Then offer a few ideas of what to do next:
+where).
+
+**Empty list (brand-new account)?** Bootstrap it: run `/build-brand-kit` with their
+website (or `create_business` if they have no site), then send them to
+`https://app.mymarky.ai/ws/{business_id}/business/profile` to connect their social
+accounts — that page is where Instagram/Facebook/LinkedIn/TikTok get linked, and
+publishing can't work until at least one is. Content creation works right away.
+
+Then offer a few ideas of what to do next:
 
 - "/plan-social-content for my business. Ask me what's coming up first."
 - "/review-performance — what were my top posts last month? Repurpose the best one."

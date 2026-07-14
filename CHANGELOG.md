@@ -3,6 +3,12 @@
 All notable changes to this collection are documented here. The format is based
 on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
+## [0.12.3] - 2026-07-13
+
+### Added
+- Install guide: empty-account bootstrap — brand-new users (e.g. signed up mid-OAuth)
+  get /build-brand-kit or create_business, then the connect-socials URL.
+
 ## [0.12.2] - 2026-07-13
 
 ### Changed
