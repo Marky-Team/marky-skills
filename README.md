@@ -93,35 +93,6 @@ how to connect Marky's MCP server).
 | **`suggest-topics`** | "Suggest 10 topics my audience would love" |
 | **`manage-library`** | "Save this pricing sheet so Marky can reference it in posts" |
 
-## What You Can Do
-
-- Plan and schedule a full week of on-brand content from your own notes
-- Generate posts about a topic and queue them across every connected platform
-- Build a countdown campaign for a launch, sale, or event
-- Turn one great photo into a batch of posts with different angles
-- Repurpose your best-performing posts into fresh variations
-- Review performance and get a concrete, data-backed content plan
-- Keep your topics and content library tidy so every draft stays on-brand
-
-## How It Works
-
-Each skill is a plain Markdown `SKILL.md` file. When your agent hits a matching
-job ("schedule these posts", "what's working", "plan my week"), it loads the
-skill and follows the steps inside — which Marky endpoints to call, in what order,
-with example requests and responses.
-
-```
-You -> Agent -> loads skill (SKILL.md) -> calls Marky API / MCP -> your socials
-```
-
-- **`marky-api`** holds the shared contract: how to authenticate with your
-  `mk_live_...` key, the base URL (`https://api.mymarky.ai/api`), and the key
-  endpoints (businesses, integrations, media, posts, generate, schedule, stats).
-- The other skills are **job-shaped** — each one composes those endpoints into a
-  complete workflow and defers to `marky-api` for the details.
-- Nothing is scheduled without your go-ahead. The planning skills always show you
-  the drafts and ask for approval first.
-
 ## Community
 
 - Questions about your account, billing, or connected socials: support@mymarky.ai
