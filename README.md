@@ -63,6 +63,7 @@ how to connect Marky's MCP server).
 | **`create-post-from-image`** | "Here's a photo from the job site — make 3 posts out of it" |
 | **`create-post-variations`** | "That review post did great — make 5 fresh variations" |
 | **`create-post-video`** | "Make a short video post about our weekend sale" |
+| **`create-post-clips`** | "Turn my YouTube webinar into short clips and schedule them" |
 
 ### Steer & measure
 

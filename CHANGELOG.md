@@ -3,6 +3,22 @@
 All notable changes to this collection are documented here. The format is based
 on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
+## [0.14.0] - 2026-07-15
+
+### Added
+
+- **New skill: `create-post-clips`.** Turn an existing long-form video (YouTube
+  link, local file, or library upload — webinar, podcast, talk, sermon) into
+  2-5 short vertical clips, scheduled: yt-dlp download with auto-caption
+  fallback, Whisper word-level transcription, hook-scored segmentation
+  (30-60s, hook 7+/10, clip opens ON the hook line), a second verification
+  pass so every cut ends on a complete thought, layout-aware 9:16 cropping
+  (talking-head center crop vs screen-share stacking), burned-in captions
+  (HyperFrames if available, else ffmpeg + styled ASS), one brand-voice post
+  per clip through the humanize pass, review-board approval, and scheduling
+  spaced across the week. Pipeline shape and ffmpeg/Whisper gotchas adapted
+  from ericosiu/ai-marketing-skills (MIT).
+
 ## [0.13.0] - 2026-07-15
 
 ### Added
