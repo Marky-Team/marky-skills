@@ -56,6 +56,10 @@
     "create-post-carousel": {
       "hash": "ed00ed5bc1781a5f6ce2e5fd55ab2202be26160b",
       "files": 2
+    },
+    "create-post-clips": {
+      "hash": "4a66be21f35a5006f48a2c7cd1777c215512e1c5",
+      "files": 1
     }
   }
 }

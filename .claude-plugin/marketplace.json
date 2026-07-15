@@ -30,7 +30,8 @@
         "./skills/create-post-video",
         "./skills/build-brand-kit",
         "./skills/humanize",
-        "./skills/create-post-carousel"
+        "./skills/create-post-carousel",
+        "./skills/create-post-clips"
       ],
       "commands": [
         "./commands/marky.md",
