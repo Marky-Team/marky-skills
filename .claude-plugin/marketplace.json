@@ -29,7 +29,8 @@
         "./skills/create-post-from-image",
         "./skills/create-post-video",
         "./skills/build-brand-kit",
-        "./skills/humanize"
+        "./skills/humanize",
+        "./skills/create-post-carousel"
       ],
       "commands": [
         "./commands/marky.md",

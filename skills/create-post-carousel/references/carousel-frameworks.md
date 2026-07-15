@@ -144,7 +144,7 @@ Judge carousels on **saves and completion**, not likes — saves signal referenc
 
 ## Using these with Marky
 
-- Render each slide with this skill's HTML→PNG flow: one shared visual template,
+- Render each slide with create-post-graphic's HTML→PNG flow: one shared visual template,
   swap the copy per slide (the "one visual template per carousel" rule above is
   free when every slide comes from the same HTML file).
 - Create the post with all slides as `media_urls` in order (slide 1 first — it's

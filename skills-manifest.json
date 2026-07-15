@@ -52,6 +52,10 @@
     "humanize": {
       "hash": "701fdd948fee8106940ac23730eba034a77ce36c",
       "files": 1
+    },
+    "create-post-carousel": {
+      "hash": "ed00ed5bc1781a5f6ce2e5fd55ab2202be26160b",
+      "files": 2
     }
   }
 }

@@ -70,11 +70,9 @@ Match the post's *point* to a shape. If none fits, a bold typographic card
 | explains two+ parties interacting over time (dev audience) | **Sequence** | lifelines + labeled arrows, dark surface, mono font for message labels |
 | gives setup or how-to instructions | **Steps** | numbered cards with accent number badges, joined by short connectors |
 
-**Making a multi-slide carousel instead of one card?** Pick the narrative
-structure first — [references/carousel-frameworks.md](references/carousel-frameworks.md)
-has five slide-by-slide architectures (Value-Stack, Problem-Proof, Hack List,
-Rant Callout, Demo Walkthrough) with a picking table. Then render each slide
-from ONE shared HTML template using the archetypes above.
+**Making a multi-slide carousel instead of one card?** That's the
+create-post-carousel skill — it owns the narrative frameworks and slide-copy
+workflow, and comes back here for the brand pull and render mechanics.
 
 ## Stage 3 — Author the HTML
 

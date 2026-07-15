@@ -14,11 +14,16 @@ on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
   create-post-graphic now run it before their approval gates; the user's own
   caption_writing_rules always outrank it. Adapted from Wikipedia's "Signs of
   AI writing" (via ericosiu/ai-marketing-skills, MIT).
-- **Carousel frameworks reference** in create-post-graphic: five slide-by-slide
-  narrative architectures (Value-Stack, Problem-Proof, Hack List, Rant Callout,
-  Demo Walkthrough) with a picking table, platform notes, and Marky-specific
-  execution steps (one shared HTML template per carousel, metadata tagging for
-  per-framework performance). Adapted from coreyhaines31/marketingskills (MIT).
+- **New skill: `create-post-carousel`.** Multi-slide carousels (Instagram,
+  LinkedIn document posts, TikTok photo mode) as their own job: pick one of
+  five narrative frameworks (Value-Stack, Problem-Proof, Hack List, Rant
+  Callout, Demo Walkthrough — adapted from coreyhaines31/marketingskills,
+  MIT), write the slide-by-slide copy, render every slide from ONE shared
+  branded HTML template via create-post-graphic's mechanics, attach in order,
+  tag `format: carousel` + `hook: <framework>` so review-performance can score
+  frameworks against each other. Carousels were previously a footnote inside
+  create-post-graphic; they route on different words ("make a carousel") and
+  follow a different workflow (narrative arc, not single-card design).
 
 ### Changed
 
