@@ -3,6 +3,36 @@
 All notable changes to this collection are documented here. The format is based
 on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
+## [0.13.0] - 2026-07-15
+
+### Added
+
+- **New skill: `humanize`.** A pre-review quality pass that scores captions and
+  marketing copy against 24 AI-writing patterns (banned vocabulary, negation
+  definitions, significance inflation, sycophancy, filler...) and rewrites to
+  90+ before the user ever sees a draft. plan-social-content and
+  create-post-graphic now run it before their approval gates; the user's own
+  caption_writing_rules always outrank it. Adapted from Wikipedia's "Signs of
+  AI writing" (via ericosiu/ai-marketing-skills, MIT).
+- **New skill: `create-post-carousel`.** Multi-slide carousels (Instagram,
+  LinkedIn document posts, TikTok photo mode) as their own job: pick one of
+  five narrative frameworks (Value-Stack, Problem-Proof, Hack List, Rant
+  Callout, Demo Walkthrough — adapted from coreyhaines31/marketingskills,
+  MIT), write the slide-by-slide copy, render every slide from ONE shared
+  branded HTML template via create-post-graphic's mechanics, attach in order,
+  tag `format: carousel` + `hook: <framework>` so review-performance can score
+  frameworks against each other. Carousels were previously a footnote inside
+  create-post-graphic; they route on different words ("make a carousel") and
+  follow a different workflow (narrative arc, not single-card design).
+
+### Changed
+
+- **Every skill description now carries trigger phrases and scope boundaries.**
+  Casual phrasings users actually type ("fill my queue", "repurpose this post",
+  "how are my posts doing") plus one "For X, see Y" line per skill so agents
+  route between plan-social-content / schedule-posts / create-post-variations
+  correctly. Descriptions are the only thing an agent sees at routing time.
+
 ## [0.12.3] - 2026-07-13
 
 ### Added

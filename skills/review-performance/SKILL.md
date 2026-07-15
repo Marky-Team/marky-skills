@@ -5,7 +5,7 @@ description: >
   working, and turn it into a concrete plan. Use this when you want to know your top posts,
   follower growth, and which topics, formats, and platforms get the best engagement, then
   get specific recommendations (and optionally act on them). Pulls per-post stats, account
-  stats, and your post history. Reads auth and endpoints from the marky-api skill.
+  stats, and your post history. Reads auth and endpoints from the marky-api skill. Also triggers on "how are my posts doing", "what's working", "top posts last month". For a quick queue/account status, use /marky-status.
 ---
 
 # Review Performance

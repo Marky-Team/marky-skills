@@ -70,6 +70,10 @@ Match the post's *point* to a shape. If none fits, a bold typographic card
 | explains two+ parties interacting over time (dev audience) | **Sequence** | lifelines + labeled arrows, dark surface, mono font for message labels |
 | gives setup or how-to instructions | **Steps** | numbered cards with accent number badges, joined by short connectors |
 
+**Making a multi-slide carousel instead of one card?** That's the
+create-post-carousel skill — it owns the narrative frameworks and slide-copy
+workflow, and comes back here for the brand pull and render mechanics.
+
 ## Stage 3 — Author the HTML
 
 Start from `assets/_base.css` (copy it next to your HTML files and substitute
@@ -125,6 +129,8 @@ curl -X POST "https://api.mymarky.ai/api/businesses/BIZ_ID/media" \
 Keep the `.html` sources next to the PNGs in your content folder — future edits
 are a one-line change plus a re-render, and a series stays visually consistent
 by reusing the same base CSS.
+
+Before presenting drafts, run every caption through the **humanize** skill's pattern check (score 90+; fix silently, don't show the math). The user's own caption_writing_rules still outrank it.
 
 ## Approval gate
 

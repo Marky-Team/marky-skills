@@ -6,7 +6,7 @@ description: >
   endpoints (businesses, integrations, media, posts, generate, schedule, stats), or
   connect Marky's MCP server to Claude Code CLI, Cowork, or Codex. Read this
   first before calling the Marky API or using the plan-social-content or schedule-posts
-  skills.
+  skills. Also triggers on "connect my agent to Marky", "is my Marky connection working".
 ---
 
 # Marky API

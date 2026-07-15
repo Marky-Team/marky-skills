@@ -5,7 +5,7 @@ description: >
   the API. Use this when you have a strong photo or graphic (a product shot, a professional
   photo, a branded design) and want to get maximum mileage out of it with multiple captions
   and angles. Picks a library image and creates several draft posts that all use it. Reads
-  auth and endpoints from the marky-api skill.
+  auth and endpoints from the marky-api skill. Also triggers on "make posts from this photo", "use this image for a post", "what can I do with this picture". To design a new image instead, see create-post-graphic.
 ---
 
 # Posts From Library Image

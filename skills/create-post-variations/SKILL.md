@@ -5,7 +5,7 @@ description: >
   this when a post did well (or you just have one you like) and you want more posts in the
   same spirit, with new angles, new wording, or a specific call-to-action link. Lists your
   past posts, lets you pick one, and creates new drafts you can review and schedule. Reads
-  auth and endpoints from the marky-api skill.
+  auth and endpoints from the marky-api skill. Also triggers on "repurpose this post", "more like this one", "remix my best post". For a full week planned from scratch, see plan-social-content.
 ---
 
 # Repurpose Posts
