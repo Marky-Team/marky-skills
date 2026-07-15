@@ -48,6 +48,10 @@
     "build-brand-kit": {
       "hash": "0b5c26aafd6babb40f654dec303bee024439a2bc",
       "files": 1
+    },
+    "humanize": {
+      "hash": "701fdd948fee8106940ac23730eba034a77ce36c",
+      "files": 1
     }
   }
 }

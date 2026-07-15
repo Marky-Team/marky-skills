@@ -5,7 +5,7 @@ description: >
   HTML) in your Marky brand colors, fonts, and logo, then upload it to Marky, caption it in
   your voice, and schedule it everywhere you're connected. Use when you want a video post —
   a promo, explainer, stat animation, countdown sting, or captioned clip — produced and
-  queued from one conversation. Reads auth and endpoints from the marky-api skill.
+  queued from one conversation. Reads auth and endpoints from the marky-api skill. Also triggers on "make a video post", "turn this into a reel", "animate this stat". For a still graphic or carousel, see create-post-graphic.
 ---
 
 # Create Post: Video

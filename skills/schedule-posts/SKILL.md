@@ -5,7 +5,7 @@ description: >
   when you have post content ready (your own captions and images/videos, or a topic for
   Marky to write) and you want to get it onto your connected social accounts on a schedule.
   Covers uploading media, creating posts, generating on-brand drafts, scheduling, and
-  checking publish results. Reads auth and endpoint details from the marky-api skill.
+  checking publish results. Reads auth and endpoint details from the marky-api skill. Also triggers on "schedule this", "post this tomorrow at 9", "queue these up", "publish this now". For a whole week planned from scratch, see plan-social-content.
 ---
 
 # Schedule Posts

@@ -3,6 +3,31 @@
 All notable changes to this collection are documented here. The format is based
 on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
+## [0.13.0] - 2026-07-15
+
+### Added
+
+- **New skill: `humanize`.** A pre-review quality pass that scores captions and
+  marketing copy against 24 AI-writing patterns (banned vocabulary, negation
+  definitions, significance inflation, sycophancy, filler...) and rewrites to
+  90+ before the user ever sees a draft. plan-social-content and
+  create-post-graphic now run it before their approval gates; the user's own
+  caption_writing_rules always outrank it. Adapted from Wikipedia's "Signs of
+  AI writing" (via ericosiu/ai-marketing-skills, MIT).
+- **Carousel frameworks reference** in create-post-graphic: five slide-by-slide
+  narrative architectures (Value-Stack, Problem-Proof, Hack List, Rant Callout,
+  Demo Walkthrough) with a picking table, platform notes, and Marky-specific
+  execution steps (one shared HTML template per carousel, metadata tagging for
+  per-framework performance). Adapted from coreyhaines31/marketingskills (MIT).
+
+### Changed
+
+- **Every skill description now carries trigger phrases and scope boundaries.**
+  Casual phrasings users actually type ("fill my queue", "repurpose this post",
+  "how are my posts doing") plus one "For X, see Y" line per skill so agents
+  route between plan-social-content / schedule-posts / create-post-variations
+  correctly. Descriptions are the only thing an agent sees at routing time.
+
 ## [0.12.3] - 2026-07-13
 
 ### Added

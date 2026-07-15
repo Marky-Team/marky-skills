@@ -5,7 +5,7 @@ description: >
   on-brand posts, each with a different angle, scheduled at the right intervals leading up
   to the date. Use this when you have an event (launch, sale, webinar, opening, holiday
   promo) and want a sequence of posts that build anticipation and end with a final reminder.
-  Reads auth and endpoints from the marky-api skill.
+  Reads auth and endpoints from the marky-api skill. Also triggers on "countdown to my event", "posts leading up to the launch", "build hype for my webinar". For a single event post, see schedule-posts.
 ---
 
 # Event Countdown Posts

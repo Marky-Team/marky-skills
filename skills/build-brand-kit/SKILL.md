@@ -7,7 +7,7 @@ description: >
   a URL and asks you to make Marky match it. Visits the site, extracts the logo, colors,
   fonts, voice, tagline, and imagery style, shows the user the proposed kit for approval,
   then writes it to the business with the update_business MCP tool. Uses the marky-api
-  skill for auth and the MCP connection.
+  skill for auth and the MCP connection. Also triggers on "my posts don't sound like me", "update my brand colors", "refresh my brand profile". For writing posts with the kit, see plan-social-content.
 ---
 
 # Build Brand Kit

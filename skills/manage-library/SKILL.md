@@ -4,7 +4,7 @@ description: >
   Manage your Marky content library through the API: upload media, organize folders, and
   create, read, update, or delete files (notes, briefs, knowledge-base docs). Use this when
   you want to add reference material Marky can draw on when writing posts, tidy up your
-  media, or store campaign notes and plans. Reads auth and endpoints from the marky-api skill.
+  media, or store campaign notes and plans. Reads auth and endpoints from the marky-api skill. Also triggers on "upload these to my library", "save this brief so Marky can use it", "organize my media".
 ---
 
 # Manage Library

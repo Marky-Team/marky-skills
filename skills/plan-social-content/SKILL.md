@@ -6,7 +6,7 @@ description: >
   with one conversation: it mines real material from your own notes and updates, drafts in
   your voice, shows you everything for approval, then schedules across every platform you
   have connected. Always gets your approval before anything is scheduled. Uses the
-  marky-api and schedule-posts skills to talk to Marky.
+  marky-api and schedule-posts skills to talk to Marky. Also triggers on "plan my week", "fill my queue", "what should I post this week", "post for me every day". For one-off posts, see schedule-posts; for ideas only, see suggest-topics.
 ---
 
 # Plan Social Content
@@ -161,6 +161,8 @@ always outrank this list — if their audience rewards plain announcements, or t
 has said they hate question hooks, follow them, not this palette. Tag the choice in
 post `metadata` (`hook: question`) so `review-performance` can tell you which
 patterns actually win for THIS audience.
+
+Before presenting drafts, run every caption through the **humanize** skill's pattern check (score 90+; fix silently, don't show the math). The user's own caption_writing_rules still outrank it.
 
 ### Stage 6 — Approve, then schedule (hard gate)
 

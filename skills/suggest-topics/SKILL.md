@@ -5,7 +5,7 @@ description: >
   this when your posts feel repetitive or off-target, you want new things to post about, or
   you want to add, edit, enable, disable, or remove topics. Topics steer what Marky writes
   about, so a good topic list is the difference between focused content and random noise.
-  Reads auth and endpoints from the marky-api skill.
+  Reads auth and endpoints from the marky-api skill. Also triggers on "what should I post about", "new content ideas", "my posts feel repetitive", "add a topic".
 ---
 
 # Suggest Topics
