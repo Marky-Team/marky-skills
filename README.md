@@ -27,7 +27,7 @@ and so much more.
 
 You'll need both the MCP & Skills.
 
-**Claude Code**
+### Claude Code
 
 CC and Cowork support `plugins` which package both MCP and Skills.
 
@@ -36,7 +36,7 @@ CC and Cowork support `plugins` which package both MCP and Skills.
 /plugin install marky@marky-skills
 ```
 
-**Claude Cowork / Desktop**
+### Claude Cowork / Desktop
 
 1. Click Customize
 2. Click Plugins
@@ -60,7 +60,7 @@ https://github.com/user-attachments/assets/06e1f9c7-cb18-4c18-914e-a1d93655dc10
 (video coming soon!)
 
 
-**Other agent (OpenClaw, Hermes, ...)**
+### Other agent (OpenClaw, Hermes, ...)
 
 Install the skills:
 
