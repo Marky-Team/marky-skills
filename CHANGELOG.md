@@ -28,6 +28,16 @@ on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
   `queue-check.sh` now sources the active business from `~/.marky/brand-cache.md`
   (written by the brand-cache hook) instead of `user.toml`, defaults the threshold to
   3 days, and honors a "stop reminding me" mute via the agent's memory.
+## [0.14.1] - 2026-07-15
+
+### Added
+
+- **Team review workflow documented** (live in the API/MCP today): `update_post`
+  moves posts between the team review states (`NEW` = ready for your team's
+  review, `LIKED`/`REJECTED` = their verdict — Marky never gates publishing on
+  these), `list_posts` filters by them, and three new MCP tools cover the
+  review discussion: `list_post_comments`, `create_post_comment`,
+  `resolve_post_comment`. REST equivalents in the rest-endpoints reference.
 
 ## [0.14.0] - 2026-07-15
 

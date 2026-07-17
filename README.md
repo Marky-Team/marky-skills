@@ -18,26 +18,58 @@
 </p>
 
 Marky Skills gives your agent the ability to automate your social media. Out of
-the box it can create content — posts, graphics, and videos in your brand style.
+the box it can create content: posts, graphics, and videos in your brand style.
 Upload and post it yourself, or sign up for a [Marky](https://app.mymarky.ai)
 account to publish straight from your agent, optimize based on what's working,
 and so much more.
 
 ## Install
 
-### Claude Cowork
+You'll need both the MCP & Skills.
 
-Watch the 4-minute setup walkthrough:
+### Claude Code
+
+CC and Cowork support `plugins` which package both MCP and Skills.
+
+```
+/plugin marketplace add Marky-Team/marky-skills
+/plugin install marky@marky-skills
+```
+
+### Claude Cowork / Desktop
+
+1. Click Customize
+2. Click Plugins
+3. Add the `Marky-Team/marky-skills` marketplace
+4. Add the Marky plugin
+5. Click **Connect** on the Marky connector
+6. Click **Allow**
+
+Watch the 4-minute install:
 
 https://github.com/user-attachments/assets/06e1f9c7-cb18-4c18-914e-a1d93655dc10
 
-### Claude Code (or Codex)
 
-Paste this into your agent. It will take it from there...
+### ChatGPT / Codex
+1. Turn on Developer mode (Settings → Security and login → Enable)
+2. Go to Plugins
+3. click +
+4. Paste `https://api.mymarky.ai/api/mcp` as the URL
+5. Click Create
 
+(video coming soon!)
+
+
+### Other agent (OpenClaw, Hermes, ...)
+
+Install the skills:
+
+```bash
+npx skills add marky-team/marky-skills -g
 ```
-Read https://raw.githubusercontent.com/Marky-Team/marky-skills/main/INSTALL_FOR_AGENTS.md and follow it.
-```
+
+Install the mcp: `https://api.mymarky.ai/api/mcp`
+
 
 ## Skills
 

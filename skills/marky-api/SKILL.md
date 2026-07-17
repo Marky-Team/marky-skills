@@ -212,9 +212,12 @@ source of truth. If you need an operation that is not exposed as a tool, tell Ma
 | `create_business` | Create a new workspace. |
 | `update_business` | Set the brand profile (tone, palettes, fonts, logo) and merge-patch `platform_writing_instructions`. |
 | `get_business` | Read one business's full brand profile by id, incl. `platform_writing_instructions`. |
-| `list_posts` | List a business's posts (filter by status). |
+| `list_posts` | List a business's posts (filter by status, incl. the review verdicts `LIKED`/`REJECTED`). |
 | `create_post` | Create one post yourself (caption + platforms + media + per-platform `platform_overrides` — see `references/platform-rules.md`). |
-| `update_post` | Edit a post (caption, `restrict_publish_to`, media). |
+| `update_post` | Edit a post (caption, `restrict_publish_to`, media) or move it through the TEAM review workflow: `status: NEW` tells the user's team it's ready for review (shows on the app's review page); `LIKED`/`REJECTED` record their verdict. Marky never gates publishing on these. Only valid between the three review states. |
+| `list_post_comments` | Read the team's review comments on a post (the same thread the app's review page shows). |
+| `create_post_comment` | Leave a review comment on a post. |
+| `resolve_post_comment` | Mark a review comment resolved (or reopen it). |
 | `get_post` | Read one post by id, including its `publish_results`. |
 | `schedule_post` | Schedule a post for a future time. |
 | `queue_post` | Drop a post into the next open posting-schedule slot. |

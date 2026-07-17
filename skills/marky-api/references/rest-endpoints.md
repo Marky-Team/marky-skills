@@ -124,11 +124,29 @@ curl -X POST "https://api.mymarky.ai/api/businesses/BIZ_ID/media" \
   - `metadata` — up to 50 string key/value pairs, YOUR analytics dimensions (see
     "Tag every post" in the main SKILL.md). Returned verbatim on every read; Marky never
     interprets it. Limits: key <=40 chars, value <=500 chars.
-- `GET /businesses/{business_id}/posts?status=NEW` — list posts (filter by status).
+- `GET /businesses/{business_id}/posts?status=NEW` — list posts (filter by status;
+  also accepts the review verdicts `LIKED` and `REJECTED`).
 - `GET /businesses/{business_id}/posts/{post_id}` — one post, including `publish_results`
   (per-platform outcome) and `scheduled_publish_time`.
 - `PATCH /businesses/{business_id}/posts/{post_id}` — update a post (e.g. change
   `restrict_publish_to`, `caption`, `media_urls`, `link`, or `metadata`).
+  - `status` — move the post through the TEAM review workflow: `NEW` tells the
+    user's team it's ready for review (it appears on the app's review page),
+    `LIKED` records a reviewer's approval, `REJECTED` a decline. Marky does not
+    gate publishing on these — they are the team's own workflow state. Only
+    valid on posts currently in `NEW`/`LIKED`/`REJECTED` (scheduling has its own
+    endpoint; published posts are immutable).
+
+### Team review comments
+
+The review-page discussion thread, for reviewer-tier workflows:
+
+- `GET /businesses/{business_id}/posts/{post_id}/comments` — list comments
+  (newest first, `CursorPage`, includes `author_name` and `resolved`).
+- `POST /businesses/{business_id}/posts/{post_id}/comments` — add a comment
+  (`body`, max 2000 chars). API-key calls are attributed to the key's creator.
+- `PATCH /businesses/{business_id}/posts/{post_id}/comments/{comment_id}` —
+  set `resolved: true|false`.
 - `DELETE /businesses/{business_id}/posts/{post_id}` — delete a post.
 - `POST /businesses/{business_id}/posts/{post_id}/schedule` — schedule a post.
   - `scheduled_publish_time` (required) — ISO 8601 time, must be in the future

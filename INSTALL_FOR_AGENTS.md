@@ -38,11 +38,6 @@ command = "npx"
 args = ["-y", "mcp-remote", "https://api.mymarky.ai/api/mcp"]
 ```
 
-Other clients take the same command/args as JSON under `mcpServers.marky`.
-
-No API keys anywhere — agents sign in. (Keys exist only for calling the REST API
-directly; see the `marky-api` skill.)
-
 ## After connecting
 
 Call the `list_businesses` MCP tool and ask your user which business they want to
