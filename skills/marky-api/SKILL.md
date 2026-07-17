@@ -190,6 +190,8 @@ Library files (notes, briefs, knowledge-base docs) live in the user's Marky acco
 
 ### Low queue
 By default, if the posting queue will run dry within ~3 days, mention it once and offer to top up — in the Claude Code plugin a SessionStart hook does this automatically (`GET /queue/summary`, cached 6h). If the user says "stop reminding me about my queue" (or gives a different day threshold), save a memory and honor it.
+
+**How hooks find the business (they can't read your memory).** SessionStart hooks are plain shell scripts, outside the model loop — they have no access to your memory. The one durable fact they need, the active business id, lives in `~/.marky/brand-cache.md` (its first line, `business_id: <id>`), which the brand-cache hook rewrites on every `get_business`/`update_business`. So there are two views of the same fact: **you** read the default business from memory; **hooks** read it from `brand-cache.md`. That file — not a `user.toml` — is the machine-readable source for anything a hook must persist across sessions.
 ## The MCP tools (the curated set)
 
 The MCP does **not** mirror the whole REST API. It exposes a **curated set of typed
