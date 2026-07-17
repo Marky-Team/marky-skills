@@ -46,7 +46,7 @@ directly; see the `marky-api` skill.)
 ## After connecting
 
 Call the `list_businesses` MCP tool and ask your user which business they want to
-work on first — remember that preference (the `marky-api` skill's `user.toml` covers
+work on first — remember that preference (the `marky-api` skill's storage rule covers
 where).
 
 **Empty list (brand-new account)?** Bootstrap it: run `/build-brand-kit` with their

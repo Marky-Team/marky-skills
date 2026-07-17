@@ -1,8 +1,8 @@
 #!/usr/bin/env bash
 # SessionStart hook — low-posting-queue notification.
 #
-# WHY: the whole job of a posting queue is to never run dry. If the user opted
-# in (user.toml [notifications]), this hook checks how many days of queued
+# WHY: the whole job of a posting queue is to never run dry. This hook
+# checks how many days of queued
 # posts remain for their saved business and, when that drops to/below their
 # threshold, injects a one-line heads-up so the agent can offer to top up.
 #
@@ -22,35 +22,16 @@
 set -euo pipefail
 
 STATE_DIR="${MARKY_STATE_DIR:-${HOME}/.marky}"  # override for tests
-TOML_PATH="${STATE_DIR}/user.toml"
+# The persistent "which business" source is brand-cache.md (line 1:
+# "business_id: <id>"), written by the brand-cache-sync hook whenever
+# get_business/update_business runs. There is no user.toml anymore.
+BRAND_CACHE="${STATE_DIR}/brand-cache.md"
 CACHE_FILE="${STATE_DIR}/queue-cache"
 API_BASE="${MARKY_API_BASE:-https://api.mymarky.ai/api}"
 NOW_EPOCH="$(date +%s)"
 CACHE_TTL=21600  # 6h — queue depth doesn't change faster than this matters
 
-[[ -f "$TOML_PATH" ]] || exit 0
-
-# Read a `key = "value"` (or bare) value from a [section] of the TOML file.
-# Minimal, good enough for this flat schema; not a general TOML parser.
-read_toml() {
-  section="$1"
-  key="$2"
-  awk -v section="[$section]" -v key="$key" '
-    $0 == section { in_section = 1; next }
-    /^\[/         { in_section = 0 }
-    in_section {
-      line = $0
-      sub(/#.*/, "", line)                  # strip comments
-      if (line ~ "^[[:space:]]*" key "[[:space:]]*=") {
-        sub("^[^=]*=[[:space:]]*", "", line)
-        gsub(/[[:space:]]*$/, "", line)
-        gsub(/^"|"$/, "", line)             # strip surrounding quotes
-        print line
-        exit
-      }
-    }
-  ' "$TOML_PATH"
-}
+[[ -f "$BRAND_CACHE" ]] || exit 0  # no known business yet → nothing to check
 
 read_cache() {
   # key=value lines; missing file or key → empty string.
@@ -67,15 +48,13 @@ iso_to_epoch() {
     || echo ""
 }
 
-# ── Config: opted out, or nothing to check? ─────────────────────────────────
-reminder="$(read_toml notifications low_queue_reminder || true)"
-[[ "$reminder" == "off" ]] && exit 0  # missing key = on (opt-out feature)
-
-threshold_days="$(read_toml notifications low_queue_threshold_days || true)"
-[[ "$threshold_days" =~ ^[0-9]+$ ]] || threshold_days=3
-
-business_id="$(read_toml workspace current_business_id || true)"
-business_name="$(read_toml workspace current_business_name || true)"
+# ── Config: which business, and the threshold ───────────────────────────────
+# Default threshold is 3 days. Muting ("stop reminding me about my queue") is
+# NOT read here — it lives in the agent's memory; this hook always emits the
+# heads-up when the queue is low and tells the agent to stay silent if muted.
+threshold_days=3
+business_id="$(sed -n 's/^business_id:[[:space:]]*//p' "$BRAND_CACHE" | head -1)"
+business_name="$(sed -n 's/^name:[[:space:]]*//p' "$BRAND_CACHE" | head -1)"
 [[ -z "$business_id" ]] && exit 0
 
 # ── Queue state: cache first, network only when stale ───────────────────────
@@ -131,7 +110,7 @@ fi
 
 (( days_left > threshold_days )) && exit 0
 
-NOTE="LOW_QUEUE: the posting queue for '${business_name:-$business_id}' is low — ${queued_count} post(s) queued, running dry ${run_out_label} (~${days_left} day(s) left; user's threshold is ${threshold_days}). At the START of your first reply, tell the user in one plain line, then offer to top the queue up (plan a batch via /plan-social-content or queue posts via /schedule-posts -> queue_post). Do not block on it if they asked for something else. Data is from GET /queue/summary, cached up to 6h — refresh with one get_queue_summary call before acting on exact numbers. The user can tune this in ~/.marky/user.toml [notifications]: low_queue_reminder = \"off\" silences it, low_queue_threshold_days changes when it fires."
+NOTE="LOW_QUEUE: the posting queue for '${business_name:-$business_id}' is low — ${queued_count} post(s) queued, running dry ${run_out_label} (~${days_left} day(s) left; threshold ${threshold_days} days). FIRST check your memory: if the user has muted queue reminders (or set a different day threshold), honor that and stay silent. Otherwise, at the START of your first reply tell the user in one plain line, then offer to top the queue up (plan a batch via /plan-social-content or queue posts via /schedule-posts -> queue_post). Do not block on it if they asked for something else. Data is from GET /queue/summary, cached up to 6h — refresh with one get_queue_summary call before acting on exact numbers. If the user says 'stop reminding me about my queue' (or gives a new threshold), save that as a memory."
 
 escaped=$(printf '%s' "$NOTE" | tr '\n' ' ' | sed 's/\\/\\\\/g; s/"/\\"/g')
 printf '{"hookSpecificOutput":{"hookEventName":"SessionStart","additionalContext":"%s"}}\n' "$escaped"
