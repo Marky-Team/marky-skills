@@ -17,15 +17,16 @@ posts. This skill creates, organizes, and cleans it up through the API.
 endpoint list. Everything below uses `https://api.mymarky.ai/api` and the header
 `Authorization: Bearer mk_live_YOUR_KEY`.
 
-## Which file system? Check `user.toml` first
+## Which file system? Marky by default
 
-Before any file operation, read `file_system` from the `[workspace]` section of the
-plugin's `user.toml` (see the marky-api skill's "Session start" section for where it
-lives). Two modes:
+Library files live in the user's **Marky account** by default — use the API endpoints
+below, and Marky's post writer can reference them. Only switch to local disk if the user
+has **explicitly opted into local library storage** (a preference you'd have saved as a
+memory — see the marky-api skill's storage rule). Two modes:
 
-- **`file_system = "marky"` (default, or key missing)** — use the API endpoints below.
+- **Default (Marky)** — use the API endpoints below.
   Files live in the user's Marky account and Marky's post writer can reference them.
-- **`file_system = "local"`** — do NOT call the file/folder API endpoints. Read and write
+- **Local (only if the user opted in)** — do NOT call the file/folder API endpoints. Read and write
   plain files under `~/.marky/fs/<business_id>/` instead (create the directory if it
   doesn't exist). Library paths map directly onto that folder:
   `/knowledge-base/services.md` → `~/.marky/fs/BIZ_ID/knowledge-base/services.md`.

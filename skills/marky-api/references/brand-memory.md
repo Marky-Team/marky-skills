@@ -24,7 +24,7 @@ or video frames you render). **Over MCP the cache maintains itself**: a PostTool
 rewrites it automatically after every `get_business` / `update_business` call, so you
 don't need to touch the file. On the REST path (or outside the plugin) you keep it fresh
 yourself: **after every `GET /businesses/{id}` and after every profile update**, write
-`~/.marky/brand-cache.md` (next to `user.toml`) in this shape — header lines, blank
+`~/.marky/brand-cache.md` in this shape — header lines, blank
 line, then one `field: value` line each (non-string values as compact JSON):
 
 ```markdown
@@ -122,11 +122,11 @@ The feedback log holds what the user chose; `performance-learnings.md` holds wha
 audience rewarded — data-backed lessons from real engagement ("first-person posts that
 end with a question get 3-4x the comments", "video beats image on TikTok, image wins on
 LinkedIn"). It is a plain markdown file of dated bullets, one learning per line, stored
-per business where library files live (honor the `file_system` choice in `user.toml`):
+per business where library files live (the Marky library by default; local only if the user opted into local library storage — see the marky-api storage rule):
 
-- `file_system = "marky"` → library file `/performance-learnings.md`
+- default → the Marky library file `/performance-learnings.md`
   (`POST /businesses/{id}/library/files` to create, files endpoints to read/update)
-- `file_system = "local"` → `~/.marky/fs/<business_id>/performance-learnings.md`
+- local library storage → `~/.marky/fs/<business_id>/performance-learnings.md`
 
 Format — newest first, each line dated and concrete enough to act on:
 

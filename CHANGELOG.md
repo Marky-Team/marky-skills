@@ -3,6 +3,31 @@
 All notable changes to this collection are documented here. The format is based
 on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
+## [0.15.0] - 2026-07-17
+
+### Changed
+
+- **Retired `user.toml` in favor of a simpler two-tier storage rule.** State now
+  follows one rule: **Marky-first, memory-fallback** — a lasting preference or asset
+  goes to the Marky business profile via `update_business` if it has a field there
+  (brand color, font, tone, caption rules, imagery, logo, CTA, tagline); otherwise it
+  becomes a local memory (e.g. a preferred TTS voice, "no code in my videos", the
+  user's default business, a muted prompt). Everything else runs on hardcoded defaults;
+  you only remember a *deviation*. This replaces the per-user `user.toml` file and its
+  cadence bookkeeping.
+- **Feedback / contribution nudges are now event-driven**, not timer-driven — asked at
+  natural pauses, muted via a memory instead of a `leave_feedback`/`suggest_contribution`
+  flag + `ask_*_next` timestamp.
+- **Rewrote the `marky-api` "Session start" section** around the new rule (much shorter),
+  and updated `manage-library`, `contribution-nudge`, `brand-memory`, and the `/marky`
+  commands to match.
+
+### Removed
+
+- `user.toml` and `user.toml.example`; the `user-state-check.sh` SessionStart hook.
+  `queue-check.sh` now sources the active business from `~/.marky/brand-cache.md`
+  (written by the brand-cache hook) instead of `user.toml`, defaults the threshold to
+  3 days, and honors a "stop reminding me" mute via the agent's memory.
 ## [0.14.1] - 2026-07-15
 
 ### Added

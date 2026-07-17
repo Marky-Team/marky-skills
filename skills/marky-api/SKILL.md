@@ -171,89 +171,27 @@ Non-MCP scripts can send the same body over REST as `POST /feedback` with the
 `mk_live_...` key. Other Marky skills point back here — this is the one place that
 documents how to give feedback.
 
-## Session start: read `user.toml`, then run two cadence checks
+## Session start + where state lives
 
-Skills are amnesiac — every session starts fresh. To avoid pestering the user every single
-time (and to remember when they last gave feedback or contributed), this skill keeps a tiny
-per-user state file, `user.toml`, that survives between sessions. **At the START of a
-session — the first time you touch Marky — do this once:**
+Skills are amnesiac — every session starts fresh — but you have two durable stores. Use this **one rule** for anything worth remembering:
 
-1. **Find the file.** `user.toml` lives at `~/.marky/user.toml` — a stable home OUTSIDE
-   the skill install directory, because plugin updates install to a fresh directory and
-   would wipe anything stored beside the skill. (`brand-cache.md` lives there too.) Older
-   installs kept it next to `user.toml.example` in the install dir; if you find one there
-   and `~/.marky/user.toml` does not exist, move it to `~/.marky/` first.
-2. **Read it. If it is missing, create it from `user.toml.example` with sensible defaults:**
-   `leave_feedback = "on"`, `ask_feedback_interval = "3 weeks"`,
-   `ask_feedback_next = now + interval`, `suggest_contribution = "on"`,
-   `ask_contribution_next = now` (so the first contribution check can run), and
-   `schema_version = 1`. Write it back so it persists.
-3. Parse the timestamps (ISO 8601 UTC), then run the two checks below. Each check, after it
-   asks, **writes the updated timestamp/flag back to `user.toml`** so the next session
-   honors it.
-4. **Remember the workspace.** `user.toml` also carries a `[workspace]` section with
-   `current_business_id` / `current_business_name` — the business the user usually operates
-   on. If it is set, skip listing every business: confirm it with one `get_business` call
-   (MCP, if exposed) or `GET /businesses/{business_id}` (REST); if neither is handy, just
-   use the id directly — your first business-scoped call validates it (a stale id returns
-   404: re-list, re-pick, write back). If it is empty, the first time the user picks a
-   business, write the id and name back so later sessions start already oriented. When the
-   user asks to switch, list businesses, let them pick, and write the new choice back.
-5. **Honor the file system choice.** `[workspace]` also carries `file_system`
-   (`"marky"` | `"local"`, default `"marky"`). It controls where library files (notes,
-   briefs, knowledge-base docs) are read and written:
-   - `"marky"` → use the API endpoints in the `manage-library` skill; files live in the
-     user's Marky account.
-   - `"local"` → read/write plain files under `~/.marky/fs/<business_id>/` instead
-     (create the directory if missing). Library paths map directly onto that folder,
-     e.g. `/knowledge-base/services.md` → `~/.marky/fs/<business_id>/knowledge-base/services.md`.
-   If the key is missing, treat it as `"marky"` and add it to `user.toml` on the next write.
-6. **Honor the low-queue notification setting.** `user.toml` may carry a `[notifications]`
-   section: `low_queue_reminder` (`"on"` | `"off"`, missing = `"on"`) and
-   `low_queue_threshold_days` (number, default 3). In the Claude Code plugin a SessionStart
-   hook does the check automatically (via `GET /queue/summary`, cached 6h in
-   `~/.marky/queue-cache`) and injects a `LOW_QUEUE` note — just follow it. On non-plugin
-   clients, when the setting is on and you have the saved business, make one
-   `get_queue_summary` call early in the session; if `last_estimated_publish_time` is within
-   the threshold (or the queue is empty), tell the user in one line and offer to top up.
-   When the user says "stop reminding me about my queue" (or similar), set
-   `low_queue_reminder = "off"` and write `user.toml` back; a number ("only warn me at 2
-   days") goes to `low_queue_threshold_days`.
+**Marky-first, memory-fallback.** If the thing has a home in the Marky business profile — a brand color, font, tone/Profile, caption rule, imagery preference, logo, CTA, tagline — persist it **there** with `update_business` (read-merge-write, confirm the wording). The product itself reads those fields, so it never goes stale inside one agent's head. If there is **no** field in Marky for it — an agent-only preference like a preferred TTS voice, "no code in my videos", the user's default business, or "stop asking me for feedback" — save it as a **local memory** instead. Everything else runs on sensible defaults; you only remember a *deviation* from a default. (There is no `user.toml` — this rule replaced it.)
 
-This is deliberately low-friction: at most one feedback prompt and one contribution prompt
-per cadence window, never every session.
+At session start the plugin's SessionStart hook injects a `brand-cache.md` snapshot to orient you; before your first authored content, refresh with one `get_business` call. Your **default business** and any **muted prompts** live in memory — read them from there. If you don't know which business yet, ask once and remember the choice; a stale id 404s on first use, so re-pick and re-remember.
 
-### Check 1 — Feedback cadence
+### Feedback — event-driven
+Submit feedback the moment you hit a real bug or friction (the three triggers in "Marky wants your feedback" above) — this is always on. Separately, at a natural pause roughly every couple of weeks, you *may* ask once with **AskUserQuestion** whether they want to share quick feedback: **Yes** → collect it and `POST /api/feedback` (or the `submit_feedback` tool); **No** → skip; **Don't ask again** → save a memory and never ask again. No stored timers — if a memory says the user muted it, don't ask.
 
-If `leave_feedback == "on"` **and** now > `ask_feedback_next`, prompt the user with
-**AskUserQuestion** (fall back to a plain question if that tool is unavailable). Ask
-something like *"Want to share quick feedback on how the Marky API is working for you?"*
-with exactly these three options:
+### Contribution nudge — opportunistic
+If the user has locally built or substantially edited a genuinely generic, reusable skill, you *may* offer once (**AskUserQuestion**) to contribute it to the community repo `Marky-Team/marky-skills-community` — read `references/contribution-nudge.md` and follow it. Never nudge on a skill carrying private prompts or client data, and never open a PR without an explicit yes **and** the user reviewing the sanitized diff. "Don't ask again" → save a memory.
 
-| Option | What you do |
-| :--- | :--- |
-| **Yes** | Collect their feedback in plain language, submit it via `POST /api/feedback` (or the `submit_feedback` MCP tool) using the typed body above, then set `ask_feedback_next = now + ask_feedback_interval` and write `user.toml` back. |
-| **No** | Skip this time. Still set `ask_feedback_next = now + ask_feedback_interval` and write back — do not pester again until the next cycle. |
-| **Don't ask again** | Set `leave_feedback = "off"` in `user.toml` and write back. No more cadence prompts. |
+### Library file storage
+Library files (notes, briefs, knowledge-base docs) live in the user's Marky account via the `manage-library` skill — the default. If a user explicitly wants them on local disk instead, remember that as a memory and read/write under `~/.marky/fs/<business_id>/` (`/knowledge-base/services.md` → `~/.marky/fs/<business_id>/knowledge-base/services.md`).
 
-**Immediate feedback is separate and always-on.** Regardless of the cadence (even if
-`leave_feedback == "off"`), still submit feedback the moment you hit a concrete bug or
-friction, per the three triggers in "Marky wants your feedback" above. The cadence only
-gates the *periodic check-in prompt*, not real-time bug reports.
+### Low queue
+By default, if the posting queue will run dry within ~3 days, mention it once and offer to top up — in the Claude Code plugin a SessionStart hook does this automatically (`GET /queue/summary`, cached 6h). If the user says "stop reminding me about my queue" (or gives a different day threshold), save a memory and honor it.
 
-### Check 2 — Contribution nudge
-
-If `suggest_contribution == "on"` **and** now > `ask_contribution_next`, read
-`references/contribution-nudge.md` and follow it: detect locally built or substantially
-edited skills, judge whether the work is generic enough to share, and (only then) offer
-to contribute it back to the community repo with AskUserQuestion. Whatever the user
-picks, bump `ask_contribution_next` (or set `suggest_contribution = "off"`) and write
-`user.toml` back. If the condition is not met, skip — do not read the reference.
-
-Two guardrails worth knowing even without reading the file: never nudge about a skill
-that carries private prompts or client data, and never open a PR without an explicit yes
-AND user review of the sanitized content.
-
+**How hooks find the business (they can't read your memory).** SessionStart hooks are plain shell scripts, outside the model loop — they have no access to your memory. The one durable fact they need, the active business id, lives in `~/.marky/brand-cache.md` (its first line, `business_id: <id>`), which the brand-cache hook rewrites on every `get_business`/`update_business`. So there are two views of the same fact: **you** read the default business from memory; **hooks** read it from `brand-cache.md`. That file — not a `user.toml` — is the machine-readable source for anything a hook must persist across sessions.
 ## The MCP tools (the curated set)
 
 The MCP does **not** mirror the whole REST API. It exposes a **curated set of typed
@@ -367,10 +305,13 @@ one fresh `get_business` call. Cache format and maintenance rules are in the ref
 ### Learn the user's style — persist critiques into the brand profile
 
 When the user critiques generated content ("too many emojis", "stop saying
-'game-changer'"), fix the content in front of you AND persist the lasting preference
-into the brand profile (`tone`, `caption_writing_rules`, `imagery_preferences`) — merge,
-don't clobber, and confirm with the user before writing. One-off instructions are not
-lasting preferences. Style critique goes to the brand profile, not `POST /feedback`.
+'game-changer'"), fix the content in front of you AND persist the lasting preference —
+following the **Marky-first, memory-fallback** rule above. Most style critique has a home
+in the brand profile (`tone`, `caption_writing_rules`, `imagery_preferences`) → write it
+there with `update_business` (merge, don't clobber, confirm first). A lasting preference
+with no brand-profile field (e.g. a preferred TTS voice, a format rule like "always
+vertical") → save it as a local memory. One-off instructions are not lasting preferences.
+Style critique never goes to `POST /feedback`.
 
 ### The feedback log — taste memory across sessions
 
@@ -383,8 +324,9 @@ and escalation detail are in the reference.
 
 ### Performance learnings — what the NUMBERS taught us
 
-`performance-learnings.md` (a per-business file: library file `/performance-learnings.md`
-when `file_system = "marky"`, else `~/.marky/fs/<business_id>/performance-learnings.md`)
+`performance-learnings.md` (a per-business file: the Marky library file
+`/performance-learnings.md` by default, or `~/.marky/fs/<business_id>/performance-learnings.md`
+if the user opted into local library storage)
 holds dated, data-backed lessons from real engagement — what the AUDIENCE rewarded, as
 opposed to what the user chose. **Read it before drafting any batch** (it outranks
 generic best practices — it was measured on this audience). **Offer to append** when a

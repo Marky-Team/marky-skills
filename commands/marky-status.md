@@ -6,7 +6,7 @@ Give the user a compact status snapshot of their Marky account. Read the `marky-
 skill first for auth and endpoints; use MCP tools when connected, otherwise REST with
 the `mk_live_` key. Base URL: `https://api.mymarky.ai/api`.
 
-**Workspace.** Use `workspace.current_business_id` from `~/.marky/user.toml` (see the
+**Workspace.** Use the user's default business, remembered in memory / `~/.marky/brand-cache.md` (see the
 marky-api skill's "Session start" section). If it's empty, list businesses and let the
 user pick before continuing.
 

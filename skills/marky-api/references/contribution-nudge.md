@@ -1,8 +1,8 @@
 # Check 2 — Contribution nudge (full procedure)
 
 Part of the `marky-api` skill's session-start checks. Read this ONLY when the trigger
-condition in SKILL.md is met: `suggest_contribution == "on"` and now >
-`ask_contribution_next` in `~/.marky/user.toml`. Then check whether the user has locally
+condition in SKILL.md is met: the user has done real skill work this session AND a memory
+does not say they muted contribution nudges. Then check whether the user has locally
 built something worth sharing back with the community:
 
 1. **Detect local skill work.** Compare the locally installed skills against the pristine
@@ -32,12 +32,9 @@ built something worth sharing back with the community:
 
    | Option | What you do |
    | :--- | :--- |
-   | **Yes** | **Read and follow `CONTRIBUTING.md`** — it is the canonical guide. Sanitize + generalize the skill first (strip business ids/keys/private context, rewrite so it is reusable for any Marky user), let the user review the final diff, then open the PR to the community repo. Bump `ask_contribution_next = now + 2 weeks` and write back. |
-   | **No** | Bump `ask_contribution_next = now + 2 weeks` (a cooldown) and move on. Write back. |
-   | **Don't ask again** | Set `suggest_contribution = "off"` in `user.toml` and write back. Never offer again. |
-
-   Whichever they pick, update `ask_contribution_next` (or the flag) and write `user.toml`
-   back before moving on.
+   | **Yes** | **Read and follow `CONTRIBUTING.md`** — it is the canonical guide. Sanitize + generalize the skill first (strip business ids/keys/private context, rewrite so it is reusable for any Marky user), let the user review the final diff, then open the PR to the community repo. |
+   | **No** | Skip it this session; don't pester again in the same session. |
+   | **Don't ask again** | Save a memory that the user muted contribution nudges. Never offer again. |
 
 ## Hard guardrails (always apply)
 
