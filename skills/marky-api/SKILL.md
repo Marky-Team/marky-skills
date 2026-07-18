@@ -238,12 +238,14 @@ source of truth. If you need an operation that is not exposed as a tool, tell Ma
 | `list_google_reviews` | Read your Google Business reviews. |
 | `create_media_upload` | THE upload path when the file is on a disk you can shell to (a code-exec sandbox, the user's machine) and has no public URL. Returns a 1-hour `upload_url` + a ready-to-run curl command; PUT the raw bytes there and the response is the created media asset (its `original_url` feeds `media_urls`/`logo_url`). Re-PUTting the same bytes safely returns the same asset. On hosted Claude clients, run the curl in the code-execution sandbox (the user may need to allow `api.mymarky.ai` under Settings → Capabilities → Code execution → Additional allowed domains). |
 | `submit_feedback` | Send a bug report, feature request, or general feedback to the Marky team. |
+| `generate_draft_posts` | **DEPRECATED — prefer `create_post`.** Have Marky generate on-brand draft posts from a brief / website / idea. Returns a job id; poll `get_job_status` until `completed`. Use this ONLY when the user explicitly asks Marky to write/design the content for them — it spends credits and counts against the org's monthly post quota. By default, author your own caption and push it in with `create_post`. |
+| `get_job_status` | Poll a `generate_draft_posts` job until `completed` / `failed`. |
 
 **Deliberately NOT tools** — these stay off the MCP on purpose, so do not wait for them:
-Marky-side post generation (`POST /posts/generate` + its job poller — the agent writes
-its own posts; generation is a product feature, not an agent tool), the design/template
-flow, and the destructive/config ops (API-key create/list/revoke, webhooks,
-`delete_business`, `delete_post`).
+the design/template flow, and the destructive/config ops (API-key create/list/revoke,
+webhooks, `delete_business`, `delete_post`). (Marky-side generation IS a tool now —
+`generate_draft_posts` above — but it's **deprecated**: author your own posts with
+`create_post` and only reach for generation when the user explicitly asks Marky to generate.)
 
 **Not yet MCP tools (REST stopgap)** — remaining gaps Marky is closing. If one matters
 to your workflow, say so via `submit_feedback`; meanwhile reach them over REST:
