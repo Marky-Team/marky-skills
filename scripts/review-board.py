@@ -53,7 +53,10 @@ def load_input():
         sys.exit("usage: review-board.py items.json [--mode approve|pick]")
 
     path = os.path.abspath(sys.argv[1])
-    with open(path) as f:
+    # encoding="utf-8" is REQUIRED: items.json is UTF-8, but Python on Windows
+    # defaults open() to the ANSI locale codepage (e.g. cp1251 for Russian), so a
+    # non-English board crashes with UnicodeDecodeError (api_feedback 631a2a66).
+    with open(path, encoding="utf-8") as f:
         spec = json.load(f)
 
     mode = spec.get("mode", "approve")
@@ -286,8 +289,10 @@ def main():
 
             length = int(self.headers.get("Content-Length", 0))
             feedback = json.loads(self.rfile.read(length))
-            with open(feedback_path, "w") as f:
-                json.dump(feedback, f, indent=2)
+            # utf-8 + ensure_ascii=False so non-English feedback (edited captions,
+            # comments) round-trips readably and doesn't crash on Windows (631a2a66).
+            with open(feedback_path, "w", encoding="utf-8") as f:
+                json.dump(feedback, f, indent=2, ensure_ascii=False)
 
             self.send_response(200)
             self.end_headers()
