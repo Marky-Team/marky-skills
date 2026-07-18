@@ -54,7 +54,10 @@ def load_input():
         sys.exit("usage: capture-studio.py tasks.json")
 
     path = os.path.abspath(sys.argv[1])
-    with open(path) as f:
+    # encoding="utf-8": tasks.json is UTF-8, but Windows open() defaults to the
+    # ANSI codepage and crashes on non-English content (see review-board.py /
+    # api_feedback 631a2a66).
+    with open(path, encoding="utf-8") as f:
         spec = json.load(f)
 
     if not spec.get("items"):
@@ -345,7 +348,9 @@ def main():
                 return
 
             if self.path == "/api/finish":
-                with open(os.path.join(base_dir, "captures.json"), "w") as f:
+                # utf-8 so non-English capture paths/labels write without a
+                # Windows codepage crash (api_feedback 631a2a66).
+                with open(os.path.join(base_dir, "captures.json"), "w", encoding="utf-8") as f:
                     f.write(body.decode())
 
                 self.send_response(200)

@@ -99,16 +99,39 @@ Design rules (non-negotiable):
 
 ## Stage 4 — Render and LOOK at it
 
-Render with headless Chrome/Chromium (any of these binaries):
+Render with headless Chrome/Chromium. Use an **absolute** `--screenshot` path and
+add `--virtual-time-budget=6000` so web fonts (Oswald, Montserrat, …) finish
+loading before the shot fires — without it Chrome can silently fall back to a
+system font and quietly break the brand typography.
 
 ```bash
 # macOS
 "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome" \
-  --headless=new --disable-gpu --hide-scrollbars \
-  --window-size=1080,1350 --screenshot=diagram.png "file://$PWD/diagram.html"
+  --headless=new --disable-gpu --hide-scrollbars --virtual-time-budget=6000 \
+  --window-size=1080,1350 --screenshot="$PWD/diagram.png" "file://$PWD/diagram.html"
 
-# Linux: google-chrome / chromium / chromium-browser with the same flags
+# Linux: google-chrome / chromium / chromium-browser with the same flags.
+# On locked-down Linux/CI, add --no-sandbox if Chrome exits immediately.
+
+# Windows (Git Bash): Chrome resolves a RELATIVE --screenshot path against a
+# directory it can't write ("Failed to write file ...: Access is denied. (0x5)"),
+# so pass ABSOLUTE, Windows-native paths (forward slashes are safest in bash) for
+# BOTH the output and the file:/// input. Derive them from your Git-Bash dir with
+# cygpath — do NOT hand-type them:
+WINDIR=$(cygpath -w "$PWD" | sed 's#\\#/#g')   # /c/Users/you/x -> C:/Users/you/x
+"/c/Program Files/Google/Chrome/Application/chrome.exe" \
+  --headless=new --disable-gpu --hide-scrollbars --virtual-time-budget=6000 \
+  --window-size=1080,1350 --screenshot="$WINDIR/diagram.png" \
+  "file:///$WINDIR/diagram.html"
 ```
+
+**No local renderer?** Some agent sandboxes (e.g. Cowork) have no Chrome/Chromium
+binary, no way to install one, and restricted network egress — so both local
+rendering and a Puppeteer/Chromium download fail. Don't get stuck: skip the
+hand-authored-HTML render and use Marky's server-side media instead —
+`search_library` for existing on-brand images, or `upload_media_from_url` (Marky
+fetches the URL server-side, past the sandbox's egress limits) for a web image.
+Fall back to local rendering only when a browser binary is actually present.
 
 Then **open or read the PNG and inspect it before showing the user.** The two
 failure modes to catch: labels wrapping onto arrows or borders, and content
