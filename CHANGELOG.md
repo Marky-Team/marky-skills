@@ -3,12 +3,35 @@
 All notable changes to this collection are documented here. The format is based
 on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
+## [0.16.1] - 2026-07-18
+
+### Fixed
+
+- **Corrected the Codex install commands.** 0.16.0 documented
+  `codex plugin install marky --source marky-skills` and a `/reload-plugins`
+  step. Neither exists: the subcommand is `add` (not `install`), the flag is
+  `-m` / `--marketplace` (not `--source`), and the selector form is
+  `PLUGIN@MARKETPLACE`. There is no `/reload-plugins` command — Codex reloads
+  its config on its own after `marketplace add`. The correct sequence is:
+
+  ```
+  codex plugin marketplace add Marky-Team/marky-skills
+  codex plugin add marky@marky-skills
+  ```
+
+  Verified end-to-end against codex-cli 0.144.6: the marketplace resolves from
+  `.agents/plugins/marketplace.json`, `marky@marky-skills` lists, installs to
+  `~/.codex/plugins/cache/marky-skills/marky/0.16.0/`, registers as enabled in
+  `~/.codex/config.toml`, and all 15 skills load (Codex reports "Codex can still
+  see every skill"). The 0.16.0 manifests themselves were correct — only the
+  documented commands were wrong.
+
 ## [0.16.0] - 2026-07-18
 
 ### Added
 
 - **Codex plugin support.** `codex plugin marketplace add Marky-Team/marky-skills`
-  then `codex plugin install marky --source marky-skills` now installs the skills
+  then `codex plugin add marky@marky-skills` now installs the skills
   and the MCP server in one step, the same way Claude Code does. Previously Codex
   users could only wire up the raw MCP URL and got none of the skills.
   - `.codex-plugin/plugin.json` — Codex's own plugin manifest. It needs an explicit
