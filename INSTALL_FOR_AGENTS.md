@@ -25,10 +25,10 @@ plugin → **Connect** on the Marky connector → **Allow**.)
 
 ```
 codex plugin marketplace add Marky-Team/marky-skills
-codex plugin install marky --source marky-skills
+codex plugin add marky@marky-skills
 ```
 
-Then `/reload-plugins`, and the user signs in when Codex prompts them (browser
+Then the user signs in when Codex prompts them (browser
 opens, they click Allow).
 
 **Other agent (Cursor, OpenClaw, Hermes, ...)?**

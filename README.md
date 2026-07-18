@@ -56,10 +56,10 @@ Codex supports `plugins` too, so you get the MCP and the skills in one step.
 
 ```
 codex plugin marketplace add Marky-Team/marky-skills
-codex plugin install marky --source marky-skills
+codex plugin add marky@marky-skills
 ```
 
-Then run `/reload-plugins` and sign in when Codex prompts you.
+Then sign in when Codex prompts you.
 
 ### ChatGPT
 
