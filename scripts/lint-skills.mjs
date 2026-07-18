@@ -155,6 +155,32 @@ function lintManifests(skillDirs, violations) {
   }
 }
 
+// The version is hand-maintained in three files (one per vendor manifest plus
+// package.json). Nothing generates them from a single source, so they drift
+// silently — a stale version in a vendor manifest ships the wrong number to
+// that vendor's plugin UI. Cheapest guard is to fail the lint when they differ.
+function lintVersions(violations) {
+  const VERSIONED_FILES = [
+    "package.json",
+    join(".claude-plugin", "plugin.json"),
+    join(".codex-plugin", "plugin.json"),
+  ];
+
+  const versions = VERSIONED_FILES.map((rel) => ({
+    rel,
+    version: JSON.parse(readFileSync(join(ROOT, rel), "utf-8")).version,
+  }));
+
+  const expected = versions[0].version;
+  for (const { rel, version } of versions) {
+    if (version !== expected) {
+      violations.push(
+        `${rel}: version "${version}" does not match ${versions[0].rel} "${expected}".`,
+      );
+    }
+  }
+}
+
 function main() {
   if (!statSync(SKILLS_DIR, { throwIfNoEntry: false })?.isDirectory()) {
     console.error("No skills/ directory found.");
@@ -174,6 +200,7 @@ function main() {
   }
 
   lintManifests(skillDirs, violations);
+  lintVersions(violations);
 
   if (violations.length > 0) {
     for (const v of violations) {

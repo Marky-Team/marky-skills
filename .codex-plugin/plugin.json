@@ -1,0 +1,23 @@
+{
+  "name": "marky",
+  "version": "0.16.0",
+  "description": "Agent skills for driving Marky (social media management): authenticate and connect the API/MCP, create and schedule posts, plan a week of on-brand content, manage topics and your library, review performance, and repurpose what works.",
+  "author": {
+    "name": "Marky",
+    "email": "support@mymarky.ai",
+    "url": "https://app.mymarky.ai"
+  },
+  "homepage": "https://docs.mymarky.ai",
+  "repository": "https://github.com/Marky-Team/marky-skills",
+  "license": "Apache-2.0",
+  "skills": "./skills/",
+  "mcpServers": "./.mcp.json",
+  "interface": {
+    "displayName": "Marky",
+    "shortDescription": "Plan, write, design, schedule, and publish on-brand social posts.",
+    "category": "Productivity",
+    "developerName": "Marky",
+    "websiteURL": "https://app.mymarky.ai",
+    "repository": "https://github.com/Marky-Team/marky-skills"
+  }
+}

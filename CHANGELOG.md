@@ -3,6 +3,28 @@
 All notable changes to this collection are documented here. The format is based
 on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
+## [0.16.0] - 2026-07-18
+
+### Added
+
+- **Codex plugin support.** `codex plugin marketplace add Marky-Team/marky-skills`
+  then `codex plugin install marky --source marky-skills` now installs the skills
+  and the MCP server in one step, the same way Claude Code does. Previously Codex
+  users could only wire up the raw MCP URL and got none of the skills.
+  - `.codex-plugin/plugin.json` — Codex's own plugin manifest. It needs an explicit
+    `"skills": "./skills/"` because, unlike Claude Code, Codex does not auto-discover
+    the `skills/` directory.
+  - `.agents/plugins/marketplace.json` — Codex's marketplace manifest. Codex will
+    fall back to `.claude-plugin/marketplace.json`, but the two use different
+    `source` shapes (structured object vs. relative path), so both are shipped.
+  - Hooks are deliberately **not** registered for Codex: `hooks/hooks.json` uses
+    Claude event names (`SessionStart`, `PostToolUse`), `mcp__marky__*` matchers, and
+    `${CLAUDE_PLUGIN_ROOT}`, none of which are verified under Codex. Skills and MCP
+    work; the brand-cache/queue/feedback hooks stay Claude-only until tested.
+- **Version parity lint.** `npm run lint` now fails when `package.json`,
+  `.claude-plugin/plugin.json`, and `.codex-plugin/plugin.json` disagree on
+  `version` — nothing generates them from one source, so they drift silently.
+
 ## [0.15.0] - 2026-07-17
 
 ### Changed
