@@ -1,0 +1,22 @@
+{
+  "name": "marky-skills",
+  "interface": {
+    "displayName": "Marky"
+  },
+  "plugins": [
+    {
+      "name": "marky",
+      "description": "Agent skills for managing social media with Marky: authenticate and connect the API/MCP, create and schedule posts, plan a week of on-brand content, manage topics and your library, review performance, and repurpose what works.",
+      "source": {
+        "source": "url",
+        "url": "https://github.com/Marky-Team/marky-skills.git",
+        "ref": "main"
+      },
+      "policy": {
+        "installation": "AVAILABLE",
+        "authentication": "ON_INSTALL"
+      },
+      "category": "Productivity"
+    }
+  ]
+}

@@ -50,7 +50,21 @@ Watch the 4-minute install:
 https://github.com/user-attachments/assets/06e1f9c7-cb18-4c18-914e-a1d93655dc10
 
 
-### ChatGPT / Codex
+### Codex
+
+Codex supports `plugins` too, so you get the MCP and the skills in one step.
+
+```
+codex plugin marketplace add Marky-Team/marky-skills
+codex plugin install marky --source marky-skills
+```
+
+Then run `/reload-plugins` and sign in when Codex prompts you.
+
+### ChatGPT
+
+ChatGPT takes the MCP on its own (no skills).
+
 1. Turn on Developer mode (Settings → Security and login → Enable)
 2. Go to Plugins
 3. click +

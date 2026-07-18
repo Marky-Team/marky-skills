@@ -21,7 +21,17 @@ https://github.com/Marky-Team/marky-skills/blob/main/README.md
 (Customize → Plugins → add the `Marky-Team/marky-skills` marketplace → add the Marky
 plugin → **Connect** on the Marky connector → **Allow**.)
 
-**Other agent (Codex, Cursor, ...)?**
+**Codex?**
+
+```
+codex plugin marketplace add Marky-Team/marky-skills
+codex plugin install marky --source marky-skills
+```
+
+Then `/reload-plugins`, and the user signs in when Codex prompts them (browser
+opens, they click Allow).
+
+**Other agent (Cursor, OpenClaw, Hermes, ...)?**
 
 Install the skills:
 
@@ -30,12 +40,17 @@ npx skills add marky-team/marky-skills -g
 ```
 
 Install the MCP — `mcp-remote` signs the user in (browser opens, they click Allow).
-Codex (`~/.codex/config.toml`):
+Most clients take a JSON config; the server is `https://api.mymarky.ai/api/mcp`:
 
-```toml
-[mcp_servers.marky]
-command = "npx"
-args = ["-y", "mcp-remote", "https://api.mymarky.ai/api/mcp"]
+```json
+{
+  "mcpServers": {
+    "marky": {
+      "command": "npx",
+      "args": ["-y", "mcp-remote", "https://api.mymarky.ai/api/mcp"]
+    }
+  }
+}
 ```
 
 ## After connecting
