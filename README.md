@@ -27,6 +27,19 @@ and so much more.
 
 You'll need both the MCP & Skills.
 
+### ChatGPT
+
+ChatGPT takes the MCP on its own (no skills).
+
+1. Go to [chatgpt.com](https://chatgpt.com) (connect only works on web)
+2. Turn on Developer mode (Settings → Security and login)
+3. Go to Plugins
+4. Click +
+5. Paste `https://api.mymarky.ai/api/mcp` as the URL
+6. Click Create
+
+(video coming soon!)
+
 ### Claude Code
 
 CC and Cowork support `plugins` which package both MCP and Skills.
@@ -60,19 +73,6 @@ codex plugin add marky@marky-skills
 ```
 
 Then sign in when Codex prompts you.
-
-### ChatGPT
-
-ChatGPT takes the MCP on its own (no skills).
-
-1. Go to [chatgpt.com](https://chatgpt.com) (connect only works on web)
-2. Turn on Developer mode (Settings → Security and login)
-3. Go to Plugins
-4. Click +
-5. Paste `https://api.mymarky.ai/api/mcp` as the URL
-6. Click Create
-
-(video coming soon!)
 
 
 ### Other agent (OpenClaw, Hermes, ...)
