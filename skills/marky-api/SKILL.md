@@ -87,11 +87,11 @@ List endpoints (`GET /businesses`, `/posts`, `/topics`, ...) return **at most 20
 page** in a cursor-paginated envelope:
 
 ```json
-{ "data": [ ... ], "has_more": true, "next_cursor": "..." }
+{ "items": [ ... ], "next": "..." }
 ```
 
-If `has_more` is `true`, there are more results. Pass `?limit=100` to get a bigger page, or
-page through with `?cursor=NEXT_CURSOR` until `has_more` is `false`. **This matters on the
+If `next` is non-null, there are more results. Pass `?limit=100` to get a bigger page, or
+page through by passing it back as `?cursor=NEXT` until `next` is `null`. **This matters on the
 very first call:** if your org has more than 20 workspaces, the one you want may not be on
 page 1 of `GET /businesses` — use `?limit=100` (or page with the cursor) so you do not miss
 it. Same for finding a specific post or topic in a long history.
@@ -228,12 +228,12 @@ source of truth. If you need an operation that is not exposed as a tool, tell Ma
 | `list_topics` | List content topics. |
 | `create_topic` | Add a content topic. |
 | `list_categories` | List content categories. |
-| `list_business_integrations` | List connected social accounts (read `platform` + `status`). |
+| `list_connected_social_accounts` | List connected social accounts (read `platform` + `status`). |
 | `get_integration_stats` | Account-level audience stats (followers, growth) for one connected account. |
 | `list_integration_posts` | Posts published on one platform with engagement — includes posts made outside Marky. |
 | `get_external_post_stats` | Engagement for one post that was published outside Marky. |
-| `search_library` | Keyword-search the business's media library (reuse the user's own photos/videos). |
-| `list_business_queue` | Which posts sit in which upcoming schedule slot (the lineup, not just the recurring slots). Paginated (`CursorPage`: items under `data`, follow `next_cursor`). |
+| `search_media_library` | Keyword-search the business's media library (reuse the user's own photos/videos). |
+| `list_queued_posts` | Which posts sit in which upcoming schedule slot (the lineup, not just the recurring slots). Paginated (items under `items`, follow the `next` cursor). |
 | `get_queue_summary` | How full the daily queue is + when it runs dry: `queued_count`, `next_estimated_publish_time`, `last_estimated_publish_time`. One cheap call before deciding to top up — no need to page the full queue. |
 | `list_google_reviews` | Read your Google Business reviews. |
 | `create_media_upload` | THE upload path when the file is on a disk you can shell to (a code-exec sandbox, the user's machine) and has no public URL. Returns a 1-hour `upload_url` + a ready-to-run curl command; PUT the raw bytes there and the response is the created media asset (its `original_url` feeds `media_urls`/`logo_url`). Re-PUTting the same bytes safely returns the same asset. On hosted Claude clients, run the curl in the code-execution sandbox (the user may need to allow `api.mymarky.ai` under Settings → Capabilities → Code execution → Additional allowed domains). |

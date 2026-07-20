@@ -67,7 +67,7 @@ curl -X POST "https://api.mymarky.ai/api/businesses/BIZ_ID/media" \
 curl "https://api.mymarky.ai/api/businesses/BIZ_ID/library" \
   -H "Authorization: Bearer mk_live_YOUR_KEY"
 
-# (Keyword search is an MCP tool now — use search_library(business_id, query)
+# (Keyword search is an MCP tool now — use search_media_library(business_id, query)
 # instead of curl.)
 
 # One media item.

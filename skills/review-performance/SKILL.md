@@ -35,7 +35,7 @@ per bucket is directional only).
 ## Step 1 — find your business and connected accounts
 
 Two MCP tools: `list_businesses` (copy the id you want as `business_id`), then
-`list_business_integrations` on that business (copy each integration `id`, and note
+`list_connected_social_accounts` on that business (copy each integration `id`, and note
 its `platform` and `status`).
 
 If no accounts are connected, stop and tell the user to connect a social account in the

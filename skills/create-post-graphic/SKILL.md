@@ -129,7 +129,7 @@ WINDIR=$(cygpath -w "$PWD" | sed 's#\\#/#g')   # /c/Users/you/x -> C:/Users/you/
 binary, no way to install one, and restricted network egress — so both local
 rendering and a Puppeteer/Chromium download fail. Don't get stuck: skip the
 hand-authored-HTML render and use Marky's server-side media instead —
-`search_library` for existing on-brand images, or `upload_media_from_url` (Marky
+`search_media_library` for existing on-brand images, or `upload_media_from_url` (Marky
 fetches the URL server-side, past the sandbox's egress limits) for a web image.
 Fall back to local rendering only when a browser binary is actually present.
 

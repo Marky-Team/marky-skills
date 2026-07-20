@@ -202,8 +202,8 @@ A created post:
   used when you `queue` a post. PUT takes `timeslots` like `["MON 15:00", "FRI 09:00"]`
   and an optional `jitter_minutes`.
 - `GET /businesses/{business_id}/queue` — the current queued lineup, soonest first.
-  Paginated (`CursorPage`: items under `data`, `limit`/`cursor` params, follow
-  `next_cursor` while `has_more`).
+  Paginated (items under `items`, `limit`/`cursor` params, follow the `next`
+  cursor until it is null).
 - `GET /businesses/{business_id}/queue/summary` — aggregate queue health in one call:
   `queued_count`, `next_estimated_publish_time`, `last_estimated_publish_time` (when
   the queue runs dry). Use this instead of paging the list when you only need "is the
