@@ -54,7 +54,7 @@ source download when the run is done.
   ```
 
 - **Local file**: copy or symlink it into the workspace.
-- **Marky library**: `search_library` (or `GET /businesses/BIZ_ID/media`) to find it,
+- **Marky library**: `search_media_library` (or `GET /businesses/BIZ_ID/media`) to find it,
   then download the returned URL.
 
 Check the duration with `ffprobe`. Under ~10 minutes there may only be 1-2 good clips;

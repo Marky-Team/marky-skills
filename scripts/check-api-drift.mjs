@@ -57,7 +57,7 @@ const REQUIRED_MCP_TOOLS = [
   "list_posts", "get_post", "create_post", "update_post",
   "schedule_post", "queue_post", "publish_post_now", "get_post_analytics",
   "list_topics", "create_topic", "list_categories",
-  "upload_media_base64", "list_business_integrations", "list_google_reviews",
+  "create_media_upload", "upload_media_from_url", "list_connected_social_accounts", "list_google_reviews",
   "get_posting_schedule", "submit_feedback",
 ];
 

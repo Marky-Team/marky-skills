@@ -124,7 +124,7 @@ For each post:
   (`GET /businesses/{id}` — `tone`, `caption_writing_rules`, `caption_suffix`; see
   "Write like the business" in the `marky-api` skill) and layer `writing-style.md` on top.
 - **Prepare media.** Reuse what the business already has before reaching for anything
-  generic — `search_library` finds their own photos and videos by keyword. Upload new
+  generic — `search_media_library` finds their own photos and videos by keyword. Upload new
   files with `create_media_upload` (PUT the bytes to the returned URL) or
   `upload_media_from_url` for media already online, and keep the returned URL.
 - **Or design a diagram.** When a post announces, teaches, or compares something and no

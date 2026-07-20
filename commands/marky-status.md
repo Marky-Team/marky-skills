@@ -26,7 +26,7 @@ Gather these five things (in parallel where you can), then report:
    say so — they don't publish themselves.
 
 4. **Account health.** `GET /businesses/{id}/integrations` (or
-   `list_business_integrations`). Flag any integration whose `status` is not `valid` —
+   `list_connected_social_accounts`). Flag any integration whose `status` is not `valid` —
    those need a reconnect on the business profile page (see the marky-api link table)
    before posts to that platform can go out.
 
