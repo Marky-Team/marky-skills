@@ -18,6 +18,7 @@
       "license": "Apache-2.0",
       "skills": [
         "./skills/marky-api",
+        "./skills/get-started",
         "./skills/schedule-posts",
         "./skills/plan-social-content",
         "./skills/create-post-graphic",

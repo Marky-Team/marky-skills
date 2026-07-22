@@ -2,7 +2,7 @@
 
 <p align="center">
   <a href="LICENSE"><img src="https://img.shields.io/badge/license-Apache%202.0-blue.svg" alt="License"></a>
-  <img src="https://img.shields.io/badge/skills-12-brightgreen" alt="12 skills">
+  <img src="https://img.shields.io/badge/skills-16-brightgreen" alt="16 skills">
   <a href="https://agentskills.io"><img src="https://img.shields.io/badge/format-Agent%20Skills-5865F2" alt="Agent Skills format"></a>
   <a href="https://github.com/Marky-Team/marky-skills/issues"><img src="https://img.shields.io/github/issues/Marky-Team/marky-skills.svg" alt="Issues"></a>
 </p>
@@ -88,7 +88,7 @@ Install the mcp: `https://api.mymarky.ai/api/mcp`
 
 ## Skills
 
-Marky Skills ships **12 skills** agents load on demand. Read **`marky-api`** first —
+Marky Skills ships **16 skills** agents load on demand. Read **`marky-api`** first —
 it is the reference every other skill builds on (auth, base URL, endpoints, and
 how to connect Marky's MCP server).
 
@@ -97,6 +97,7 @@ how to connect Marky's MCP server).
 | Skill | Example |
 | :--- | :--- |
 | **`marky-api`** | "Connect me to Marky" — the agent reads this first for auth, endpoints, and the MCP connection. |
+| **`get-started`** | "Set me up" — brand-new account to a few on-brand drafts: workspace, brand kit, first social connected, first posts. |
 | **`build-brand-kit`** | "`/build-brand-kit` for my website nike.com" |
 
 ### Create & schedule
