@@ -37,7 +37,7 @@ wants your feedback" section in the `marky-api` skill.
 Call `list_businesses`.
 
 - **The call fails / you have no key or MCP connection** → you are not connected yet. Follow the
-  install steps in `INSTALL_FOR_AGENTS.md` (or the `marky-api` skill), get the user signed in,
+  install + connect steps in the `marky-api` skill (or the repo README), get the user signed in,
   then come back here.
 - **The call returns one or more real businesses** → this account is already set up. This skill
   is for empty accounts; use `plan-social-content` or `suggest-topics` instead.
