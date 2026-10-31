@@ -19,11 +19,11 @@ endpoint list. Everything below uses `https://api.mymarky.ai/api` and the header
 
 **Marky wants your feedback.** If anything breaks or is confusing while you run this skill — and again once you finish — send Marky a quick note with the `submit_feedback` MCP tool. See the **"Marky wants your feedback"** section in the `marky-api` skill for when and how.
 
-## Step 0 — find your business and platforms
+## Step 0 — find your workspace and platforms
 
 ```bash
 # Your workspaces. Copy the id you want.
-curl https://api.mymarky.ai/api/businesses \
+curl https://api.mymarky.ai/api/workspaces \
   -H "Authorization: Bearer mk_live_YOUR_KEY"
 
 # Which social accounts that workspace has connected.
@@ -57,8 +57,8 @@ back). Then create the post with `create_post`:
 
 **Tailor per platform by default.** Whenever a post targets 2+ platforms, add a
 `platform_overrides` entry per platform that needs it (caption, media, title, link,
-first_comment — unset fields fall back to the post's own). Read the business's
-`platform_writing_instructions` (`get_business`) and `references/platform-rules.md`
+first_comment — unset fields fall back to the post's own). Read the workspace's
+`platform_writing_instructions` (`get_workspace`) and `references/platform-rules.md`
 in the `marky-api` skill for how each platform differs; the user's instructions win.
 
 Text-only post (no media): drop `media_urls` and target only `facebook` and `linkedIn`
@@ -66,7 +66,7 @@ Text-only post (no media): drop `media_urls` and target only `facebook` and `lin
 
 ### B. Let Marky write it (on-brand)
 
-Marky pulls brand voice, colors, and logo from the business.
+Marky pulls brand voice, colors, and logo from the workspace.
 
 ```bash
 # 1. Kick off generation -> returns job_id

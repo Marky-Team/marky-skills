@@ -40,7 +40,7 @@ Before authoring any frames, load the brand so the video looks like the business
 template:
 
 1. Read the brand profile — the injected `brand-cache.md` snapshot if fresh, else one
-   `get_business` / `GET /businesses/{id}` call (which refreshes the cache).
+   `get_workspace` / `GET /workspaces/{id}` call (which refreshes the cache).
 2. Apply it to the HyperFrames composition:
    - `palettes` → the video's color system (backgrounds, accents, text).
    - `header_font` / `body_font` → typography.
@@ -53,7 +53,7 @@ template:
 project at `~/.marky/videos/<business_id>/<project-slug>/` — NOT under the current
 working directory. Video workspaces are big (tens of MB) and cwd could be inside
 someone's repo; `~/.marky` keeps them out of git, out of iCloud-synced folders, and
-groups them per business so past projects become reusable templates (the brand-remixed
+groups them per workspace so past projects become reusable templates (the brand-remixed
 `frame.md` and storyboards accumulate there). After rendering, delete the project's
 `capture/` directory — it's regenerable scratch and usually the bulk of the size.
 

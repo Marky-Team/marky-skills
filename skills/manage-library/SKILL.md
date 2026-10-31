@@ -40,10 +40,10 @@ mining your notes) must honor the same setting. Media browsing (`/library`,
 
 **Marky wants your feedback.** If anything breaks or is confusing while you run this skill — and again once you finish — send Marky a quick note with the `submit_feedback` MCP tool. See the **"Marky wants your feedback"** section in the `marky-api` skill for when and how.
 
-## Find your business
+## Find your workspace
 
 ```bash
-curl https://api.mymarky.ai/api/businesses \
+curl https://api.mymarky.ai/api/workspaces \
   -H "Authorization: Bearer mk_live_YOUR_KEY"
 ```
 

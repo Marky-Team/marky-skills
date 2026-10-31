@@ -3,7 +3,7 @@
 #
 # WHY: the whole job of a posting queue is to never run dry. This hook
 # checks how many days of queued
-# posts remain for their saved business and, when that drops to/below their
+# posts remain for their saved workspace and, when that drops to/below their
 # threshold, injects a one-line heads-up so the agent can offer to top up.
 #
 # HOW IT STAYS FAST (the update-check.sh pattern): one small REST call
@@ -22,16 +22,19 @@
 set -euo pipefail
 
 STATE_DIR="${MARKY_STATE_DIR:-${HOME}/.marky}"  # override for tests
-# The persistent "which business" source is brand-cache.md (line 1:
-# "business_id: <id>"), written by the brand-cache-sync hook whenever
-# get_business/update_business runs. There is no user.toml anymore.
+# The persistent "which workspace" source is brand-cache.md (line 1:
+# "business_id: <id>" — the workspace id; the key keeps its old name so existing
+# cache files still work), written by the brand-cache-sync hook whenever
+# get_workspace/update_workspace runs. There is no user.toml anymore.
+# The nested /businesses/{id}/queue/summary path is unchanged by the
+# business -> workspace rename (business_id there is the workspace id).
 BRAND_CACHE="${STATE_DIR}/brand-cache.md"
 CACHE_FILE="${STATE_DIR}/queue-cache"
 API_BASE="${MARKY_API_BASE:-https://api.mymarky.ai/api}"
 NOW_EPOCH="$(date +%s)"
 CACHE_TTL=21600  # 6h — queue depth doesn't change faster than this matters
 
-[[ -f "$BRAND_CACHE" ]] || exit 0  # no known business yet → nothing to check
+[[ -f "$BRAND_CACHE" ]] || exit 0  # no known workspace yet → nothing to check
 
 read_cache() {
   # key=value lines; missing file or key → empty string.
@@ -48,7 +51,7 @@ iso_to_epoch() {
     || echo ""
 }
 
-# ── Config: which business, and the threshold ───────────────────────────────
+# ── Config: which workspace, and the threshold ───────────────────────────────
 # Default threshold is 3 days. Muting ("stop reminding me about my queue") is
 # NOT read here — it lives in the agent's memory; this hook always emits the
 # heads-up when the queue is low and tells the agent to stay silent if muted.
@@ -87,7 +90,7 @@ else
     printf 'business_id=%s\nfetched_epoch=%s\nqueued_count=%s\nrun_out=%s\n' \
       "$business_id" "$NOW_EPOCH" "$queued_count" "$run_out" > "$CACHE_FILE"
   else
-    # Fetch failed → fall back to the stale cache if it's for this business.
+    # Fetch failed → fall back to the stale cache if it's for this workspace.
     [[ "$cached_biz" == "$business_id" ]] || exit 0
     queued_count="$(read_cache queued_count)"
     run_out="$(read_cache run_out)"

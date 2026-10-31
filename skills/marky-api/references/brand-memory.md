@@ -9,9 +9,9 @@ and escalation rules. Read it before your first content-creation work of a sessi
 
 Whenever YOU are about to write social content yourself (captions, hooks, hashtags, post
 copy — anything user-facing), **first read the brand profile** with
-`GET /businesses/{id}` (or `get_business`) and apply it: match `tone`, obey every line of
+`GET /workspaces/{id}` (or `get_workspace`) and apply it: match `tone`, obey every line of
 `caption_writing_rules`, append `caption_suffix`, and respect `imagery_preferences` when
-choosing or describing visuals. Do this once per session per business and keep it in
+choosing or describing visuals. Do this once per session per workspace and keep it in
 mind — don't draft from a generic voice and fix it later. (Marky's own `/posts/generate`
 endpoint applies these automatically; this rule is for content you author directly.)
 
@@ -21,14 +21,14 @@ In a Claude Code plugin install, the SessionStart hook injects a cached brand sn
 into context so sessions start already on-brand with no fetch — both the voice fields
 (for copy you write) and the design fields (colors, fonts, logo — for diagrams, cards,
 or video frames you render). **Over MCP the cache maintains itself**: a PostToolUse hook
-rewrites it automatically after every `get_business` / `update_business` call, so you
+rewrites it automatically after every `get_workspace` / `update_workspace` call, so you
 don't need to touch the file. On the REST path (or outside the plugin) you keep it fresh
-yourself: **after every `GET /businesses/{id}` and after every profile update**, write
+yourself: **after every `GET /workspaces/{id}` and after every profile update**, write
 `~/.marky/brand-cache.md` in this shape — header lines, blank
 line, then one `field: value` line each (non-string values as compact JSON):
 
 ```markdown
-business_id: your-business-uuid
+business_id: your-workspace-uuid
 updated: 2026-07-08T00:00:00Z
 
 tone: Warm, confident, and plain-spoken. No jargon.
@@ -50,11 +50,12 @@ name as a fallback until the next profile touch rewrites the new one.)
 edited by anyone at any time in the Marky dashboard (a teammate tweaking the tone, the
 user on their phone), and the cache only updates when an agent touches the profile — so
 treat the injected snapshot as possibly stale. Use it to sound right in conversation, but
-before your FIRST authored-or-scheduled content of a session, make one `get_business`
+before your FIRST authored-or-scheduled content of a session, make one `get_workspace`
 call to pick up dashboard edits (over MCP the sync hook then rewrites the cache for you).
 The workspace is always the source of truth; the file is disposable. When the user
-switches business, rewrite the file for the new business — the hook only injects it when
-its `business_id` matches the current workspace.
+switches workspace, rewrite the file for the new workspace — the hook only injects it when
+its `business_id` (the workspace id; the key keeps its old name so existing cache files
+stay valid) matches the current workspace.
 
 ## Learn the user's style — persist critiques into the brand profile
 
@@ -66,12 +67,12 @@ first:
    needs).
 2. **Persist the lasting preference into the brand profile** so every future generation —
    yours and Marky's own — honors it. Read the current values first
-   (`GET /businesses/{id}` or `get_business`), then merge, don't clobber:
+   (`GET /workspaces/{id}` or `get_workspace`), then merge, don't clobber:
    - Voice/personality feedback → append or refine `tone`.
    - Concrete do/don't rules (emojis, sentence length, banned words, hashtags) → add a
      line to `caption_writing_rules`.
    - Image feedback → `imagery_preferences`.
-   Write back with `PATCH /businesses/{id}` (REST) or `update_business` (MCP). Show the
+   Write back with `PATCH /workspaces/{id}` (REST) or `update_workspace` (MCP). Show the
    user the updated field text and confirm before writing — these fields steer all future
    content.
 
@@ -80,7 +81,7 @@ them and move on. Only persist feedback the user states as a general preference 
 
 **Routing note:** style critique goes to the *brand profile*, not `POST /feedback`. The
 feedback endpoint reports bugs/friction about Marky itself to the Marky team; it does not
-change how Marky writes for this business.
+change how Marky writes for this workspace.
 
 ## The feedback log — taste memory across sessions
 
@@ -113,7 +114,7 @@ Two duties, every creation skill:
 **Escalate patterns to the brand profile.** The log is local to this machine. When the
 same preference shows up ~3+ times (always rejects emoji-heavy captions, always picks
 the layers diagram), it has earned a line in `caption_writing_rules` /
-`imagery_preferences` via `update_business` — confirm with the user, then it applies on
+`imagery_preferences` via `update_workspace` — confirm with the user, then it applies on
 every machine and in Marky's own generator.
 
 ## Performance learnings — what the NUMBERS taught us
@@ -122,7 +123,7 @@ The feedback log holds what the user chose; `performance-learnings.md` holds wha
 audience rewarded — data-backed lessons from real engagement ("first-person posts that
 end with a question get 3-4x the comments", "video beats image on TikTok, image wins on
 LinkedIn"). It is a plain markdown file of dated bullets, one learning per line, stored
-per business where library files live (the Marky library by default; local only if the user opted into local library storage — see the marky-api storage rule):
+per workspace where library files live (the Marky library by default; local only if the user opted into local library storage — see the marky-api storage rule):
 
 - default → the Marky library file `/performance-learnings.md`
   (`POST /businesses/{id}/library/files` to create, files endpoints to read/update)

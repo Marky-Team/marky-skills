@@ -3,7 +3,7 @@ name: marky-api
 description: >
   Reference for driving Marky (social media management) from an AI agent. Use this
   when you need to authenticate to the Marky API, find the base URL, look up the key
-  endpoints (businesses, integrations, media, posts, generate, schedule, stats), or
+  endpoints (workspaces, integrations, media, posts, generate, schedule, stats), or
   connect Marky's MCP server to Claude Code CLI, Cowork, or Codex. Read this
   first before calling the Marky API or using the plan-social-content or schedule-posts
   skills. Also triggers on "connect my agent to Marky", "is my Marky connection working".
@@ -16,7 +16,7 @@ an agent: how to authenticate, how to connect Marky's MCP server, and which tool
 reach for.
 
 **The MCP is how agents drive Marky.** Connect it once (see the setup pointer below) and
-your client gets a curated set of typed Marky tools natively — `list_businesses`,
+your client gets a curated set of typed Marky tools natively — `list_workspaces`,
 `create_post`, `schedule_post`, `publish_post_now`, `create_media_upload`,
 `submit_feedback`, ... — the live list your client shows after connecting is the source
 of truth. When an MCP tool exists for an operation, **use the tool, not curl.**
@@ -40,7 +40,7 @@ Auth:      Authorization: Bearer mk_live_YOUR_KEY
 Every request needs the Bearer header:
 
 ```bash
-curl https://api.mymarky.ai/api/businesses \
+curl https://api.mymarky.ai/api/workspaces \
   -H "Authorization: Bearer mk_live_YOUR_KEY"
 ```
 
@@ -49,8 +49,8 @@ Error responses:
 | Status | Meaning |
 |--------|---------|
 | `401` | Missing or invalid API key |
-| `403` | Business does not belong to your org |
-| `404` | Business or resource not found |
+| `403` | Workspace does not belong to your org |
+| `404` | Workspace or resource not found |
 | `429` | Rate limit exceeded (check the `Retry-After` header) |
 
 Rate limits: 100 requests per minute per org.
@@ -64,10 +64,10 @@ creating and persisting in `MARKY_API_KEY`. In a Claude Code plugin install the 
 server is already bundled and reads the `MARKY_API_KEY` env var; for OAuth instead,
 register the server manually per setup.md.
 
-## The shape: everything is scoped to a business
+## The shape: everything is scoped to a workspace
 
-Almost every resource lives **under a business** (your workspace). The path always starts
-with the business id:
+Almost every resource lives **under a workspace**. The path always starts with the
+workspace id — which the nested paths still spell `businesses/{business_id}`:
 
 ```
 /api/businesses/{business_id}/posts
@@ -77,13 +77,25 @@ with the business id:
 ...
 ```
 
-So the first call you make is always `GET /businesses` to get your `business_id`, then you
-slot that id into every path after it. Only a few org-level resources (`/keys`,
-`/webhooks`, `/feedback`) sit outside a business.
+So the first call you make is always `list_workspaces` (MCP) or `GET /workspaces` (REST)
+to get the workspace id, then you slot that id into every path after it as `business_id`.
+Only a few org-level resources (`/keys`, `/webhooks`, `/feedback`) sit outside a workspace.
+
+**"Business" in the API means workspace.** Marky renamed businesses to workspaces. The
+top-level workspace calls have workspace names — MCP tools `list_workspaces`,
+`get_workspace`, `update_workspace`; REST `GET|POST /workspaces` and
+`GET|PATCH|DELETE /workspaces/{workspace_id}`. Everything below them kept its shape:
+nested paths are still `/businesses/{business_id}/...`, MCP tools still take a
+`business_id` argument, and responses still carry `business_id` — in every case that
+value **is the workspace id**. Media-upload bodies (`upload_media_from_url`,
+`upload_media_from_reference`, `create_media_upload`) take `workspace_id`. The old names
+(`list_businesses`, `get_business`, `update_business`, `create_business`,
+`delete_business`, and `/businesses`, `/businesses/{id}`) are deprecated but still work,
+so an older script or prompt that uses them is not broken — just prefer the new names.
 
 ### Pagination (list endpoints)
 
-List endpoints (`GET /businesses`, `/posts`, `/topics`, ...) return **at most 20 items per
+List endpoints (`GET /workspaces`, `/posts`, `/topics`, ...) return **at most 20 items per
 page** in a cursor-paginated envelope:
 
 ```json
@@ -93,16 +105,16 @@ page** in a cursor-paginated envelope:
 If `next` is non-null, there are more results. Pass `?limit=100` to get a bigger page, or
 page through by passing it back as `?cursor=NEXT` until `next` is `null`. **This matters on the
 very first call:** if your org has more than 20 workspaces, the one you want may not be on
-page 1 of `GET /businesses` — use `?limit=100` (or page with the cursor) so you do not miss
+page 1 of `GET /workspaces` — use `?limit=100` (or page with the cursor) so you do not miss
 it. Same for finding a specific post or topic in a long history.
 
 ## Opening the app for the user
 
 When the user asks to *see* something (their scheduled posts, the calendar, the library),
 open the right page in the Marky app instead of describing it. Workspace pages live under
-`https://app.mymarky.ai/ws/{workspace}/...` — `{workspace}` accepts **the `business_id`
-UUID** (the human-readable slug also works, but the API does not expose it, so use the id
-you already have).
+`https://app.mymarky.ai/ws/{workspace}/...` — `{workspace}` accepts **the workspace id**
+(the `business_id` UUID; the human-readable slug also works, but the API does not expose
+it, so use the id you already have).
 
 | To show the user... | Open |
 | :--- | :--- |
@@ -112,11 +124,11 @@ you already have).
 | The posting calendar | `https://app.mymarky.ai/ws/{business_id}/post-calendar` |
 | The media/docs library | `https://app.mymarky.ai/ws/{business_id}/library` |
 | Connect / reconnect social accounts | `https://app.mymarky.ai/ws/{business_id}/business/profile` |
-| Business settings | `https://app.mymarky.ai/ws/{business_id}/business/settings` |
+| Workspace settings | `https://app.mymarky.ai/ws/{business_id}/business/settings` |
 
 When an integration's `status` is not `valid` (or a platform the user wants is missing),
-send them to the **business profile** page — that's where social accounts are connected
-and reconnected. It is NOT under business settings.
+send them to the **workspace profile** page (the `/business/profile` link above) — that's
+where social accounts are connected and reconnected. It is NOT under workspace settings.
 
 Do not invent page paths (there is no `/calendar` at the root, for example) — anything not
 in this table, link `https://app.mymarky.ai` and let the user navigate.
@@ -129,7 +141,7 @@ tool**. **Treat sending feedback as part of the job, not an afterthought.** It i
 (one tool call), it never blocks your work, and it is how Marky finds and fixes the rough
 edges agents hit.
 
-`submit_feedback` (org-level, not under a business; over REST it is `POST /feedback`).
+`submit_feedback` (org-level, not under a workspace; over REST it is `POST /feedback`).
 Typed fields:
 
 | Field | Required | Value |
@@ -175,9 +187,9 @@ documents how to give feedback.
 
 Skills are amnesiac — every session starts fresh — but you have two durable stores. Use this **one rule** for anything worth remembering:
 
-**Marky-first, memory-fallback.** If the thing has a home in the Marky business profile — a brand color, font, tone/Profile, caption rule, imagery preference, logo, CTA, tagline — persist it **there** with `update_business` (read-merge-write, confirm the wording). The product itself reads those fields, so it never goes stale inside one agent's head. If there is **no** field in Marky for it — an agent-only preference like a preferred TTS voice, "no code in my videos", the user's default business, or "stop asking me for feedback" — save it as a **local memory** instead. Everything else runs on sensible defaults; you only remember a *deviation* from a default. (There is no `user.toml` — this rule replaced it.)
+**Marky-first, memory-fallback.** If the thing has a home in the Marky workspace's brand profile — a brand color, font, tone/Profile, caption rule, imagery preference, logo, CTA, tagline — persist it **there** with `update_workspace` (read-merge-write, confirm the wording). The product itself reads those fields, so it never goes stale inside one agent's head. If there is **no** field in Marky for it — an agent-only preference like a preferred TTS voice, "no code in my videos", the user's default workspace, or "stop asking me for feedback" — save it as a **local memory** instead. Everything else runs on sensible defaults; you only remember a *deviation* from a default. (There is no `user.toml` — this rule replaced it.)
 
-At session start the plugin's SessionStart hook injects a `brand-cache.md` snapshot to orient you; before your first authored content, refresh with one `get_business` call. Your **default business** and any **muted prompts** live in memory — read them from there. If you don't know which business yet, ask once and remember the choice; a stale id 404s on first use, so re-pick and re-remember.
+At session start the plugin's SessionStart hook injects a `brand-cache.md` snapshot to orient you; before your first authored content, refresh with one `get_workspace` call. Your **default workspace** and any **muted prompts** live in memory — read them from there. If you don't know which workspace yet, ask once and remember the choice; a stale id 404s on first use, so re-pick and re-remember.
 
 ### Feedback — event-driven
 Submit feedback the moment you hit a real bug or friction (the three triggers in "Marky wants your feedback" above) — this is always on. Separately, at a natural pause roughly every couple of weeks, you *may* ask once with **AskUserQuestion** whether they want to share quick feedback: **Yes** → collect it and `POST /api/feedback` (or the `submit_feedback` tool); **No** → skip; **Don't ask again** → save a memory and never ask again. No stored timers — if a memory says the user muted it, don't ask.
@@ -191,7 +203,7 @@ Library files (notes, briefs, knowledge-base docs) live in the user's Marky acco
 ### Low queue
 By default, if the posting queue will run dry within ~3 days, mention it once and offer to top up — in the Claude Code plugin a SessionStart hook does this automatically (`GET /queue/summary`, cached 6h). If the user says "stop reminding me about my queue" (or gives a different day threshold), save a memory and honor it.
 
-**How hooks find the business (they can't read your memory).** SessionStart hooks are plain shell scripts, outside the model loop — they have no access to your memory. The one durable fact they need, the active business id, lives in `~/.marky/brand-cache.md` (its first line, `business_id: <id>`), which the brand-cache hook rewrites on every `get_business`/`update_business`. So there are two views of the same fact: **you** read the default business from memory; **hooks** read it from `brand-cache.md`. That file — not a `user.toml` — is the machine-readable source for anything a hook must persist across sessions.
+**How hooks find the workspace (they can't read your memory).** SessionStart hooks are plain shell scripts, outside the model loop — they have no access to your memory. The one durable fact they need, the active workspace id, lives in `~/.marky/brand-cache.md` (its first line, `business_id: <id>`), which the brand-cache hook rewrites on every `get_workspace`/`update_workspace`. So there are two views of the same fact: **you** read the default workspace from memory; **hooks** read it from `brand-cache.md`. That file — not a `user.toml` — is the machine-readable source for anything a hook must persist across sessions.
 ## The MCP tools (the curated set)
 
 The MCP does **not** mirror the whole REST API. It exposes a **curated set of typed
@@ -208,11 +220,10 @@ source of truth. If you need an operation that is not exposed as a tool, tell Ma
 
 | Tool | What it does |
 | :--- | :--- |
-| `list_businesses` | List your workspaces. Grab the `id` you want as `business_id`. |
-| `create_business` | Create a new workspace. |
-| `update_business` | Set the brand profile (tone, palettes, fonts, logo) and merge-patch `platform_writing_instructions`. |
-| `get_business` | Read one business's full brand profile by id, incl. `platform_writing_instructions`. |
-| `list_posts` | List a business's posts (filter by status, incl. the review verdicts `LIKED`/`REJECTED`). |
+| `list_workspaces` | List your workspaces. Grab the `id` you want as `business_id`. |
+| `update_workspace` | Set the brand profile (tone, palettes, fonts, logo) and merge-patch `platform_writing_instructions`. |
+| `get_workspace` | Read one workspace's full brand profile by id, incl. `platform_writing_instructions`. |
+| `list_posts` | List a workspace's posts (filter by status, incl. the review verdicts `LIKED`/`REJECTED`). |
 | `create_post` | Create one post yourself (caption + platforms + media + per-platform `platform_overrides` — see `references/platform-rules.md`). |
 | `update_post` | Edit a post (caption, `restrict_publish_to`, media) or move it through the TEAM review workflow: `status: NEW` tells the user's team it's ready for review (shows on the app's review page); `LIKED`/`REJECTED` record their verdict. Marky never gates publishing on these. Only valid between the three review states. |
 | `list_post_comments` | Read the team's review comments on a post (the same thread the app's review page shows). |
@@ -232,7 +243,7 @@ source of truth. If you need an operation that is not exposed as a tool, tell Ma
 | `get_integration_stats` | Account-level audience stats (followers, growth) for one connected account. |
 | `list_integration_posts` | Posts published on one platform with engagement — includes posts made outside Marky. |
 | `get_external_post_stats` | Engagement for one post that was published outside Marky. |
-| `search_media_library` | Keyword-search the business's media library (reuse the user's own photos/videos). |
+| `search_media_library` | Keyword-search the workspace's media library (reuse the user's own photos/videos). |
 | `list_queued_posts` | Which posts sit in which upcoming schedule slot (the lineup, not just the recurring slots). Paginated (items under `items`, follow the `next` cursor). |
 | `get_queue_summary` | How full the daily queue is + when it runs dry: `queued_count`, `next_estimated_publish_time`, `last_estimated_publish_time`. One cheap call before deciding to top up — no need to page the full queue. |
 | `list_google_reviews` | Read your Google Business reviews. |
@@ -243,7 +254,8 @@ source of truth. If you need an operation that is not exposed as a tool, tell Ma
 
 **Deliberately NOT tools** — these stay off the MCP on purpose, so do not wait for them:
 the design/template flow, and the destructive/config ops (API-key create/list/revoke,
-webhooks, `delete_business`, `delete_post`). (Marky-side generation IS a tool now —
+webhooks, `create_workspace` / `delete_workspace` (REST `POST /workspaces`,
+`DELETE /workspaces/{workspace_id}`), `delete_post`). (Marky-side generation IS a tool now —
 `generate_draft_posts` above — but it's **deprecated**: author your own posts with
 `create_post` and only reach for generation when the user explicitly asks Marky to generate.)
 
@@ -255,7 +267,7 @@ per-item topic / category / library / file / folder GET-DELETE-UPDATE.
 ## REST endpoints
 
 The calls you will make most, all relative to the base URL and nested under
-`/businesses/{business_id}`:
+`/businesses/{business_id}` (`business_id` = the workspace id):
 
 - **Posts** — `POST /posts` (create: `caption` required, plus `restrict_publish_to`,
   `media_urls`, `status`, `link` (clickable on Facebook / Google Business /
@@ -274,7 +286,7 @@ The calls you will make most, all relative to the base URL and nested under
 - **Integrations** — `GET /integrations` (connected accounts; read `platform` + `status`,
   target only `valid` ones). Accounts are connected in the dashboard, never via API.
 - **Stats** — `GET /posts/{post_id}/stats`, plus per-integration account/post stats.
-- **Businesses** — `GET /businesses` (org-level list), `GET|PATCH /businesses/{id}`
+- **Workspaces** — `GET /workspaces` (org-level list), `GET|PATCH /workspaces/{id}`
   (the PATCH is also how you set the brand profile — flat fields like `tone`,
   `caption_writing_rules`, `palettes`; there is no separate brand endpoint).
 - **Topics & schedule** — `GET|POST /topics`, `GET|PUT /posting-schedule`,
@@ -296,13 +308,13 @@ content-creation work of a session.**
 ### Write like the business — pull the brand profile before drafting
 
 Whenever YOU are about to write social content yourself (captions, hooks, hashtags,
-anything user-facing), first read the brand profile (`get_business` /
-`GET /businesses/{id}`) and apply it: match `tone`, obey every line of
+anything user-facing), first read the brand profile (`get_workspace` /
+`GET /workspaces/{id}`) and apply it: match `tone`, obey every line of
 `caption_writing_rules`, append `caption_suffix`, respect `imagery_preferences`. Once per
-session per business — don't draft from a generic voice and fix it later. A cached
+session per workspace — don't draft from a generic voice and fix it later. A cached
 snapshot (`~/.marky/brand-cache.md`) is injected by the plugin's SessionStart hook to
 orient you, but it can be stale: before your first authored content of a session, make
-one fresh `get_business` call. Cache format and maintenance rules are in the reference.
+one fresh `get_workspace` call. Cache format and maintenance rules are in the reference.
 
 ### Learn the user's style — persist critiques into the brand profile
 
@@ -310,7 +322,7 @@ When the user critiques generated content ("too many emojis", "stop saying
 'game-changer'"), fix the content in front of you AND persist the lasting preference —
 following the **Marky-first, memory-fallback** rule above. Most style critique has a home
 in the brand profile (`tone`, `caption_writing_rules`, `imagery_preferences`) → write it
-there with `update_business` (merge, don't clobber, confirm first). A lasting preference
+there with `update_workspace` (merge, don't clobber, confirm first). A lasting preference
 with no brand-profile field (e.g. a preferred TTS voice, a format rule like "always
 vertical") → save it as a local memory. One-off instructions are not lasting preferences.
 Style critique never goes to `POST /feedback`.
@@ -320,13 +332,13 @@ Style critique never goes to `POST /feedback`.
 `~/.marky/feedback-log.jsonl` records what the user actually approved, rejected, and
 edited on review boards. Two duties for every creation skill: **append a line after
 every board** (feedback verbatim + an `items` map), and **scan the last ~20 entries for
-this business before you generate** — lean into what won, drop what got rejected. When
+this workspace before you generate** — lean into what won, drop what got rejected. When
 the same preference shows up ~3+ times, escalate it into the brand profile. Entry format
 and escalation detail are in the reference.
 
 ### Performance learnings — what the NUMBERS taught us
 
-`performance-learnings.md` (a per-business file: the Marky library file
+`performance-learnings.md` (a per-workspace file: the Marky library file
 `/performance-learnings.md` by default, or `~/.marky/fs/<business_id>/performance-learnings.md`
 if the user opted into local library storage)
 holds dated, data-backed lessons from real engagement — what the AUDIENCE rewarded, as
@@ -370,7 +382,7 @@ integration `platform` field returns these canonical strings:
 
 These five are the common targets. The `restrict_publish_to` enum also accepts `twitter`,
 `linkedInProfile`, `pinterest`, `googleBusiness`, and `youtube` — but only target a platform
-that shows up as a `valid` integration on the business.
+that shows up as a `valid` integration on the workspace.
 
 Media rules of thumb:
 - **Video** posts can target all platforms.
@@ -386,9 +398,9 @@ Always read `GET /businesses/{id}/integrations` first and only target platforms 
 - **Connect your social accounts in the dashboard first.** This is a one-time step at
   [app.mymarky.ai](https://app.mymarky.ai). The API sees connected accounts but cannot add
   new ones.
-- Find your `business_id` with `GET /businesses` (or from the dashboard URL —
-  workspace pages are `app.mymarky.ai/ws/{workspace}/...`, and a UUID in that slot is
-  the business_id).
+- Find your workspace id (the `business_id` every other call takes) with `list_workspaces`
+  / `GET /workspaces` (or from the dashboard URL — workspace pages are
+  `app.mymarky.ai/ws/{workspace}/...`, and a UUID in that slot is the workspace id).
 - Posts you create via the API show up in your normal Marky queue — review them at
   `app.mymarky.ai/ws/{business_id}/social-posts?tab=scheduled` (see "Opening the app
   for the user" above).

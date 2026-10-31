@@ -4,14 +4,19 @@
 # WHY: the SessionStart hook injects a cached brand snapshot (voice + design
 # fields) so agents write and render on-brand from the first message. Before this hook, refreshing that
 # cache relied on the agent following a skill instruction ("rewrite the file
-# after get_business / update_business") — hope, not enforcement. This hook
-# fires deterministically after every mcp__marky__get_business /
-# mcp__marky__update_business call and rewrites the cache from the tool's
-# actual response, so the snapshot can never drift from what the agent last
-# saw. REST-path and non-plugin usage still rely on the skill instruction.
+# after get_workspace / update_workspace") — hope, not enforcement. This hook
+# fires deterministically after every mcp__marky__get_workspace /
+# mcp__marky__update_workspace call (and the deprecated get_business /
+# update_business names, which the server still accepts) and rewrites the cache
+# from the tool's actual response, so the snapshot can never drift from what the
+# agent last saw. REST-path and non-plugin usage still rely on the skill
+# instruction.
+#
+# The cache file keeps its `business_id:` first line (it is the workspace id):
+# queue-check.sh and existing installs read that key, so it is not renamed.
 #
 # This hook needs python3 (JSON parsing is beyond sane bash) but must never
-# break a session: any failure — no python3, unparseable payload, no business
+# break a session: any failure — no python3, unparseable payload, no workspace
 # in the response — exits 0 silently. Worst case is the old behavior.
 
 set -uo pipefail
@@ -34,7 +39,7 @@ DESIGN_FIELDS = [
 FIELDS = VOICE_FIELDS + DESIGN_FIELDS
 
 def find_business(node):
-    """Recursively find a dict that looks like a Marky business (has an id and
+    """Recursively find a dict that looks like a Marky workspace (has an id and
     at least one voice field). MCP responses wrap payloads in content blocks
     whose text is itself JSON, so parse string leaves that look like JSON."""
     if isinstance(node, dict):
@@ -61,14 +66,18 @@ try:
 except ValueError:
     sys.exit(0)
 
-if event.get("tool_name") not in ("mcp__marky__get_business", "mcp__marky__update_business"):
+GET_TOOLS = ("mcp__marky__get_workspace", "mcp__marky__get_business")
+UPDATE_TOOLS = ("mcp__marky__update_workspace", "mcp__marky__update_business")
+
+if event.get("tool_name") not in GET_TOOLS + UPDATE_TOOLS:
     sys.exit(0)
 
 business = find_business(event.get("tool_response"))
 
-# update_business may return a bare ack; fall back to the request itself,
-# which carries business_id plus whichever voice fields were being set.
-if business is None and event.get("tool_name") == "mcp__marky__update_business":
+# update_workspace may return a bare ack; fall back to the request itself,
+# which carries business_id (the workspace id) plus whichever voice fields were
+# being set.
+if business is None and event.get("tool_name") in UPDATE_TOOLS:
     tool_input = event.get("tool_input") or {}
     business_id = tool_input.get("business_id") or tool_input.get("id")
     if business_id and any(tool_input.get(f) for f in FIELDS):
@@ -82,7 +91,7 @@ os.makedirs(state_dir, exist_ok=True)
 path = os.path.join(state_dir, "brand-cache.md")
 
 # On a partial update, keep previously cached fields the response didn't carry —
-# but only when the cache is for the same business.
+# but only when the cache is for the same workspace.
 previous = {}
 try:
     with open(path) as f:

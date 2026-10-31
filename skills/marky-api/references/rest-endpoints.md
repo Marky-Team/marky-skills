@@ -6,12 +6,14 @@ come here when you need a resource that isn't on it (library, folders, files, de
 templates, webhooks, keys, reviews, categories) or the full field detail of one that is.
 
 All paths are relative to `https://api.mymarky.ai/api`. All need the Bearer header. Almost
-every path is nested under `/businesses/{business_id}`.
+every path is nested under `/businesses/{business_id}` — despite the name, `business_id` is
+the **workspace id** (Marky renamed businesses to workspaces; nested paths, MCP tool
+arguments, and response fields kept `business_id`).
 
 ## Contents
 
-- [Businesses (workspaces)](#businesses-workspaces)
-- [Brand profile (flat fields on the business)](#brand-profile-flat-fields-on-the-business)
+- [Workspaces](#workspaces)
+- [Brand profile (flat fields on the workspace)](#brand-profile-flat-fields-on-the-workspace)
 - [Integrations (connected social accounts)](#integrations-connected-social-accounts)
 - [Media](#media)
 - [Posts](#posts)
@@ -20,33 +22,40 @@ every path is nested under `/businesses/{business_id}`.
 - [Topics, categories, posting schedule](#topics-categories-posting-schedule)
 - [Library, folders, files](#library-folders-files)
 - [Reviews, templates, designs](#reviews-templates-designs)
-- [Org-level (not under a business)](#org-level-not-under-a-business)
+- [Org-level (not under a workspace)](#org-level-not-under-a-workspace)
 
-## Businesses (workspaces)
+## Workspaces
 
-- `GET /businesses` — list your workspaces. Copy the `id` you want; that is your
-  `business_id` for every other call.
-- `GET /businesses/{business_id}` — one workspace (includes the brand profile fields).
-- `POST /businesses` — create a workspace (`name` is required).
-- `PATCH /businesses/{business_id}` — update a workspace, **including the brand profile**
-  (see below).
-- `DELETE /businesses/{business_id}` — delete a workspace (REST only, not an MCP tool).
+- `GET /workspaces` (`list_workspaces`) — list your workspaces. Copy the `id` you want;
+  that is your `business_id` for every other call.
+- `GET /workspaces/{workspace_id}` (`get_workspace`) — one workspace (includes the brand
+  profile fields).
+- `POST /workspaces` (`create_workspace`) — create a workspace (`name` is required). REST
+  only, not an MCP tool.
+- `PATCH /workspaces/{workspace_id}` (`update_workspace`) — update a workspace,
+  **including the brand profile** (see below).
+- `DELETE /workspaces/{workspace_id}` (`delete_workspace`) — delete a workspace (REST
+  only, not an MCP tool).
 
-A business in the response looks like:
+The older `/businesses` and `/businesses/{business_id}` forms of these five calls
+(`list_businesses`, `get_business`, `create_business`, `update_business`,
+`delete_business`) still work but are deprecated — same bodies, same responses.
+
+A workspace in the response looks like:
 
 ```json
-{ "id": "your-business-uuid", "name": "My Business", "industry": "Marketing", "website": "https://mybusiness.com", "language": "English" }
+{ "id": "your-workspace-uuid", "name": "My Business", "industry": "Marketing", "website": "https://mybusiness.com", "language": "English" }
 ```
 
-## Brand profile (flat fields on the business)
+## Brand profile (flat fields on the workspace)
 
 There is **no separate brand-profile endpoint**. The brand lives as flat fields on the
-business object — read them with `GET /businesses/{id}` and set them with
-`PATCH /businesses/{id}`. Marky applies them automatically whenever it writes captions or
+workspace object — read them with `GET /workspaces/{id}` and set them with
+`PATCH /workspaces/{id}`. Marky applies them automatically whenever it writes captions or
 renders designs:
 
 ```bash
-curl -X PATCH https://api.mymarky.ai/api/businesses/BIZ_ID \
+curl -X PATCH https://api.mymarky.ai/api/workspaces/BIZ_ID \
   -H "Authorization: Bearer mk_live_YOUR_KEY" \
   -H "Content-Type: application/json" \
   -d '{
@@ -66,7 +75,7 @@ curl -X PATCH https://api.mymarky.ai/api/businesses/BIZ_ID \
 ```
 
 Every field is optional — send only what you want to change. **Shape note:** on the
-business object, `palettes` is a list of palette OBJECTS (`{name, colors, text_color}`),
+workspace object, `palettes` is a list of palette OBJECTS (`{name, colors, text_color}`),
 so the colors live at `palettes[0].colors`. (The bare nested-array form
 `[["#hex", ...]]` is only accepted by the generate endpoints' `palettes` override.)
 Key brand fields: `tone`,
@@ -77,7 +86,7 @@ Key brand fields: `tone`,
 ## Integrations (connected social accounts)
 
 - `GET /businesses/{business_id}/integrations` — list the social accounts connected to a
-  business. **You connect accounts in the dashboard, not via the API** — the API can see
+  workspace. **You connect accounts in the dashboard, not via the API** — the API can see
   them but cannot add new ones.
 
 Each integration has:
@@ -96,6 +105,10 @@ integrations whose `status` is `valid`.
 - `POST /businesses/{business_id}/media` — upload an image or video. Multipart form, field
   name `file`, up to 50 MB. Optional `alt_text` query param. Returns a `MediaResponse` with
   `original_url`. Pass that URL in a post's `media_urls`.
+- `POST /media/from-url` (`upload_media_from_url`), `POST /media/from-reference`
+  (`upload_media_from_reference`), `POST /media/uploads` (`create_media_upload`) — org-level
+  upload paths; the JSON body names the target workspace as `workspace_id` (the older
+  `business_id` key is still accepted).
 
 ```bash
 curl -X POST "https://api.mymarky.ai/api/businesses/BIZ_ID/media" \
@@ -152,7 +165,7 @@ The review-page discussion thread, for reviewer-tier workflows:
   - `scheduled_publish_time` (required) — ISO 8601 time, must be in the future
   - `restrict_publish_to` — defaults to all connected platforms if omitted
 - `POST /businesses/{business_id}/posts/{post_id}/queue` — drop the post into the
-  business's posting schedule (the next open slot) instead of a fixed time.
+  workspace's posting schedule (the next open slot) instead of a fixed time.
 - `POST /businesses/{business_id}/posts/{post_id}/publish` — publish immediately.
 
 A created post:
@@ -164,7 +177,7 @@ A created post:
 ## Generate on-brand posts (let Marky write them)
 
 - `POST /businesses/{business_id}/posts/generate` — generate draft posts. Brand voice,
-  colors, and logo are pulled from the business automatically.
+  colors, and logo are pulled from the workspace automatically.
   - `content` — what to post about (used as the topic)
   - `website_url` — a page to scrape for context (alternative to `content`)
   - `custom_idea` — skip ideation and use this exact idea for every post
@@ -239,7 +252,7 @@ A created post:
 - `POST /businesses/{business_id}/posts/{post_id}/design/edit` — revise a post's design with
   a plain-language `instruction` (e.g. "make the headline tan").
 
-## Org-level (not under a business)
+## Org-level (not under a workspace)
 
 - `GET|POST /webhooks`, `DELETE /webhooks/{webhook_id}`,
   `GET /webhooks/{webhook_id}/deliveries` — get notified when posts publish

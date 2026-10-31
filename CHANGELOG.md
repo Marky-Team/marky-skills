@@ -3,6 +3,36 @@
 All notable changes to this collection are documented here. The format is based
 on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
+## [0.17.0] - 2026-10-31
+
+### Changed
+
+- **Businesses are now workspaces.** Marky renamed "business" to "workspace" across
+  its API, and the skills now use the new names everywhere:
+  - MCP tools: `list_workspaces`, `get_workspace`, `update_workspace` (in place of
+    `list_businesses`, `get_business`, `update_business`). Creating and deleting a
+    workspace stay REST-only: `POST /workspaces` (`create_workspace`) and
+    `DELETE /workspaces/{workspace_id}` (`delete_workspace`).
+  - REST: `GET /workspaces` and `GET|PATCH /workspaces/{workspace_id}` for the
+    top-level workspace calls in every curl example and reference.
+  - Media uploads (`upload_media_from_url`, `upload_media_from_reference`,
+    `create_media_upload`) document `workspace_id` in the request body.
+  - Prose says "workspace" for the Marky container; "business" is kept where it means
+    the customer's real-world business.
+- **What did not change**, explained once in the `marky-api` skill: nested paths are
+  still `/businesses/{business_id}/...`, MCP tools still take a `business_id` argument,
+  and responses still carry `business_id` — that value is the workspace id.
+- The brand-cache hook now fires on `get_workspace` / `update_workspace` as well as the
+  old names, and the API drift check expects the new tool names in the live MCP tool
+  list.
+
+Nothing for you to do. The old business names and `/businesses` endpoints still work
+on Marky's side (deprecated, not removed), so older prompts and scripts keep running.
+Local files are untouched: `~/.marky/brand-cache.md` keeps its `business_id:` line,
+the `~/.marky/fs/<business_id>/` layout and feedback log are unchanged, and any
+leftover `user.toml` keys (`current_business_id`, `current_business_name`) were not
+renamed.
+
 ## [0.16.1] - 2026-07-18
 
 ### Fixed

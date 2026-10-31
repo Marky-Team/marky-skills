@@ -3,7 +3,7 @@ name: create-post-graphic
 description: >
   Design branded diagram images for social posts — layer diagrams, flows, loops,
   quote + stat cards, sequence diagrams, numbered steps — as hand-authored HTML
-  rendered to PNG, styled from the business's own brand settings pulled from the
+  rendered to PNG, styled from the workspace's own brand settings pulled from the
   Marky API. Use this when a post announces, teaches, or compares something and a
   designed diagram would beat a stock photo: "make a diagram for this post",
   "turn these steps into an image", "make an infographic". A companion to
@@ -16,7 +16,7 @@ description: >
 A designed diagram in the brand's own colors makes a post stop the scroll and
 carry its point without the caption. This skill turns a post's idea into a
 1080x1350 PNG: you author real HTML/CSS (no AI image generation, no stock), style
-it from the business's brand settings, render it headlessly, look at it, and
+it from the workspace's brand settings, render it headlessly, look at it, and
 attach it to the post.
 
 **Read the marky-api skill first** for the base URL and your key.
@@ -35,7 +35,7 @@ with these fields — start from that. If it's missing or possibly stale (see "W
 the business" in the marky-api skill), fetch fresh:
 
 ```bash
-curl "https://api.mymarky.ai/api/businesses/BIZ_ID" \
+curl "https://api.mymarky.ai/api/workspaces/BIZ_ID" \
   -H "Authorization: Bearer mk_live_YOUR_KEY"
 ```
 

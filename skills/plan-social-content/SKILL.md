@@ -63,7 +63,7 @@ it grounded and safe.
 
 ### Stage 2 — Learn what is working (optional, once you have history)
 
-If the business has posted through Marky for a few weeks, look at the engagement before
+If the workspace has posted through Marky for a few weeks, look at the engagement before
 planning. Pull per-post stats (`get_post_analytics`) and account stats
 (`get_integration_stats`, `list_integration_posts`), and notice
 patterns: which topics, formats, and platforms get the most reach and engagement. Lean the
@@ -74,10 +74,10 @@ history yet, skip this and come back to it later.
 
 Design about 6 posts for the week.
 
-- **Learn from past boards first.** Read the last ~20 entries for this business in
+- **Learn from past boards first.** Read the last ~20 entries for this workspace in
   `~/.marky/feedback-log.jsonl` (see "The feedback log" in the `marky-api` skill): lean
   into approved topics/formats, drop anything repeatedly rejected, honor the comments.
-- **Learn from the numbers too.** Read the business's `performance-learnings.md` (see
+- **Learn from the numbers too.** Read the workspace's `performance-learnings.md` (see
   "Performance learnings" in the `marky-api` skill) and let its data-backed lessons
   steer topic, format, and voice — they are measured on this audience and outrank
   generic best practices.
@@ -120,8 +120,8 @@ the user cannot provide this week, swap it for one that needs nothing extra.
 
 For each post:
 
-- **Write the caption** in the brand's voice. Pull the business's brand profile first
-  (`GET /businesses/{id}` — `tone`, `caption_writing_rules`, `caption_suffix`; see
+- **Write the caption** in the brand's voice. Pull the workspace's brand profile first
+  (`GET /workspaces/{id}` — `tone`, `caption_writing_rules`, `caption_suffix`; see
   "Write like the business" in the `marky-api` skill) and layer `writing-style.md` on top.
 - **Prepare media.** Reuse what the business already has before reaching for anything
   generic — `search_media_library` finds their own photos and videos by keyword. Upload new
@@ -133,7 +133,7 @@ For each post:
   uploads it.
 - **Or let Marky write it.** For posts where the user just has a topic, use
   `POST /businesses/{id}/posts/generate` (brand voice, colors, and logo come from the
-  business automatically), poll the job, and review the drafts.
+  workspace automatically), poll the job, and review the drafts.
 
 #### Hooks — the first line earns everything else
 
@@ -189,7 +189,7 @@ Before presenting drafts, run every caption through the **humanize** skill's pat
         rest of the batch, not just the edited post.
       - Any comment phrased as a rule ("never ...", "always ...", "stop ...") is an
         explicit lasting preference: persist it to the brand profile
-        (`caption_writing_rules` via `update_business`) NOW, with the user's wording —
+        (`caption_writing_rules` via `update_workspace`) NOW, with the user's wording —
         don't wait for it to recur. Confirm the field text, then write.
    
    5. **Persist it**: append the feedback to `~/.marky/feedback-log.jsonl` with
@@ -199,8 +199,8 @@ Before presenting drafts, run every caption through the **humanize** skill's pat
    (Submit on the board with at least one approved post counts). Rejected posts don't get
    scheduled; apply per-post comments as edits and re-show anything that changed.
    Apply their edits. If an edit reveals a lasting voice preference, write it into
-   `writing-style.md` AND persist it to the business's brand profile (`tone` /
-   `caption_writing_rules` via `PATCH /businesses/{id}` or `update_business`) so Marky's
+   `writing-style.md` AND persist it to the workspace's brand profile (`tone` /
+   `caption_writing_rules` via `PATCH /workspaces/{id}` or `update_workspace`) so Marky's
    own generator learns it too — see "Learn the user's style" in the `marky-api` skill.
 3. On approval, create each post WITH `metadata` tags (`media_type`, `format`, `hook`,
    `topic`, `created_by: "plan-social-content"` — see "Tag every post" in the marky-api
@@ -229,7 +229,7 @@ One caption rarely fits every platform. Read `references/platform-rules.md` (in 
 `marky-api` skill) for the hard limits and per-platform style baseline, then tailor
 with `platform_overrides` on every multi-platform post — X gets a compressed one-idea
 version, LinkedIn moves hashtags to `first_comment`, Pinterest gets a keyword-rich
-`title`. Read the business's `platform_writing_instructions` (on `get_business`)
+`title`. Read the workspace's `platform_writing_instructions` (on `get_workspace`)
 first; the user's own platform preferences always win over the baseline.
 
 ## Cadence

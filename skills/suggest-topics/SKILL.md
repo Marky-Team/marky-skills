@@ -22,11 +22,11 @@ endpoint list. Everything below uses `https://api.mymarky.ai/api` and the header
 ## Step 1 — understand the business and what exists today
 
 ```bash
-curl https://api.mymarky.ai/api/businesses \
+curl https://api.mymarky.ai/api/workspaces \
   -H "Authorization: Bearer mk_live_YOUR_KEY"
 
-# Read the business profile for context (what they do, who they serve).
-curl https://api.mymarky.ai/api/businesses/BIZ_ID \
+# Read the workspace profile for context (what they do, who they serve).
+curl https://api.mymarky.ai/api/workspaces/BIZ_ID \
   -H "Authorization: Bearer mk_live_YOUR_KEY"
 
 # The topics they already have.
