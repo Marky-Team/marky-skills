@@ -32,10 +32,10 @@ engagement by each key and report which values win — "diagrams out-engage phot
 lead with it when tags exist, and note when the sample is too small to trust (<5 posts
 per bucket is directional only).
 
-## Step 1 — find your business and connected accounts
+## Step 1 — find your workspace and connected accounts
 
-Two MCP tools: `list_businesses` (copy the id you want as `business_id`), then
-`list_connected_social_accounts` on that business (copy each integration `id`, and note
+Two MCP tools: `list_workspaces` (copy the id you want as `business_id`), then
+`list_connected_social_accounts` on that workspace (copy each integration `id`, and note
 its `platform` and `status`).
 
 If no accounts are connected, stop and tell the user to connect a social account in the
@@ -62,7 +62,7 @@ To tie performance back to what you posted about, also list your posts and topic
 `list_posts(business_id)` for your post history (filter by status if you like), and
 `list_topics(business_id)` so you can group results by topic.
 
-If the business has a Google Business profile connected, you can also pull customer
+If the workspace has a Google Business profile connected, you can also pull customer
 reviews to round out the picture (reviewer, star rating, text, and any reply):
 
 `list_google_reviews(business_id, order_by="rating desc")` — newest first by default;
@@ -99,7 +99,7 @@ directional only).
 
 Then offer to act on it with the writing skills:
 
-- **Save the learnings.** Offer to append the data-backed findings to the business's
+- **Save the learnings.** Offer to append the data-backed findings to the workspace's
   `performance-learnings.md` (see "Performance learnings" in the `marky-api` skill for
   the file's home and format). Creation skills read it before drafting, so a saved
   learning steers every future batch. Show the exact lines first; write only on a yes.

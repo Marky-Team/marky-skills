@@ -36,7 +36,7 @@ auth header, and endpoints are in the main SKILL.md.
 
 Notes:
 - You must be an **org admin** to create keys.
-- A key has access to every workspace (business) in your organization.
+- A key has access to every workspace in your organization.
 - Keep the key in an environment variable or `.env` file, never in source control.
 - Each org can have up to 10 active keys. Revoke a leaked key from the same page.
 
@@ -73,7 +73,7 @@ key" above for both options; a one-off `export` disappears when the terminal clo
 { "env": { "MARKY_API_KEY": "mk_live_YOUR_KEY" } }
 ```
 
-Then ask: *"List my Marky businesses."* Claude calls `list_businesses` and shows your
+Then ask: *"List my Marky workspaces."* Claude calls `list_workspaces` and shows your
 workspaces. Each has an `id` you use as `business_id` for everything else.
 
 **Prefer OAuth sign-in, or not using the plugin?** Register the server yourself and

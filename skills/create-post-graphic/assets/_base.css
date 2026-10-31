@@ -1,5 +1,5 @@
 /* Post-diagram base. Substitute --ink / --accent / --surface from the
-   business's palettes[0].colors (SKILL.md Stage 1); everything else derives.
+   workspace's palettes[0].colors (SKILL.md Stage 1); everything else derives.
    The hex values here are placeholders. */
 * { margin: 0; padding: 0; box-sizing: border-box; }
 :root {
@@ -39,6 +39,6 @@ h1 { font-size: 64px; font-weight: 800; line-height: 1.12; letter-spacing: -1px;
 .logo { height: 48px; max-width: 260px; object-fit: contain; display: block; }
 /* If logo_background_color is set (and not transparent), wrap the img:
    .logo-chip { background: <logo_background_color>; padding: 8px 14px; border-radius: 10px; } */
-/* Fallback ONLY when the business has no logo_url: */
+/* Fallback ONLY when the workspace has no logo_url: */
 .wordmark { font-size: 34px; font-weight: 800; color: var(--accent); letter-spacing: -0.5px; }
 .foot-note { font-size: 26px; color: var(--ink-2); font-weight: 600; }

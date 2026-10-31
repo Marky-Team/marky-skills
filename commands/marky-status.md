@@ -6,8 +6,8 @@ Give the user a compact status snapshot of their Marky account. Read the `marky-
 skill first for auth and endpoints; use MCP tools when connected, otherwise REST with
 the `mk_live_` key. Base URL: `https://api.mymarky.ai/api`.
 
-**Workspace.** Use the user's default business, remembered in memory / `~/.marky/brand-cache.md` (see the
-marky-api skill's "Session start" section). If it's empty, list businesses and let the
+**Workspace.** Use the user's default workspace, remembered in memory / `~/.marky/brand-cache.md` (see the
+marky-api skill's "Session start" section). If it's empty, list workspaces and let the
 user pick before continuing.
 
 Gather these five things (in parallel where you can), then report:
@@ -27,7 +27,7 @@ Gather these five things (in parallel where you can), then report:
 
 4. **Account health.** `GET /businesses/{id}/integrations` (or
    `list_connected_social_accounts`). Flag any integration whose `status` is not `valid` —
-   those need a reconnect on the business profile page (see the marky-api link table)
+   those need a reconnect on the workspace profile page (see the marky-api link table)
    before posts to that platform can go out.
 
 5. **Performance snapshot.** Pull engagement for the ~5 most recently published posts
@@ -51,7 +51,7 @@ Gather these five things (in parallel where you can), then report:
 
 **Save what the numbers taught you.** When the snapshot shows a real pattern (not noise —
 a clear best/worst gap, a format or voice that repeatedly wins), OFFER to record it in
-the business's `performance-learnings.md` (see "Performance learnings" in the `marky-api`
+the workspace's `performance-learnings.md` (see "Performance learnings" in the `marky-api`
 skill for the file's home and format). Creation skills read that file before drafting,
 so a saved learning steers every future batch. Ask first, show the exact lines you would
 append, and only write on a yes.

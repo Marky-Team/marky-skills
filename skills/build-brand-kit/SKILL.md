@@ -2,11 +2,11 @@
 name: build-brand-kit
 description: >
   Build or refresh a business's brand kit in Marky from its website. Use this right
-  after connecting a new business, when generated posts look generic or off-brand, or
+  after creating a new workspace, when generated posts look generic or off-brand, or
   whenever the user says "set up my brand", "pull my brand from my site", or gives you
   a URL and asks you to make Marky match it. Visits the site, extracts the logo, colors,
   fonts, voice, tagline, and imagery style, shows the user the proposed kit for approval,
-  then writes it to the business with the update_business MCP tool. Uses the marky-api
+  then writes it to the workspace with the update_workspace MCP tool. Uses the marky-api
   skill for auth and the MCP connection. Also triggers on "my posts don't sound like me", "update my brand colors", "refresh my brand profile". For writing posts with the kit, see plan-social-content.
 ---
 
@@ -16,13 +16,13 @@ Turn the user's website into a complete brand profile in Marky, so every post Ma
 writes or designs from then on sounds and looks like the business — right colors, right
 fonts, right logo, right voice — instead of a generic default.
 
-This is usually the **first thing worth doing after connecting a business.** A thin or
+This is usually the **first thing worth doing after creating a workspace.** A thin or
 empty brand profile is the number-one reason generated posts feel off. Ten minutes here
 pays back on every post afterward.
 
 **Read the `marky-api` skill first** for your `mk_live_` key and the MCP connection.
-This skill drives Marky entirely through the **MCP tools** (`list_businesses`,
-`get_business`, `update_business`, `create_media_upload`) — every step below has a tool,
+This skill drives Marky entirely through the **MCP tools** (`list_workspaces`,
+`get_workspace`, `update_workspace`, `create_media_upload`) — every step below has a tool,
 so no REST calls are needed.
 
 **The approval gate is mandatory.** The brand profile steers every future caption and
@@ -32,11 +32,11 @@ existing non-empty field without calling that out specifically.
 
 ## Stage 1 — Read what's already there
 
-1. Pick the business: `list_businesses`, confirm with the user if there is more than one.
-2. `get_business` and note, field by field, what is **empty** versus **already set**:
+1. Pick the workspace: `list_workspaces`, confirm with the user if there is more than one.
+2. `get_workspace` and note, field by field, what is **empty** versus **already set**:
    `tone`, `tagline`, `ctas`, `caption_writing_rules`, `imagery_preferences`, `palettes`,
    `header_font`, `body_font`, `logo_url`, `logo_background_color`.
-3. Get the source URL. Use the business's `website_url` if set; otherwise ask the user
+3. Get the source URL. Use the workspace's `website_url` if set; otherwise ask the user
    for their site (or, if they have no site, their most active social profile — the
    extraction below works on any page that carries their branding).
 
@@ -113,14 +113,14 @@ the above" is still required.
    local file, `create_media_upload` then PUT the bytes (pass a data URI, or raw
    base64 plus `content_type`). Use the returned media URL as `logo_url`. Hot-linking
    the site's own image URL is a last resort — sites move and break the logo silently.
-2. **One `update_business` call** with only the approved fields. Shape notes that bite:
+2. **One `update_workspace` call** with only the approved fields. Shape notes that bite:
    - `palettes` is a list of palette **objects**: 
      `[{"name": "Brand", "colors": ["#101418", "#FFFFFF", "#E11D48"]}]` — colors live at
      `palettes[0].colors`, not a bare nested array.
    - `header_font` / `body_font` are objects: `{"family": "Poppins"}`.
    - `logo_background_color` — `"#00000000"` for a transparent logo, otherwise the solid
      color the logo needs behind it.
-3. **Verify:** `get_business` again and confirm every approved field round-tripped.
+3. **Verify:** `get_workspace` again and confirm every approved field round-tripped.
 4. If you keep a local brand snapshot (`~/.marky/brand-cache.md` in a Claude Code plugin
    install — see the `marky-api` skill's brand-memory section), refresh it now so the
    next session starts on the new brand.
@@ -133,6 +133,6 @@ Don't end on a settings change; end on evidence. Offer to generate one draft pos
 bad extraction (muddy palette, wrong font weight), fix the profile now while the context
 is fresh.
 
-**Marky wants your feedback.** If extraction hit friction or an `update_business` field
+**Marky wants your feedback.** If extraction hit friction or an `update_workspace` field
 behaved unexpectedly, send a quick note via the `submit_feedback` MCP tool — see "Marky
 wants your feedback" in the `marky-api` skill.

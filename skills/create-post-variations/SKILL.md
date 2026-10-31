@@ -20,10 +20,10 @@ endpoint list. Everything below uses `https://api.mymarky.ai/api` and the header
 
 **Marky wants your feedback.** If anything breaks or is confusing while you run this skill — and again once you finish — send Marky a quick note with the `submit_feedback` MCP tool. See the **"Marky wants your feedback"** section in the `marky-api` skill for when and how.
 
-## Step 1 — find the business and pick a source post
+## Step 1 — find the workspace and pick a source post
 
 ```bash
-curl https://api.mymarky.ai/api/businesses \
+curl https://api.mymarky.ai/api/workspaces \
   -H "Authorization: Bearer mk_live_YOUR_KEY"
 
 # List recent posts so the user can choose one to repurpose.

@@ -10,7 +10,7 @@ publish results). They are deliberately a touch conservative so you stay clear o
 the hard edge.
 
 **Precedence:** the user's own preferences ALWAYS outrank this table. Read the brand
-profile (`get_business` — `tone`, `caption_writing_rules`, `caption_suffix`) before
+profile (`get_workspace` — `tone`, `caption_writing_rules`, `caption_suffix`) before
 drafting; where the user has platform-specific instructions, follow those over the
 style guidance here. This table is the floor (hard limits) plus a default style
 baseline, never a ceiling on the user's choices.
@@ -71,12 +71,12 @@ one-idea version, LinkedIn gets the professional angle with hashtags moved to
 `first_comment`, Pinterest gets a keyword `title` + `link`. On `update_post` the
 field REPLACES the whole override set (send the full list; `[]` clears).
 
-**Read the user's own per-platform instructions first.** `get_business` returns
+**Read the user's own per-platform instructions first.** `get_workspace` returns
 `platform_writing_instructions` — the map the user customized in their dashboard
 (keys are canonical platform names plus `common`, which applies everywhere). Follow
 the matching entry when writing each override caption; it outranks everything in
 this file. To save a preference the user states ("on LinkedIn never use emojis"),
-PATCH the business with a MERGE-patch — `{"platform_writing_instructions":
+PATCH the workspace (`update_workspace`) with a MERGE-patch — `{"platform_writing_instructions":
 {"linkedIn": "..."}}` touches only that key; a null value resets it.
 
 Set overrides by default, not as a special case: whenever a post targets 2+

@@ -2,7 +2,7 @@
 name: get-started
 description: >
   Set up a brand-new Marky account end to end, from your AI agent, in one sitting. Use this
-  the first time someone connects Marky and has no business yet, or when they say "set me up",
+  the first time someone connects Marky and has no workspace yet, or when they say "set me up",
   "get me started", "onboard me", or paste a prompt asking you to get their social media going.
   It creates their first workspace and brand kit from their website, walks them through
   connecting their first social account, learns from what they already post, and drafts their
@@ -34,14 +34,14 @@ wants your feedback" section in the `marky-api` skill.
 
 ## Before you start: are you connected?
 
-Call `list_businesses`.
+Call `list_workspaces`.
 
 - **The call fails / you have no key or MCP connection** → you are not connected yet. Follow the
   install + connect steps in the `marky-api` skill (or the repo README), get the user signed in,
   then come back here.
-- **The call returns one or more real businesses** → this account is already set up. This skill
+- **The call returns one or more real workspaces** → this account is already set up. This skill
   is for empty accounts; use `plan-social-content` or `suggest-topics` instead.
-- **The call returns an empty list (or only a placeholder business)** → you're in the right
+- **The call returns an empty list (or only a placeholder workspace)** → you're in the right
   place. Continue.
 
 ## Stage 1 — Create the workspace and brand kit
@@ -54,11 +54,12 @@ generic AI filler, so this comes first.
    profile — any page that carries their branding works.
 2. **Run the `build-brand-kit` skill** with that URL. It visits the site, extracts the logo,
    colors, fonts, voice, and imagery style, shows the user the proposed kit, and — on their
-   approval — creates the business and writes the brand profile via `update_business`.
-3. If the user genuinely has no site or social presence, fall back to `create_business` with a
-   name and a short description they give you, and set the voice from a couple of questions.
+   approval — creates the workspace and writes the brand profile via `update_workspace`.
+3. If the user genuinely has no site or social presence, fall back to creating the workspace
+   over REST — `POST /workspaces` (`create_workspace`; it is not an MCP tool) — with a name
+   and a short description they give you, and set the voice from a couple of questions.
 
-Note the `business_id` that comes back — every later step needs it.
+Note the workspace `id` that comes back — every later step passes it as `business_id`.
 
 ## Stage 2 — Connect the first social account
 
@@ -72,12 +73,12 @@ the user a link and wait.
 2. Send them to their connect page:
 
    ```
-   https://app.mymarky.ai/ws/BUSINESS_ID/business/profile
+   https://app.mymarky.ai/ws/WORKSPACE_ID/business/profile
    ```
 
-   (Replace `BUSINESS_ID` with the id from Stage 1.) Tell them: *"Open this, click the platform
+   (Replace `WORKSPACE_ID` with the id from Stage 1.) Tell them: *"Open this, click the platform
    you picked, and approve the connection. Come back here when it's done."*
-3. **Poll, don't guess.** Call `list_connected_social_accounts` for the business every 10–15
+3. **Poll, don't guess.** Call `list_connected_social_accounts` for the workspace every 10–15
    seconds (or when they say they're done) until at least one account shows up with a `valid`
    status. Don't move on until you can see it — a confident "great, you're connected!" that turns
    out to be wrong is worse than waiting.
@@ -118,7 +119,7 @@ You've done the setup; now it's their call.
 1. Point them to their drafts to review, edit, and approve:
 
    ```
-   https://app.mymarky.ai/ws/BUSINESS_ID/social-posts
+   https://app.mymarky.ai/ws/WORKSPACE_ID/social-posts
    ```
 
 2. Tell them plainly what you did and what's left: *"Your brand kit is set, [platform] is

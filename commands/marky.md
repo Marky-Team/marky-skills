@@ -1,5 +1,5 @@
 ---
-description: Start a Marky session — load the marky-api reference, check the API key, and list your businesses.
+description: Start a Marky session — load the marky-api reference, check the API key, and list your workspaces.
 ---
 
 You are about to drive **Marky** (AI social media management) for the user. Get the session
@@ -15,14 +15,14 @@ ready before doing anything else:
    sign in at app.mymarky.ai -> Organization Settings -> API Keys -> Create API Key, and set
    it as an env var. Never print the key back to the user.
 
-3. **Find the workspace.** The user's default business is remembered in memory (and the
+3. **Find the workspace.** The user's default workspace is remembered in memory (and the
    `~/.marky/brand-cache.md` snapshot) — see the marky-api skill's storage rule. If you
-   know it, tell the user which business you're on (e.g. "Working on **Marky** — say the
-   word to switch") — do NOT re-list every business. Confirm it with one `get_business`
-   call (MCP, if exposed) or `GET /businesses/{business_id}` (REST); otherwise just use
-   the id — your first business-scoped call validates it (a stale id returns 404). If you
-   don't know it yet (or it's stale), call `list_businesses` (MCP) or `GET /businesses`
-   (REST), show the user their businesses with the `id` (the `business_id`) for each, and
+   know it, tell the user which workspace you're on (e.g. "Working on **Marky** — say the
+   word to switch") — do NOT re-list every workspace. Confirm it with one `get_workspace`
+   call (MCP, if exposed) or `GET /workspaces/{workspace_id}` (REST); otherwise just use
+   the id — your first workspace-scoped call validates it (a stale id returns 404). If you
+   don't know it yet (or it's stale), call `list_workspaces` (MCP) or `GET /workspaces`
+   (REST), show the user their workspaces with the `id` (the `business_id` other calls take) for each, and
    once they pick one, **remember it as a memory** so the next session starts already
    oriented. Almost every other call is scoped to a `business_id`.
 

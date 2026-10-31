@@ -30,10 +30,10 @@ Ask the user for whatever is missing:
 - How many posts they want (a 5-post countdown is a good default).
 - Which connected platforms to post to.
 
-## Step 2 — find the business and platforms
+## Step 2 — find the workspace and platforms
 
 ```bash
-curl https://api.mymarky.ai/api/businesses \
+curl https://api.mymarky.ai/api/workspaces \
   -H "Authorization: Bearer mk_live_YOUR_KEY"
 
 curl https://api.mymarky.ai/api/businesses/BIZ_ID/integrations \

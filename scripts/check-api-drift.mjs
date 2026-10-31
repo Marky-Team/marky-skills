@@ -1,12 +1,14 @@
 /**
  * Catch API drift before it breaks a shipped skill.
  *
- * These skills tell agents to call specific Marky API tools (`get_business`,
+ * These skills tell agents to call specific Marky API tools (`get_workspace`,
  * `create_post`, ...) and send specific request fields (`caption`,
  * `restrict_publish_to`, ...). The public API is a LIVE, hosted contract — if a
- * field or tool is renamed or removed on the API side (it has happened twice:
- * `publish_to` -> `restrict_publish_to`, and `get_business` being cut from the
- * MCP), the skills silently start telling agents to do something that now 422s or
+ * field or tool is renamed or removed on the API side (it has happened three times:
+ * `publish_to` -> `restrict_publish_to`, `get_business` being cut from the MCP, and
+ * the business -> workspace rename that swapped `list_businesses` / `get_business` /
+ * `update_business` for `list_workspaces` / `get_workspace` / `update_workspace` in
+ * the MCP tool list), the skills silently start telling agents to do something that now 422s or
  * doesn't exist. Nobody notices until a user's automation breaks.
  *
  * This script is the backstop. It reads the LIVE public API surface and fails if a
@@ -53,7 +55,7 @@ const FIELD_ALLOWLIST = new Set([
 // asserts each is still exposed on the live MCP. Keep this to what the skills
 // actually drive an agent to call over MCP.
 const REQUIRED_MCP_TOOLS = [
-  "list_businesses", "get_business",
+  "list_workspaces", "get_workspace", "update_workspace",
   "list_posts", "get_post", "create_post", "update_post",
   "schedule_post", "queue_post", "publish_post_now", "get_post_analytics",
   "list_topics", "create_topic", "list_categories",
