@@ -88,7 +88,7 @@ Design about 6 posts for the week.
 - **Lead with the value to the reader,** not the feature or the jargon. Say what they get.
 - **Cover the platforms you have connected.** Check
   `GET /businesses/{id}/integrations` and plan to reach each `valid` one.
-- **Respect the brand profile and `writing-style.md` exactly.** Match the voice, and
+- **Respect the workspace's `strategy` doc and `writing-style.md` exactly.** Match the voice, and
   avoid anything on the brand's "don't" list.
 - Write the week into `calendar.md` so it is easy to scan.
 
@@ -120,8 +120,9 @@ the user cannot provide this week, swap it for one that needs nothing extra.
 
 For each post:
 
-- **Write the caption** in the brand's voice. Pull the workspace's brand profile first
-  (`GET /workspaces/{id}` — `tone`, `caption_writing_rules`, `caption_suffix`; see
+- **Write the caption** in the brand's voice. Read the workspace's `strategy` doc first
+  (`GET /workspaces/{id}` — its voice, audience, calls to action, caption rules and the
+  line every caption ends with; see
   "Write like the business" in the `marky-api` skill) and layer `writing-style.md` on top.
 - **Prepare media.** Reuse what the business already has before reaching for anything
   generic — `search_media_library` finds their own photos and videos by keyword. Upload new
@@ -155,14 +156,14 @@ Anti-patterns to cut on sight: throat-clearing openers ("We wanted to share...",
 first word, and generic-expert voice that could belong to any business in the
 industry.
 
-**Precedence:** these are a BASELINE. The user's brand profile
-(`caption_writing_rules`, `tone`), their feedback log, and `performance-learnings.md`
+**Precedence:** these are a BASELINE. The voice and caption rules in
+the user's `strategy` doc, their feedback log, and `performance-learnings.md`
 always outrank this list — if their audience rewards plain announcements, or the user
 has said they hate question hooks, follow them, not this palette. Tag the choice in
 post `metadata` (`hook: question`) so `review-performance` can tell you which
 patterns actually win for THIS audience.
 
-Before presenting drafts, run every caption through the **humanize** skill's pattern check (score 90+; fix silently, don't show the math). The user's own caption_writing_rules still outrank it.
+Before presenting drafts, run every caption through the **humanize** skill's pattern check (score 90+; fix silently, don't show the math). The caption rules in the user's `strategy` doc still outrank it.
 
 ### Stage 6 — Approve, then schedule (hard gate)
 
@@ -188,9 +189,9 @@ Before presenting drafts, run every caption through the **humanize** skill's pat
         (shortened it, cut the emoji, unhyped the verbs). Apply the pattern to the
         rest of the batch, not just the edited post.
       - Any comment phrased as a rule ("never ...", "always ...", "stop ...") is an
-        explicit lasting preference: persist it to the brand profile
-        (`caption_writing_rules` via `update_workspace`) NOW, with the user's wording —
-        don't wait for it to recur. Confirm the field text, then write.
+        explicit lasting preference: persist it to the `## Caption rules` section of
+        the `strategy` doc (whole doc via `update_workspace`) NOW, with the user's
+        wording — don't wait for it to recur. Confirm the new lines, then write.
    
    5. **Persist it**: append the feedback to `~/.marky/feedback-log.jsonl` with
       `context: "weekly-posts"` — see "The feedback log" in the `marky-api` skill. This
@@ -199,9 +200,9 @@ Before presenting drafts, run every caption through the **humanize** skill's pat
    (Submit on the board with at least one approved post counts). Rejected posts don't get
    scheduled; apply per-post comments as edits and re-show anything that changed.
    Apply their edits. If an edit reveals a lasting voice preference, write it into
-   `writing-style.md` AND persist it to the workspace's brand profile (`tone` /
-   `caption_writing_rules` via `PATCH /workspaces/{id}` or `update_workspace`) so Marky's
-   own generator learns it too — see "Learn the user's style" in the `marky-api` skill.
+   `writing-style.md` AND persist it to the workspace's `strategy` doc (its voice or
+   caption-rules section, whole doc via `PATCH /workspaces/{id}` or `update_workspace`)
+   so Max learns it too — see "Learn the user's style" in the `marky-api` skill.
 3. On approval, create each post WITH `metadata` tags (`media_type`, `format`, `hook`,
    `topic`, `created_by: "plan-social-content"` — see "Tag every post" in the marky-api
    skill); these power next month's what-worked review. Then schedule through Marky

@@ -3,6 +3,50 @@
 All notable changes to this collection are documented here. The format is based
 on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
+## [0.18.0] - 2026-11-03
+
+### Changed
+
+- **The brand now lives in two documents.** Marky's API (version 2026-11-03) stopped
+  reading and writing the old structured brand fields on a workspace. The rule is:
+  **words go to `strategy`, visuals go to `design_style`.**
+  - `strategy` (markdown, 6,000 characters): voice, audience, calls to action and
+    tagline, caption rules, the line every caption ends with, plus the goal, pillars and
+    what we won't do.
+  - `design_style` (markdown, 5,000 characters): colours with hex codes, fonts, the logo
+    (a `Logo: https://...` line, its background, where it sits, when it appears),
+    imagery and stock photos yes/no, content mix, post shape, then a `## Treatments`
+    table of named looks.
+  - Both are replaced whole on every write; the skills read the current document, edit
+    it, and send it all back, watching `field_budgets`.
+- **build-brand-kit** writes the kit into those two documents (`## Voice`,
+  `## Audience`, `## Calls to action`, `## Caption rules` in `strategy`; colours, fonts,
+  logo, `## Content mix` and `## Format` in `design_style`) instead of the old fields.
+- **create-post-graphic** and **create-post-video** take colours, fonts and the logo
+  from `design_style`. With no logo URL in the doc, they ask you for the file.
+- **plan-social-content**, **create-post-clips**, **humanize** and **marky-api** follow
+  the voice and caption rules in `strategy`, and save style feedback there (words) or in
+  `design_style` (visuals).
+- The brand-cache hook caches `name`, `website`, `language`, `brand_style_grid_url` and
+  the two documents (kept as markdown) instead of the old fields.
+
+### Removed
+
+- Every mention of the old workspace fields: `tone`, `audience_combined`,
+  `caption_writing_rules`, `caption_suffix`, `custom_caption_prompt`,
+  `custom_meme_prompt`, `custom_carousel_prompt`, `tagline`, `ctas`, `palettes`,
+  `header_font`, `body_font`, `logo_url`, `logo_background_color`, `logo_width`,
+  `include_stock`, `aspect_ratio`, `creative_types`, `use_logo_on_post`.
+
+### Migration
+
+**Update the plugin.** Older versions of these skills send the removed fields, and
+Marky now rejects them with a message asking you to update the Marky plugin to the
+latest version (see "Keep it up to date" in the README). Your stored brand settings are
+not deleted: the old fields still drive the web app's templated generator. To carry your
+brand into the new documents, run **build-brand-kit** once; it writes your voice into
+`strategy` and your look into `design_style`.
+
 ## [0.17.0] - 2026-10-31
 
 ### Changed

@@ -187,9 +187,9 @@ documents how to give feedback.
 
 Skills are amnesiac — every session starts fresh — but you have two durable stores. Use this **one rule** for anything worth remembering:
 
-**Marky-first, memory-fallback.** If the thing has a home in the Marky workspace's brand profile — a brand color, font, tone/Profile, caption rule, imagery preference, logo, CTA, tagline — persist it **there** with `update_workspace` (read-merge-write, confirm the wording). The product itself reads those fields, so it never goes stale inside one agent's head. If there is **no** field in Marky for it — an agent-only preference like a preferred TTS voice, "no code in my videos", the user's default workspace, or "stop asking me for feedback" — save it as a **local memory** instead. Everything else runs on sensible defaults; you only remember a *deviation* from a default. (There is no `user.toml` — this rule replaced it.)
+**Marky-first, memory-fallback.** If the thing has a home in the Marky workspace's two brand documents — words (voice, audience, caption rules, CTAs, tagline, the closing line) in `strategy`, visuals (colours, fonts, logo, imagery, content mix, post shape) in `design_style` — persist it **there** with `update_workspace` (read the whole document, merge, write the whole document back, confirm the wording). The product itself reads those documents, so it never goes stale inside one agent's head. If there is **no** field in Marky for it — an agent-only preference like a preferred TTS voice, "no code in my videos", the user's default workspace, or "stop asking me for feedback" — save it as a **local memory** instead. Everything else runs on sensible defaults; you only remember a *deviation* from a default. (There is no `user.toml` — this rule replaced it.)
 
-At session start the plugin's SessionStart hook injects a `brand-cache.md` snapshot to orient you; before your first authored content, refresh with one `get_workspace` call. Your **default workspace** and any **muted prompts** live in memory — read them from there. If you don't know which workspace yet, ask once and remember the choice; a stale id 404s on first use, so re-pick and re-remember.
+In a plugin install `~/.marky/brand-cache.md` holds a recent copy of the two documents to orient you; before your first authored content, refresh with one `get_workspace` call. Your **default workspace** and any **muted prompts** live in memory — read them from there. If you don't know which workspace yet, ask once and remember the choice; a stale id 404s on first use, so re-pick and re-remember.
 
 ### Feedback — event-driven
 Submit feedback the moment you hit a real bug or friction (the three triggers in "Marky wants your feedback" above) — this is always on. Separately, at a natural pause roughly every couple of weeks, you *may* ask once with **AskUserQuestion** whether they want to share quick feedback: **Yes** → collect it and `POST /api/feedback` (or the `submit_feedback` tool); **No** → skip; **Don't ask again** → save a memory and never ask again. No stored timers — if a memory says the user muted it, don't ask.
@@ -221,8 +221,8 @@ source of truth. If you need an operation that is not exposed as a tool, tell Ma
 | Tool | What it does |
 | :--- | :--- |
 | `list_workspaces` | List your workspaces. Grab the `id` you want as `business_id`. |
-| `update_workspace` | Set the brand profile (tone, palettes, fonts, logo) and merge-patch `platform_writing_instructions`. |
-| `get_workspace` | Read one workspace's full brand profile by id, incl. `platform_writing_instructions`. |
+| `update_workspace` | Set the workspace's two brand documents (`strategy` for words, `design_style` for visuals; each replaced whole) and merge-patch `platform_writing_instructions`. |
+| `get_workspace` | Read one workspace by id: `strategy`, `design_style`, `platform_writing_instructions`, `field_budgets`. |
 | `list_posts` | List a workspace's posts (filter by status, incl. the review verdicts `LIKED`/`REJECTED`). |
 | `create_post` | Create one post yourself (caption + platforms + media + per-platform `platform_overrides` — see `references/platform-rules.md`). |
 | `update_post` | Edit a post (caption, `restrict_publish_to`, media) or move it through the TEAM review workflow: `status: NEW` tells the user's team it's ready for review (shows on the app's review page); `LIKED`/`REJECTED` record their verdict. Marky never gates publishing on these. Only valid between the three review states. |
@@ -247,7 +247,7 @@ source of truth. If you need an operation that is not exposed as a tool, tell Ma
 | `list_queued_posts` | Which posts sit in which upcoming schedule slot (the lineup, not just the recurring slots). Paginated (items under `items`, follow the `next` cursor). |
 | `get_queue_summary` | How full the daily queue is + when it runs dry: `queued_count`, `next_estimated_publish_time`, `last_estimated_publish_time`. One cheap call before deciding to top up — no need to page the full queue. |
 | `list_google_reviews` | Read your Google Business reviews. |
-| `create_media_upload` | THE upload path when the file is on a disk you can shell to (a code-exec sandbox, the user's machine) and has no public URL. Returns a 1-hour `upload_url` + a ready-to-run curl command; PUT the raw bytes there and the response is the created media asset (its `original_url` feeds `media_urls`/`logo_url`). Re-PUTting the same bytes safely returns the same asset. On hosted Claude clients, run the curl in the code-execution sandbox (the user may need to allow `api.mymarky.ai` under Settings → Capabilities → Code execution → Additional allowed domains). |
+| `create_media_upload` | THE upload path when the file is on a disk you can shell to (a code-exec sandbox, the user's machine) and has no public URL. Returns a 1-hour `upload_url` + a ready-to-run curl command; PUT the raw bytes there and the response is the created media asset (its `original_url` feeds `media_urls`, or the `Logo:` line in `design_style`). Re-PUTting the same bytes safely returns the same asset. On hosted Claude clients, run the curl in the code-execution sandbox (the user may need to allow `api.mymarky.ai` under Settings → Capabilities → Code execution → Additional allowed domains). |
 | `submit_feedback` | Send a bug report, feature request, or general feedback to the Marky team. |
 | `generate_draft_posts` | **DEPRECATED — prefer `create_post`.** Have Marky generate on-brand draft posts from a brief / website / idea. Returns a job id; poll `get_job_status` until `completed`. Use this ONLY when the user explicitly asks Marky to write/design the content for them — it spends credits and counts against the org's monthly post quota. By default, author your own caption and push it in with `create_post`. |
 | `get_job_status` | Poll a `generate_draft_posts` job until `completed` / `failed`. |
@@ -287,8 +287,9 @@ The calls you will make most, all relative to the base URL and nested under
   target only `valid` ones). Accounts are connected in the dashboard, never via API.
 - **Stats** — `GET /posts/{post_id}/stats`, plus per-integration account/post stats.
 - **Workspaces** — `GET /workspaces` (org-level list), `GET|PATCH /workspaces/{id}`
-  (the PATCH is also how you set the brand profile — flat fields like `tone`,
-  `caption_writing_rules`, `palettes`; there is no separate brand endpoint).
+  (the PATCH is also how you set the brand: the `strategy` and `design_style`
+  markdown documents, each replaced whole; there is no separate brand endpoint, and
+  since 2026-11-03 no `tone` / palette / font / logo fields).
 - **Topics & schedule** — `GET|POST /topics`, `GET|PUT /posting-schedule`,
   `GET /queue` (paginated), `GET /queue/summary` (count + next/last estimated
   publish times — the cheap "when does my queue run dry?" call).
@@ -305,26 +306,26 @@ are summarized here; `references/brand-memory.md` has the full protocol — file
 cache maintenance, examples, escalation rules. **Read it before your first
 content-creation work of a session.**
 
-### Write like the business — pull the brand profile before drafting
+### Write like the business — read the two documents before drafting
 
 Whenever YOU are about to write social content yourself (captions, hooks, hashtags,
-anything user-facing), first read the brand profile (`get_workspace` /
-`GET /workspaces/{id}`) and apply it: match `tone`, obey every line of
-`caption_writing_rules`, append `caption_suffix`, respect `imagery_preferences`. Once per
-session per workspace — don't draft from a generic voice and fix it later. A cached
-snapshot (`~/.marky/brand-cache.md`) is injected by the plugin's SessionStart hook to
-orient you, but it can be stale: before your first authored content of a session, make
+anything user-facing), first read the workspace (`get_workspace` /
+`GET /workspaces/{id}`) and apply it: follow the voice, audience and every caption rule
+in `strategy` (ending each caption with its closing line, once, if it names one), and
+`design_style` for anything visual. Once per session per workspace — don't draft from a
+generic voice and fix it later. A cached copy (`~/.marky/brand-cache.md`) can orient
+you, but it can be stale: before your first authored content of a session, make
 one fresh `get_workspace` call. Cache format and maintenance rules are in the reference.
 
-### Learn the user's style — persist critiques into the brand profile
+### Learn the user's style — persist critiques into the two documents
 
 When the user critiques generated content ("too many emojis", "stop saying
 'game-changer'"), fix the content in front of you AND persist the lasting preference —
 following the **Marky-first, memory-fallback** rule above. Most style critique has a home
-in the brand profile (`tone`, `caption_writing_rules`, `imagery_preferences`) → write it
-there with `update_workspace` (merge, don't clobber, confirm first). A lasting preference
-with no brand-profile field (e.g. a preferred TTS voice, a format rule like "always
-vertical") → save it as a local memory. One-off instructions are not lasting preferences.
+in one of the two documents (voice and caption rules in `strategy`; colours, imagery,
+logo and post shape in `design_style`) → write it there with `update_workspace` (merge,
+send the whole document, confirm first). A lasting preference with no home there (e.g.
+a preferred TTS voice) → save it as a local memory. One-off instructions are not lasting preferences.
 Style critique never goes to `POST /feedback`.
 
 ### The feedback log — taste memory across sessions
@@ -333,7 +334,7 @@ Style critique never goes to `POST /feedback`.
 edited on review boards. Two duties for every creation skill: **append a line after
 every board** (feedback verbatim + an `items` map), and **scan the last ~20 entries for
 this workspace before you generate** — lean into what won, drop what got rejected. When
-the same preference shows up ~3+ times, escalate it into the brand profile. Entry format
+the same preference shows up ~3+ times, escalate it into `strategy` or `design_style`. Entry format
 and escalation detail are in the reference.
 
 ### Performance learnings — what the NUMBERS taught us
@@ -345,7 +346,7 @@ holds dated, data-backed lessons from real engagement — what the AUDIENCE rewa
 opposed to what the user chose. **Read it before drafting any batch** (it outranks
 generic best practices — it was measured on this audience). **Offer to append** when a
 performance review shows a real pattern — show the exact lines, write only on a yes.
-User-taste statements go to the brand profile, not here. Format in the reference.
+User-taste statements go to `strategy` / `design_style`, not here. Format in the reference.
 
 ## Tag every post you create — `metadata`
 

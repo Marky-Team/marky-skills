@@ -220,8 +220,8 @@ For each final clip:
 
    Keep the returned URL. Uploads cap at 50 MB; if over, raise `-crf` to 23 and re-encode.
 2. **Write the caption in the brand voice.** Start from the clip's `hook_sentence` — it
-  already earned its place — then rewrite per the brand profile (`tone`,
-  `caption_writing_rules`, `caption_suffix`; see "Write like the business" in the
+  already earned its place — then rewrite per the workspace's `strategy` doc (voice,
+  caption rules, the closing line; see "Write like the business" in the
   marky-api skill). Run every caption through the **humanize** skill's pattern check
   (score 90+, fix silently) before showing the user.
 3. Create the post as a draft with `metadata`:
