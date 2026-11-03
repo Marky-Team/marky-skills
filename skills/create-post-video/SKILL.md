@@ -39,13 +39,15 @@ HyperFrames is the supported path.
 Before authoring any frames, load the brand so the video looks like the business, not a
 template:
 
-1. Read the brand profile — the injected `brand-cache.md` snapshot if fresh, else one
-   `get_workspace` / `GET /workspaces/{id}` call (which refreshes the cache).
-2. Apply it to the HyperFrames composition:
-   - `palettes` → the video's color system (backgrounds, accents, text).
-   - `header_font` / `body_font` → typography.
-   - `logo_url` → end-card or corner mark (respect `logo_background_color`).
-   - `tone` → the on-screen copy's voice; `ctas` → the closing call-to-action.
+1. Read the workspace's two brand documents — `~/.marky/brand-cache.md` if fresh, else
+   one `get_workspace` / `GET /workspaces/{id}` call (which refreshes the cache).
+2. Apply them to the HyperFrames composition:
+   - `design_style` colours (its hex codes; the one it says leads) → the video's color
+     system (backgrounds, accents, text).
+   - `design_style` fonts → typography.
+   - `design_style`'s `Logo: https://...` line → end-card or corner mark, placed and
+     backed the way the doc says. No logo URL there? Ask the user for the file.
+   - `strategy` voice → the on-screen copy's voice; its calls to action → the closing CTA.
 3. Keep platform constraints in mind: 9:16 for Reels/TikTok/Stories, 1:1 or 16:9 for
    feeds; short (under ~30s) unless the user asks for longer.
 
@@ -97,8 +99,8 @@ duration or resolution and re-render rather than compressing into artifacts.
 
 ## Stage 4 — Caption, approve, schedule
 
-1. Write the caption in the brand voice (`tone`, `caption_writing_rules`,
-   `caption_suffix` — see "Write like the business" in the marky-api skill).
+1. Write the caption in the brand voice (the voice, caption rules and closing line in
+   the `strategy` doc — see "Write like the business" in the marky-api skill).
 2. Create the post with the caption and the uploaded media.
 3. **Show the user the video and caption, and get explicit approval.** For multiple
    cuts or variants, use the review board in pick mode

@@ -47,41 +47,41 @@ A workspace in the response looks like:
 { "id": "your-workspace-uuid", "name": "My Business", "industry": "Marketing", "website": "https://mybusiness.com", "language": "English" }
 ```
 
-## Brand profile (flat fields on the workspace)
+## Brand (two documents on the workspace)
 
-There is **no separate brand-profile endpoint**. The brand lives as flat fields on the
-workspace object — read them with `GET /workspaces/{id}` and set them with
-`PATCH /workspaces/{id}`. Marky applies them automatically whenever it writes captions or
-renders designs:
+There is **no separate brand-profile endpoint**. Since API version 2026-11-03 the brand
+lives in two markdown fields on the workspace — read them with `GET /workspaces/{id}` and
+set them with `PATCH /workspaces/{id}`. The rule: words go to `strategy`, visuals go to
+`design_style`.
+
+- `strategy` — goal, audience, voice, calls to action and tagline, caption rules (do/don't
+  lines, the line every caption ends with), content pillars, what we won't do. 6,000
+  characters.
+- `design_style` — colours with hex codes, fonts, the logo (`Logo: https://...` line, its
+  background, placement), imagery and stock photos yes/no, content mix, post shape. Then a
+  `## Treatments` table (`| Treatment | What it is | How to build it |`). 5,000 characters.
 
 ```bash
 curl -X PATCH https://api.mymarky.ai/api/workspaces/BIZ_ID \
   -H "Authorization: Bearer mk_live_YOUR_KEY" \
   -H "Content-Type: application/json" \
   -d '{
-    "tone": "Warm, confident, and plain-spoken. No jargon.",
-    "caption_writing_rules": "Never use emojis. Keep sentences short.",
-    "caption_suffix": "\n\n#smallbusiness #local",
-    "imagery_preferences": "Bright, natural light. Real people, not stock-looking shots.",
-    "tagline": "Service you can trust.",
-    "ctas": ["Call today", "Book online"],
-    "palettes": [{ "name": "Brand", "colors": ["#0A0A0A", "#FFFFFF", "#E11D48"] }],
-    "header_font": { "family": "Poppins" },
-    "body_font": { "family": "Inter" },
-    "logo_url": "https://.../logo.png",
-    "logo_background_color": "#00000000",
-    "logo_width": 240
+    "strategy": "## Voice\nWarm, confident, plain-spoken. No jargon.\n\n## Calls to action\n- Call today\n- Book online\n\n## Caption rules\n- Never use emojis.\n- End every caption with: #smallbusiness #local",
+    "design_style": "Lead colour is crimson #E11D48 on white #FFFFFF; text is near-black #0A0A0A.\nHeadlines in Poppins, body in Inter.\nLogo: https://.../logo.png\nLogo small in the bottom-right corner of every picture.\nBright, natural light. Real people, no stock photos.\n\n## Format\nPosts are 4:5 portrait."
   }'
 ```
 
-Every field is optional — send only what you want to change. **Shape note:** on the
-workspace object, `palettes` is a list of palette OBJECTS (`{name, colors, text_color}`),
-so the colors live at `palettes[0].colors`. (The bare nested-array form
-`[["#hex", ...]]` is only accepted by the generate endpoints' `palettes` override.)
-Key brand fields: `tone`,
-`caption_writing_rules`, `caption_suffix`, `custom_caption_prompt`, `imagery_preferences`,
-`tagline`, `ctas`, `palettes`, `header_font`, `body_font`, `logo_url`,
-`logo_background_color`, `logo_width`.
+**Each document is replaced whole**: send the full text, not a fragment (read it first,
+edit, send it all back). The response carries `field_budgets` (room left per document)
+and `warnings` (a document over its budget). Other fields on the workspace: `name`,
+`description`, `industry`, `website`, `language`, `brand_style_grid_url`,
+`platform_writing_instructions` (merge-patch), `events`, `timezone`, and `clear`
+(a list of fields to empty, e.g. `["website"]`).
+
+The old flat brand fields (tone, caption rules, caption suffix, custom prompts, tagline,
+CTAs, palettes, fonts, logo fields, stock / aspect-ratio / content-mix settings) are gone
+from this endpoint. Sending one returns a 422; on a client pinned to an older
+`Marky-Version` they are dropped and read back as `null`.
 
 ## Integrations (connected social accounts)
 

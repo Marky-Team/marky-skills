@@ -9,9 +9,9 @@ whether a post is **rejected at publish time** (`CAPTION_TOO_LONG`,
 publish results). They are deliberately a touch conservative so you stay clear of
 the hard edge.
 
-**Precedence:** the user's own preferences ALWAYS outrank this table. Read the brand
-profile (`get_workspace` — `tone`, `caption_writing_rules`, `caption_suffix`) before
-drafting; where the user has platform-specific instructions, follow those over the
+**Precedence:** the user's own preferences ALWAYS outrank this table. Read the
+workspace (`get_workspace` — the voice and caption rules in `strategy`, and
+`platform_writing_instructions`) before drafting; where the user has platform-specific instructions, follow those over the
 style guidance here. This table is the floor (hard limits) plus a default style
 baseline, never a ceiling on the user's choices.
 

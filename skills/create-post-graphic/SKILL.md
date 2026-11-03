@@ -30,31 +30,37 @@ CSS line, not a re-roll.
 
 ## Stage 1 — Pull the brand
 
-In a plugin install the SessionStart hook already injected a `brand-cache.md` snapshot
-with these fields — start from that. If it's missing or possibly stale (see "Write like
-the business" in the marky-api skill), fetch fresh:
+The brand's look lives in one markdown document, `design_style` (since Marky API
+version 2026-11-03 there are no separate palette, font or logo fields). In a plugin
+install `~/.marky/brand-cache.md` holds a recent copy under `## design_style`: start
+from that. If it's missing or possibly stale (see "Write like the business" in the
+marky-api skill), fetch fresh with `get_workspace`, or:
 
 ```bash
 curl "https://api.mymarky.ai/api/workspaces/BIZ_ID" \
   -H "Authorization: Bearer mk_live_YOUR_KEY"
 ```
 
-Read these fields:
+Read `design_style` and pull these out of its prose (the top part is binding on every
+image; the `## Treatments` table underneath is a menu of looks, pick one row if it fits):
 
-- `palettes[0].colors` — the brand palette. Derive your tokens from it:
-  - **accent** = the most saturated mid-tone color (skip near-white / near-black)
-  - **ink** = the darkest color (body text)
-  - **surface** = the lightest color (page background)
+- **Colours** — the hex codes it names. Derive your tokens from them:
+  - **accent** = the colour it says leads (else the most saturated mid-tone; skip
+    near-white / near-black)
+  - **ink** = the darkest colour, or the one it names for text (body text)
+  - **surface** = the lightest colour, or the one it names for the background
   - **tints** = mix accent with white at ~92% / 82% / 65% for ring/step fills
     (CSS `color-mix(in srgb, ACCENT 8%, white)` etc.)
-- `header_font` / `body_font` — use if set; otherwise the system stack
+  If it names no hex codes, ask the user for their brand colours (and offer the
+  build-brand-kit skill to save them) rather than guessing.
+- **Fonts** — the heading and body families it names; otherwise the system stack
   (`-apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif`).
-- `logo_url` — the footer mark. Render the actual logo (`<img>` capped at ~48px
-  tall, `object-fit: contain`); if `logo_background_color` is set and isn't
-  transparent, put it behind the image with a little padding and a small
-  radius so the logo sits on the background it was designed for. Only when
-  `logo_url` is empty, fall back to a text wordmark (`name` in the accent
-  color).
+- **Logo** — a `Logo: https://...` line gives the image for the footer mark. Render
+  the actual logo (`<img>` capped at ~48px tall, `object-fit: contain`); if the doc
+  says the logo needs a background colour, put it behind the image with a little
+  padding and a small radius. Follow its placement rule ("top left", "never on
+  photos"). With no logo URL in the doc, use a logo file the user gives you, or fall
+  back to a text wordmark (`name` in the accent color).
 
 ## Stage 2 — Pick the archetype
 
@@ -153,7 +159,7 @@ Keep the `.html` sources next to the PNGs in your content folder — future edit
 are a one-line change plus a re-render, and a series stays visually consistent
 by reusing the same base CSS.
 
-Before presenting drafts, run every caption through the **humanize** skill's pattern check (score 90+; fix silently, don't show the math). The user's own caption_writing_rules still outrank it.
+Before presenting drafts, run every caption through the **humanize** skill's pattern check (score 90+; fix silently, don't show the math). The caption rules in the user's `strategy` doc still outrank it.
 
 ## Approval gate
 

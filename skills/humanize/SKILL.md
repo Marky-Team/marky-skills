@@ -7,8 +7,8 @@ description: >
   "make it sound human", "de-slop this", "humanize", "rewrite this caption",
   or asks why their posts feel generic. Every creation skill
   (plan-social-content, create-post-*) runs this pass automatically before its
-  approval gate. The user's own brand rules (caption_writing_rules) always
-  outrank this skill.
+  approval gate. The user's own caption rules (in the workspace's strategy
+  doc) always outrank this skill.
 ---
 
 # Humanize
@@ -29,7 +29,7 @@ ericosiu/ai-marketing-skills, MIT), tuned for short social copy.
 - On demand: when the user pastes copy and asks to make it sound human.
 
 Order of authority: platform hard limits (marky-api platform rules) >
-the user's caption_writing_rules and feedback log > this skill.
+the caption rules in the workspace's `strategy` doc and the feedback log > this skill.
 If a brand rule says "always use emojis", emojis stay.
 
 ## Scoring

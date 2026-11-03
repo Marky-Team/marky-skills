@@ -85,6 +85,18 @@ npx skills add marky-team/marky-skills -g
 
 Install the mcp: `https://api.mymarky.ai/api/mcp`
 
+### Keep it up to date
+
+The skills track Marky's API. When the API changes shape, an old copy of the skills can
+send fields Marky no longer accepts (for example, since 0.18.0 the brand lives in two
+documents, `strategy` and `design_style`, and the old tone / palette / font / logo fields
+are rejected). If Marky answers "update the Marky plugin to the latest version", update:
+
+- Claude Code: `claude plugin marketplace update marky-skills`, then `claude plugin update marky@marky-skills`
+  (or `/plugin marketplace update marky-skills` in a prompt)
+- Claude Cowork / Desktop: Customize, then Plugins, then update the Marky plugin
+- Codex and other agents: re-run the install commands above
+
 
 ## Skills
 
