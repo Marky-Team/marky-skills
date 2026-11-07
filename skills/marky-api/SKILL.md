@@ -35,14 +35,25 @@ which. Load them as needed rather than all up front.
 ```
 Base URL:  https://api.mymarky.ai/api
 Auth:      Authorization: Bearer mk_live_YOUR_KEY
+Version:   Marky-Version: 2026-11-03
 ```
 
-Every request needs the Bearer header:
+Every REST request needs the Bearer header, and should send the `Marky-Version` header:
 
 ```bash
 curl https://api.mymarky.ai/api/workspaces \
-  -H "Authorization: Bearer mk_live_YOUR_KEY"
+  -H "Authorization: Bearer mk_live_YOUR_KEY" \
+  -H "Marky-Version: 2026-11-03"
 ```
+
+**Always send `Marky-Version: 2026-11-03` on REST calls.** A request without it is served
+the OLDEST API version (2026-04-08), so integrations written before versioning keep working.
+Every shape in this skill is the current version's. Leave the header off and you get older
+shapes: list endpoints return `{"data": [...], "has_more": ..., "next_cursor": ...}`
+instead of `{"items": [...], "next": ...}`, and the removed brand fields are accepted
+and silently dropped instead of rejected. Each response echoes the version it was served
+in its own `Marky-Version` header. The MCP tools always use the current version, so this
+only matters for REST.
 
 Error responses:
 
@@ -89,8 +100,8 @@ nested paths are still `/businesses/{business_id}/...`, MCP tools still take a
 `business_id` argument, and responses still carry `business_id` — in every case that
 value **is the workspace id**. Media-upload bodies (`upload_media_from_url`,
 `upload_media_from_reference`, `create_media_upload`) take `workspace_id`. The old names
-(`list_businesses`, `get_business`, `update_business`, `create_business`,
-`delete_business`, and `/businesses`, `/businesses/{id}`) are deprecated but still work,
+(`list_businesses`, `get_business`, `update_business`, and `/businesses`,
+`/businesses/{id}`) are deprecated but still work,
 so an older script or prompt that uses them is not broken — just prefer the new names.
 
 ### Pagination (list endpoints)
@@ -101,6 +112,9 @@ page** in a cursor-paginated envelope:
 ```json
 { "items": [ ... ], "next": "..." }
 ```
+
+(That is the shape with `Marky-Version: 2026-11-03`. Without the header you get
+`{"data", "has_more", "next_cursor"}`; see "Base URL and auth" above.)
 
 If `next` is non-null, there are more results. Pass `?limit=100` to get a bigger page, or
 page through by passing it back as `?cursor=NEXT` until `next` is `null`. **This matters on the

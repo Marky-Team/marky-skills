@@ -85,7 +85,14 @@ else
     "${API_BASE}/businesses/${business_id}/queue/summary" 2>/dev/null || true)"
   if [[ -n "$body" ]]; then
     queued_count="$(printf '%s' "$body" | sed -n 's/.*"queued_count"[[:space:]]*:[[:space:]]*\([0-9]*\).*/\1/p' | head -1)"
-    run_out="$(printf '%s' "$body" | sed -n 's/.*"last_estimated_publish_time"[[:space:]]*:[[:space:]]*"\([^"]*\)".*/\1/p' | head -1)"
+    # covered_until counts posts scheduled for an exact time as well as the
+    # queue. Reading only the queue's run-out made every session open with
+    # "running dry now" for workspaces scheduled months ahead with schedule_post
+    # (api_feedback d8f005c5, 1907d1e1). Older servers lack the field: fall back.
+    scheduled_count="$(printf '%s' "$body" | sed -n 's/.*"scheduled_count"[[:space:]]*:[[:space:]]*\([0-9]*\).*/\1/p' | head -1)"
+    run_out="$(printf '%s' "$body" | sed -n 's/.*"covered_until"[[:space:]]*:[[:space:]]*"\([^"]*\)".*/\1/p' | head -1)"
+    [[ -z "$run_out" ]] && run_out="$(printf '%s' "$body" | sed -n 's/.*"last_estimated_publish_time"[[:space:]]*:[[:space:]]*"\([^"]*\)".*/\1/p' | head -1)"
+    queued_count=$(( ${queued_count:-0} + ${scheduled_count:-0} ))
     mkdir -p "$STATE_DIR"
     printf 'business_id=%s\nfetched_epoch=%s\nqueued_count=%s\nrun_out=%s\n' \
       "$business_id" "$NOW_EPOCH" "$queued_count" "$run_out" > "$CACHE_FILE"
@@ -113,7 +120,7 @@ fi
 
 (( days_left > threshold_days )) && exit 0
 
-NOTE="LOW_QUEUE: the posting queue for '${business_name:-$business_id}' is low — ${queued_count} post(s) queued, running dry ${run_out_label} (~${days_left} day(s) left; threshold ${threshold_days} days). FIRST check your memory: if the user has muted queue reminders (or set a different day threshold), honor that and stay silent. Otherwise, at the START of your first reply tell the user in one plain line, then offer to top the queue up (plan a batch via /plan-social-content or queue posts via /schedule-posts -> queue_post). Do not block on it if they asked for something else. Data is from GET /queue/summary, cached up to 6h — refresh with one get_queue_summary call before acting on exact numbers. If the user says 'stop reminding me about my queue' (or gives a new threshold), save that as a memory."
+NOTE="LOW_QUEUE: the posting queue for '${business_name:-$business_id}' is low — ${queued_count} post(s) queued or scheduled, running dry ${run_out_label} (~${days_left} day(s) left; threshold ${threshold_days} days). FIRST check your memory: if the user has muted queue reminders (or set a different day threshold), honor that and stay silent. Otherwise, at the START of your first reply tell the user in one plain line, then offer to top the queue up (plan a batch via /plan-social-content or queue posts via /schedule-posts -> queue_post). Do not block on it if they asked for something else. Data is from GET /queue/summary (covered_until: queue plus exact-time schedules), cached up to 6h — refresh with one get_queue_summary call before acting on exact numbers. If the user says 'stop reminding me about my queue' (or gives a new threshold), save that as a memory."
 
 escaped=$(printf '%s' "$NOTE" | tr '\n' ' ' | sed 's/\\/\\\\/g; s/"/\\"/g')
 printf '{"hookSpecificOutput":{"hookEventName":"SessionStart","additionalContext":"%s"}}\n' "$escaped"
