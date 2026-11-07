@@ -3,6 +3,28 @@
 All notable changes to this collection are documented here. The format is based
 on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
+## [0.18.1] - 2026-11-07
+
+### Fixed
+
+From the agent bug reports filed through `submit_feedback` / `POST /feedback`:
+
+- **REST calls now say to send `Marky-Version: 2026-11-03`.** Without the header the
+  API serves its oldest version, so list endpoints return `{data, has_more,
+  next_cursor}` while these docs describe `{items, next}`. About 20 reports of agents
+  reading zero rows from a full workspace. The main skill and the REST reference now
+  explain both.
+- **The LOW_QUEUE reminder counts posts scheduled for an exact time.** It read only the
+  daily queue, so a workspace scheduled through December with `schedule_post` got
+  "running dry now" every session. It now reads `covered_until` from
+  `get_queue_summary` (queue plus exact-time schedules), falling back on older servers.
+- REST reference: `restrict_publish_to` and `restrict_publish_to_integration_ids` are
+  either/or (both is a 422); the `status` values `list_posts` takes (no `FAILED`) and
+  its `limit` page size; topics take `title` and `body`; a file's GET returns
+  `body_text` while PUT takes `content`.
+- `create_business` is no longer listed among the deprecated names that "still work"
+  over MCP: it was never an MCP tool (`POST /workspaces` over REST creates one).
+
 ## [0.18.0] - 2026-11-03
 
 ### Changed

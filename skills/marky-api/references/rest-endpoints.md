@@ -5,7 +5,10 @@ shapes and examples. The main SKILL.md carries a cheat sheet of the most-used ca
 come here when you need a resource that isn't on it (library, folders, files, designs,
 templates, webhooks, keys, reviews, categories) or the full field detail of one that is.
 
-All paths are relative to `https://api.mymarky.ai/api`. All need the Bearer header. Almost
+All paths are relative to `https://api.mymarky.ai/api`. All need the Bearer header, and
+every shape on this page assumes the `Marky-Version: 2026-11-03` header: without it you are
+served the oldest API version, whose list endpoints return `{data, has_more, next_cursor}`
+instead of `{items, next}` (see "Base URL and auth" in the main SKILL.md). Almost
 every path is nested under `/businesses/{business_id}` — despite the name, `business_id` is
 the **workspace id** (Marky renamed businesses to workspaces; nested paths, MCP tool
 arguments, and response fields kept `business_id`).
@@ -127,6 +130,10 @@ curl -X POST "https://api.mymarky.ai/api/businesses/BIZ_ID/media" \
     `references/platform-rules.md`.
   - `restrict_publish_to` — target platforms, e.g. `["instagram", "facebook", "linkedIn"]`
     (case-insensitive)
+  - `restrict_publish_to_integration_ids` — target exact connected accounts instead (ids
+    from `GET /businesses/{business_id}/integrations`), for a workspace with two accounts
+    on one platform. Send this OR `restrict_publish_to`, never both: both in one request
+    is a 422.
   - `media_urls` — image/video URLs to attach (use `original_url` from an upload)
   - `status` — `NEW` (default draft) or `SCHEDULED`
   - `scheduled_publish_time` — ISO 8601 time, required if `status` is `SCHEDULED`
@@ -137,8 +144,12 @@ curl -X POST "https://api.mymarky.ai/api/businesses/BIZ_ID/media" \
   - `metadata` — up to 50 string key/value pairs, YOUR analytics dimensions (see
     "Tag every post" in the main SKILL.md). Returned verbatim on every read; Marky never
     interprets it. Limits: key <=40 chars, value <=500 chars.
-- `GET /businesses/{business_id}/posts?status=NEW` — list posts (filter by status;
-  also accepts the review verdicts `LIKED` and `REJECTED`).
+- `GET /businesses/{business_id}/posts?status=NEW` — list posts. `status` takes `NEW`,
+  `DRAFT`, `REJECTED`, `SCHEDULED` or `PUBLISHED`, and can be repeated
+  (`status=NEW&status=DRAFT`). There is no `FAILED` status: a post that failed on some
+  platforms is still `PUBLISHED` or `SCHEDULED`, so read its `publish_results`. Page size is
+  `limit` (1-100), next page is `cursor`. Posts scheduled for an exact time show up under
+  `status=SCHEDULED` (they are not in the `/queue` listing, which only holds queued posts).
 - `GET /businesses/{business_id}/posts/{post_id}` — one post, including `publish_results`
   (per-platform outcome) and `scheduled_publish_time`.
 - `PATCH /businesses/{business_id}/posts/{post_id}` — update a post (e.g. change
@@ -206,7 +217,8 @@ A created post:
 
 ## Topics, categories, posting schedule
 
-- `GET|POST /businesses/{business_id}/topics`,
+- `GET|POST /businesses/{business_id}/topics` (POST body: `title` required, `body`
+  optional, `category_id` optional; there is no `name` or `description` field),
   `GET|PATCH|DELETE /businesses/{business_id}/topics/{topic_id}` — content topics.
 - `GET|POST /businesses/{business_id}/categories`,
   `GET|PATCH|DELETE /businesses/{business_id}/categories/{category_id}` — content
@@ -232,6 +244,7 @@ A created post:
   `GET|PATCH|DELETE /businesses/{business_id}/folders/{folder_id}` — organize files.
 - `GET /businesses/{business_id}/files`,
   `GET|PUT|DELETE /businesses/{business_id}/files/{file_id}` — text docs / knowledge base.
+  GET returns the text as `body_text`; PUT takes `{ "content": "..." }` (and/or `name`).
 - `POST /businesses/{business_id}/files/{file_id}/media` — attach uploaded media to a file
   (body: `{ "media_ids": ["MEDIA_ID"] }`).
 
