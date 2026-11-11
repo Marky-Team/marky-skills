@@ -3,6 +3,17 @@
 All notable changes to this collection are documented here. The format is based
 on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
+## [0.18.2] - 2026-11-10
+
+### Removed
+
+- **`resolve_post_comment` is no longer an MCP tool.** One workspace used it in 60 days.
+  Resolving a review comment is still available over REST
+  (`PATCH /businesses/{business_id}/posts/{post_id}/comments/{comment_id}`), and reading and
+  leaving comments (`list_post_comments`, `create_post_comment`) are unchanged.
+- **`attach_media_to_file` is no longer an MCP tool** (nobody called it in 60 days). It is
+  still a REST endpoint. No skill here relied on it.
+
 ## [0.18.1] - 2026-11-07
 
 ### Fixed
