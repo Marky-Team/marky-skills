@@ -3,6 +3,13 @@
 All notable changes to this collection are documented here. The format is based
 on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
+## [0.18.3] - 2026-11-25
+
+### Added
+
+- **Video cover fields documented** (`cover_media_id`, `video_cover_timestamp_ms`) on
+  create and update. Without them Marky picks a cover frame itself.
+
 ## [0.18.2] - 2026-11-10
 
 ### Removed

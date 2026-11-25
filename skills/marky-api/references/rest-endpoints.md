@@ -137,6 +137,12 @@ curl -X POST "https://api.mymarky.ai/api/businesses/BIZ_ID/media" \
   - `media_urls` — image/video URLs to attach (use `original_url` from an upload)
   - `status` — `NEW` (default draft) or `SCHEDULED`
   - `scheduled_publish_time` — ISO 8601 time, required if `status` is `SCHEDULED`
+  - `cover_media_id` — for a video post: the media id of an IMAGE to use as the cover
+    (upload the still first). Used by Instagram, Facebook, Pinterest and YouTube
+    (verified channels). Without it, Marky picks a frame for you, which can land on a
+    transition, so set it when the cover matters. Replacing the media does not clear it.
+  - `video_cover_timestamp_ms` — which frame TikTok uses as its cover, in ms from the
+    start (default 1000). Other platforms ignore it. Both cover fields also work on PATCH.
   - `link` — clickable destination URL, for the platforms that support link posts:
     the Facebook link attachment, the Google Business CTA button, and the Pinterest
     pin destination. Other platforms ignore it — put the link in the caption there.
